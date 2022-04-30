@@ -1,62 +1,59 @@
 package ast
 
-type version string
-type expression string
-
 type pragmaValue struct {
 	version    string
-	expression expression
+	expression string
 }
 
-type pragmaDirective struct {
+type PragmaDirective struct {
 	pragmaName  string
 	pragmaValue pragmaValue
 }
 
-type functionDescriptor struct {
+type FunctionDescriptor struct {
 	name string
 }
 
-type stateMutability struct {
+type StateMutability struct {
 	pure bool
 }
 
-type modifierList struct {
-	stateMutability stateMutability
+type ModifierList struct {
+	stateMutability *StateMutability
 }
 
-type typeName struct {
+type TypeName struct {
 	elementalyTypeName string
 }
 
-type eventParameter struct {
-	typeName typeName
+type EventParameter struct {
+	typeName *TypeName
 }
 
-type parameterList struct {
-	eventParameter eventParameter
+type ParameterList struct {
+	eventParameter *EventParameter
 }
 
-type returnParameters struct {
-	parameterList parameterList
+type ReturnParameters struct {
+	parameterList *ParameterList
 }
 
-type functionDefinition struct {
-	functionDescriptor functionDescriptor
-	modifierList       modifierList
-	returnParameters   returnParameters
+type FunctionDefinition struct {
+	functionDescriptor *FunctionDescriptor
+	modifierList       *ModifierList
+	returnParameters   *ReturnParameters
 }
 
-type contractPart struct {
-	functionDefinition functionDefinition
+type ContractPart struct {
+	functionDefinition *FunctionDefinition
 }
 
-type contractDefinition struct {
-	contractPart contractPart
+type ContractDefinition struct {
+	contractPart *ContractPart
 }
 
 // A File node represents a Solidity source file.
 type SourceUnit struct {
-	pragmaDirective    pragmaDirective
-	contractDefinition contractDefinition
+	PragmaDirective    *PragmaDirective
+	ContractDefinition *ContractDefinition
 }
