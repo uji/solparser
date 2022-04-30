@@ -1,4 +1,4 @@
-package lexer
+package lexer_test
 
 import (
 	"bufio"
@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/uji/solparser/lexer"
 )
 
 // Test that the token splitter.
@@ -21,27 +22,17 @@ func TestScanTokens(t *testing.T) {
 		{" a ", []string{"a"}},
 		{"abc def", []string{"abc", "def"}},
 		{" abc def ", []string{"abc", "def"}},
-		{
-			" abc\tdef\nghi\rjkl\fmno\vpqr\u0085stu\u00a0\n",
-			[]string{
-				"abc",
-				"def",
-				"ghi",
-				"jkl",
-				"mno",
-				"pqr",
-				"stu",
-			},
-		},
+		{" a\tb\nc\rd\fe\vf\u0085g\u00a0\n", []string{"a", "b", "c", "d", "e", "f", "g"}},
 		{"^0.8.13", []string{"^", "0.8.13"}},
 		{"0.8.13;", []string{"0.8.13", ";"}},
 		{"pragma solidity ^0.8.13;", []string{"pragma", "solidity", "^", "0.8.13", ";"}},
+		{"contract HelloWorld {", []string{"contract", "HelloWorld", "{"}},
 	}
 
 	for n, c := range cases {
 		buf := strings.NewReader(c.input)
 		s := bufio.NewScanner(buf)
-		s.Split(ScanTokens)
+		s.Split(lexer.ScanTokens)
 
 		got := make([]string, 0, len(c.want))
 		for i := 0; i < len(c.want); i++ {
@@ -58,6 +49,43 @@ func TestScanTokens(t *testing.T) {
 		}
 		err := s.Err()
 		if err != nil {
+			t.Errorf("#%d: %v", n, err)
+		}
+	}
+}
+
+func TestLexer_Scan(t *testing.T) {
+	cases := []struct {
+		input string
+		want  []lexer.Token
+	}{
+		{
+			input: "pragma solidity ^0.8.13;",
+			want: []lexer.Token{
+				{lexer.Pragma, "pragma"},
+				{lexer.Unknown, "solidity"},
+				{lexer.Hat, "^"},
+				{lexer.Unknown, "0.8.13"},
+				{lexer.Semicolon, ";"},
+			},
+		},
+	}
+
+	for n, c := range cases {
+		buf := strings.NewReader(c.input)
+		l := lexer.New(buf)
+		got := make([]lexer.Token, 0, len(c.want))
+		for i := 0; i < len(c.want); i++ {
+			l.Scan()
+			got = append(got, l.Token())
+		}
+		if l.Scan() {
+			t.Errorf("#%d: scan ran too long, got %q", n, got)
+		}
+		if diff := cmp.Diff(c.want, got); diff != "" {
+			t.Errorf("#%d: %s", n, diff)
+		}
+		if err := l.Error(); err != nil {
 			t.Errorf("#%d: %v", n, err)
 		}
 	}

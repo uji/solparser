@@ -9,6 +9,7 @@ import (
 type Lexer struct {
 	scanner *bufio.Scanner
 	token   Token
+	err     error
 }
 
 // isSpace reports whether the character is a Unicode white space character.
@@ -37,7 +38,7 @@ func isSpace(r rune) bool {
 }
 
 func isMiscToken(r rune) bool {
-	return asMiscToken(r) != Invalid
+	return asMiscToken(r) != Unknown
 }
 
 func ScanTokens(data []byte, atEOF bool) (advance int, token []byte, err error) {
@@ -87,10 +88,13 @@ func (l *Lexer) Scan() bool {
 	if !l.scanner.Scan() {
 		return false
 	}
+	if err := l.scanner.Err(); err != nil {
+		l.err = err
+	}
 
 	txt := l.scanner.Text()
 	l.token = Token{
-		TokenType: asKeyword(txt),
+		TokenType: asToken(txt),
 		Text:      txt,
 	}
 
@@ -99,4 +103,8 @@ func (l *Lexer) Scan() bool {
 
 func (l Lexer) Token() Token {
 	return l.token
+}
+
+func (l Lexer) Error() error {
+	return l.err
 }
