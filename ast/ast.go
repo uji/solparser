@@ -1,13 +1,13 @@
 package ast
 
-type pragmaValue struct {
-	version    string
-	expression string
+type PragmaValue struct {
+	Version    string
+	Expression string
 }
 
 type PragmaDirective struct {
-	pragmaName  string
-	pragmaValue pragmaValue
+	PragmaName  string
+	PragmaValue PragmaValue
 }
 
 type FunctionDescriptor struct {
