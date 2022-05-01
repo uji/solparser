@@ -26,7 +26,7 @@ func (p *Parser) Parse(input io.Reader) (*ast.SourceUnit, error) {
 		return nil, err
 	}
 
-	contractDefinition, err := p.parseContractDefinition()
+	contractDefinition, err := p.ParseContractDefinition()
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,6 @@ func (p *Parser) ParsePragmaDirective() (*ast.PragmaDirective, error) {
 		return nil, errors.New("not found semicolon")
 	}
 
-	// pragma ~ のパース
 	return &ast.PragmaDirective{
 		PragmaName: pragmaName.Text,
 		PragmaValue: ast.PragmaValue{
@@ -76,7 +75,52 @@ func (p *Parser) ParsePragmaDirective() (*ast.PragmaDirective, error) {
 	}, nil
 }
 
-func (p *Parser) parseContractDefinition() (*ast.ContractDefinition, error) {
-	// contract ~ のパース
+func (p *Parser) ParseModirierList() (*ast.ModifierList, error) {
 	return nil, nil
+}
+
+func (p *Parser) ParseReturnParameters() (*ast.ReturnParameters, error) {
+	return nil, nil
+}
+
+func (p *Parser) ParseFunctionDefinition() (*ast.FunctionDefinition, error) {
+	return nil, nil
+}
+
+func (p *Parser) ParseContractPart() (*ast.ContractPart, error) {
+	funcDef, err := p.ParseFunctionDefinition()
+	if err != nil {
+		return nil, err
+	}
+
+	return &ast.ContractPart{
+		FunctionDefinition: funcDef,
+	}, nil
+}
+
+func (p *Parser) ParseContractDefinition() (*ast.ContractDefinition, error) {
+	p.lexer.Scan()
+	keyward := p.lexer.Token()
+	if keyward.TokenType != lexer.Constract {
+		return nil, errors.New("not found contract definition")
+	}
+
+	p.lexer.Scan()
+	if p.lexer.Token().TokenType != lexer.BraceL {
+		return nil, errors.New("not found left brace")
+	}
+
+	part, err := p.ParseContractPart()
+	if err != nil {
+		return nil, err
+	}
+
+	p.lexer.Scan()
+	if p.lexer.Token().TokenType != lexer.BraceR {
+		return nil, errors.New("not found right brace")
+	}
+
+	return &ast.ContractDefinition{
+		ContractPart: part,
+	}, nil
 }
