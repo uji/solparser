@@ -11,45 +11,45 @@ type PragmaDirective struct {
 }
 
 type FunctionDescriptor struct {
-	name string
+	Name string
 }
 
 type StateMutability struct {
-	pure bool
+	Pure bool
 }
 
 type ModifierList struct {
-	stateMutability *StateMutability
+	StateMutability *StateMutability
 }
 
 type TypeName struct {
-	elementalyTypeName string
+	ElementalyTypeName string
 }
 
 type EventParameter struct {
-	typeName *TypeName
+	TypeName *TypeName
 }
 
 type ParameterList struct {
-	eventParameter *EventParameter
+	EventParameter *EventParameter
 }
 
 type ReturnParameters struct {
-	parameterList *ParameterList
+	ParameterList *ParameterList
 }
 
 type FunctionDefinition struct {
-	functionDescriptor *FunctionDescriptor
-	modifierList       *ModifierList
-	returnParameters   *ReturnParameters
+	FunctionDescriptor *FunctionDescriptor
+	ModifierList       *ModifierList
+	ReturnParameters   *ReturnParameters
 }
 
 type ContractPart struct {
-	functionDefinition *FunctionDefinition
+	FunctionDefinition *FunctionDefinition
 }
 
 type ContractDefinition struct {
-	contractPart *ContractPart
+	ContractPart *ContractPart
 }
 
 // A File node represents a Solidity source file.
