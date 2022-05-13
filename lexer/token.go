@@ -89,12 +89,14 @@ func asToken(str string) TokenType {
 type Token struct {
 	TokenType TokenType
 	Text      string
+	Pos       Position
 }
 
-func NewToken(ch string) Token {
+func NewToken(ch string, pos Position) Token {
 	return Token{
 		TokenType: asKeyword(ch),
 		Text:      ch,
+		Pos:       pos,
 	}
 }
 
