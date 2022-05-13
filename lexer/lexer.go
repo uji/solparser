@@ -3,6 +3,7 @@ package lexer
 import (
 	"bufio"
 	"io"
+	"unicode/utf8"
 )
 
 type Lexer struct {
@@ -24,12 +25,29 @@ func New(input io.Reader) *Lexer {
 	}
 }
 
-func (l *Lexer) Scan() bool {
-	if !l.scanner.Scan() {
-		return false
-	}
-	if err := l.scanner.Err(); err != nil {
-		l.err = err
+func (l *Lexer) Scan() (result bool) {
+	// Scan until next token.
+	for {
+		if !l.scanner.Scan() {
+			return false
+		}
+		if err := l.scanner.Err(); err != nil {
+			l.err = err
+		}
+		result = true
+
+		txt := l.scanner.Text()
+		r, _ := utf8.DecodeRune([]byte(txt))
+		if r == '\n' {
+			l.lineOffset++
+			l.offset = 0
+			continue
+		}
+		if isSpace(r) {
+			l.offset += len([]rune(txt))
+			continue
+		}
+		break
 	}
 
 	txt := l.scanner.Text()
