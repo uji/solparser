@@ -101,4 +101,5 @@ func NewToken(ch string) Token {
 type Position struct {
 	Start int
 	Size  int
+	Line  int
 }
