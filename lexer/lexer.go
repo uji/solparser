@@ -10,6 +10,10 @@ type Lexer struct {
 	scanner *bufio.Scanner
 	token   Token
 	err     error
+
+	// position state
+	offset     int
+	lineOffset int
 }
 
 // isSpace reports whether the character is a Unicode white space character.
@@ -93,10 +97,15 @@ func (l *Lexer) Scan() bool {
 	}
 
 	txt := l.scanner.Text()
-	l.token = Token{
-		TokenType: asToken(txt),
-		Text:      txt,
+	size := len([]rune(txt))
+	pos := Position{
+		Start: l.offset,
+		Size:  size,
+		Line:  l.lineOffset,
 	}
+	l.token = NewToken(txt, pos)
+
+	l.offset += size
 
 	return true
 }

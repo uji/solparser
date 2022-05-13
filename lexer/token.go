@@ -94,7 +94,7 @@ type Token struct {
 
 func NewToken(ch string, pos Position) Token {
 	return Token{
-		TokenType: asKeyword(ch),
+		TokenType: asToken(ch),
 		Text:      ch,
 		Pos:       pos,
 	}
