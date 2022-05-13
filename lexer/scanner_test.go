@@ -25,8 +25,8 @@ func TestScanTokens(t *testing.T) {
 		{"e\vf\u0085g\u00a0\n", []string{"e", "\v", "f", "\u0085", "g", "\u00a0", "\n"}},
 		{"^0.8.13", []string{"^", "0.8.13"}},
 		{"0.8.13;", []string{"0.8.13", ";"}},
-		{"pragma solidity ^0.8.13;", []string{"pragma", "solidity", "^", "0.8.13", ";"}},
-		{"contract HelloWorld {", []string{"contract", "HelloWorld", "{"}},
+		{"pragma solidity ^0.8.13;", []string{"pragma", " ", "solidity", " ", "^", "0.8.13", ";"}},
+		{"contract HelloWorld {", []string{"contract", " ", "HelloWorld", " ", "{"}},
 	}
 
 	for n, c := range cases {
