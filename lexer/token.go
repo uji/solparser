@@ -1,5 +1,7 @@
 package lexer
 
+import "fmt"
+
 type TokenType int
 
 const (
@@ -104,4 +106,14 @@ type Position struct {
 	Column int
 	Size   int
 	Line   int
+}
+
+func (pos Position) IsValid() bool { return pos.Line > 0 && pos.Column > 0 }
+
+func (pos Position) String() string {
+	if !pos.IsValid() {
+		return "-"
+	}
+
+	return fmt.Sprintf("%d:%d", pos.Line, pos.Column)
 }
