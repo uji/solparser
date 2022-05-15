@@ -33,6 +33,7 @@ func (l *Lexer) Scan() (result bool) {
 		}
 		if err := l.scanner.Err(); err != nil {
 			l.err = err
+			return false
 		}
 		result = true
 
