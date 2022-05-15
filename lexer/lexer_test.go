@@ -16,14 +16,14 @@ func TestLexer_Scan(t *testing.T) {
 		{
 			input: "pragma solidity ^0.8.13;\n\ncontract HelloWorld { ",
 			want: []lexer.Token{
-				{lexer.Pragma, "pragma", lexer.Position{Start: 0, Size: 6, Line: 0}},
-				{lexer.Unknown, "solidity", lexer.Position{Start: 7, Size: 8, Line: 0}},
-				{lexer.Hat, "^", lexer.Position{Start: 16, Size: 1, Line: 0}},
-				{lexer.Unknown, "0.8.13", lexer.Position{Start: 17, Size: 6, Line: 0}},
-				{lexer.Semicolon, ";", lexer.Position{Start: 23, Size: 1, Line: 0}},
-				{lexer.Contract, "contract", lexer.Position{Start: 0, Size: 8, Line: 2}},
-				{lexer.Unknown, "HelloWorld", lexer.Position{Start: 9, Size: 10, Line: 2}},
-				{lexer.BraceL, "{", lexer.Position{Start: 20, Size: 1, Line: 2}},
+				{lexer.Pragma, "pragma", lexer.Position{Column: 1, Size: 6, Line: 1}},
+				{lexer.Unknown, "solidity", lexer.Position{Column: 8, Size: 8, Line: 1}},
+				{lexer.Hat, "^", lexer.Position{Column: 17, Size: 1, Line: 1}},
+				{lexer.Unknown, "0.8.13", lexer.Position{Column: 18, Size: 6, Line: 1}},
+				{lexer.Semicolon, ";", lexer.Position{Column: 24, Size: 1, Line: 1}},
+				{lexer.Contract, "contract", lexer.Position{Column: 1, Size: 8, Line: 3}},
+				{lexer.Unknown, "HelloWorld", lexer.Position{Column: 10, Size: 10, Line: 3}},
+				{lexer.BraceL, "{", lexer.Position{Column: 21, Size: 1, Line: 3}},
 			},
 		},
 	}

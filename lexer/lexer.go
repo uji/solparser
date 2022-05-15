@@ -54,9 +54,9 @@ func (l *Lexer) Scan() (result bool) {
 	txt := l.scanner.Text()
 	size := len([]rune(txt))
 	pos := Position{
-		Start: l.offset,
-		Size:  size,
-		Line:  l.lineOffset,
+		Column: l.offset + 1,
+		Size:   size,
+		Line:   l.lineOffset + 1,
 	}
 	l.token = NewToken(txt, pos)
 
