@@ -20,7 +20,7 @@ const (
 
 	// Keyword
 	Pragma
-	Constract
+	Contract
 	Function
 	Pubilc
 	Pure
@@ -61,8 +61,8 @@ func asKeyword(str string) TokenType {
 	switch str {
 	case "pragma":
 		return Pragma
-	case "constract":
-		return Constract
+	case "contract":
+		return Contract
 	case "function":
 		return Function
 	case "pubilc":

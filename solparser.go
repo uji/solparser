@@ -101,7 +101,7 @@ func (p *Parser) ParseContractPart() (*ast.ContractPart, error) {
 func (p *Parser) ParseContractDefinition() (*ast.ContractDefinition, error) {
 	p.lexer.Scan()
 	keyward := p.lexer.Token()
-	if keyward.TokenType != lexer.Constract {
+	if keyward.TokenType != lexer.Contract {
 		return nil, errors.New("not found contract definition")
 	}
 

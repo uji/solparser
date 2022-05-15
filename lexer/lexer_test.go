@@ -14,13 +14,16 @@ func TestLexer_Scan(t *testing.T) {
 		want  []lexer.Token
 	}{
 		{
-			input: "pragma solidity ^0.8.13;",
+			input: "pragma solidity ^0.8.13;\n\ncontract HelloWorld { ",
 			want: []lexer.Token{
 				{lexer.Pragma, "pragma", lexer.Position{Start: 0, Size: 6, Line: 0}},
 				{lexer.Unknown, "solidity", lexer.Position{Start: 7, Size: 8, Line: 0}},
 				{lexer.Hat, "^", lexer.Position{Start: 16, Size: 1, Line: 0}},
 				{lexer.Unknown, "0.8.13", lexer.Position{Start: 17, Size: 6, Line: 0}},
 				{lexer.Semicolon, ";", lexer.Position{Start: 23, Size: 1, Line: 0}},
+				{lexer.Contract, "contract", lexer.Position{Start: 0, Size: 8, Line: 2}},
+				{lexer.Unknown, "HelloWorld", lexer.Position{Start: 9, Size: 10, Line: 2}},
+				{lexer.BraceL, "{", lexer.Position{Start: 20, Size: 1, Line: 2}},
 			},
 		},
 	}
