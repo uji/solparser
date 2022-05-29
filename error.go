@@ -1,6 +1,8 @@
 package solparser
 
-import "github.com/uji/solparser/lexer"
+import (
+	"github.com/uji/solparser/lexer"
+)
 
 type Error struct {
 	Token lexer.Token
