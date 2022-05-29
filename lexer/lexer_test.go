@@ -9,11 +9,13 @@ import (
 )
 
 func TestLexer_Scan(t *testing.T) {
-	cases := []struct {
+	tests := []struct {
+		name  string
 		input string
 		want  []lexer.Token
 	}{
 		{
+			name:  "normal case",
 			input: "pragma solidity ^0.8.13;\n\ncontract HelloWorld { ",
 			want: []lexer.Token{
 				{lexer.Pragma, "pragma", lexer.Position{Column: 1, Line: 1}},
@@ -28,22 +30,24 @@ func TestLexer_Scan(t *testing.T) {
 		},
 	}
 
-	for n, c := range cases {
-		buf := strings.NewReader(c.input)
-		l := lexer.New(buf)
-		got := make([]lexer.Token, 0, len(c.want))
-		for i := 0; i < len(c.want); i++ {
-			l.Scan()
-			got = append(got, l.Token())
-		}
-		if l.Scan() {
-			t.Errorf("#%d: scan ran too long, got %q", n, got)
-		}
-		if diff := cmp.Diff(c.want, got); diff != "" {
-			t.Errorf("#%d: %s", n, diff)
-		}
-		if err := l.Error(); err != nil {
-			t.Errorf("#%d: %v", n, err)
-		}
+	for _, c := range tests {
+		t.Run(c.name, func(t *testing.T) {
+			buf := strings.NewReader(c.input)
+			l := lexer.New(buf)
+			got := make([]lexer.Token, 0, len(c.want))
+			for i := 0; i < len(c.want); i++ {
+				l.Scan()
+				got = append(got, l.Token())
+			}
+			if l.Scan() {
+				t.Errorf("scan ran too long, got %q", got)
+			}
+			if diff := cmp.Diff(c.want, got); diff != "" {
+				t.Errorf("%s", diff)
+			}
+			if err := l.Error(); err != nil {
+				t.Errorf("%v", err)
+			}
+		})
 	}
 }

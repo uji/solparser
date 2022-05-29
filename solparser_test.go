@@ -12,12 +12,14 @@ import (
 )
 
 func TestParserParsePragmaDirective(t *testing.T) {
-	cases := []struct {
+	tests := []struct {
+		name  string
 		input string
 		want  *ast.PragmaDirective
 		err   *solparser.Error
 	}{
 		{
+			name:  "normal case",
 			input: "pragma solidity ^0.8.13;",
 			want: &ast.PragmaDirective{
 				PragmaName: "solidity",
@@ -29,6 +31,7 @@ func TestParserParsePragmaDirective(t *testing.T) {
 			err: nil,
 		},
 		{
+			name:  "there is no pragma keyword",
 			input: "solidity ^0.8.13;",
 			want:  nil,
 			err: &solparser.Error{
@@ -41,21 +44,23 @@ func TestParserParsePragmaDirective(t *testing.T) {
 		},
 	}
 
-	for n, c := range cases {
-		r := strings.NewReader(c.input)
-		p := solparser.New(r)
+	for _, tt := range tests {
+		t.Run(tt.name, func(*testing.T) {
+			r := strings.NewReader(tt.input)
+			p := solparser.New(r)
 
-		got, err := p.ParsePragmaDirective()
+			got, err := p.ParsePragmaDirective()
 
-		var sErr *solparser.Error
-		if errors.As(err, &sErr) {
-			if diff := cmp.Diff(c.err, sErr); diff != "" {
-				t.Errorf("#%d %s", n, diff)
+			var sErr *solparser.Error
+			if errors.As(err, &sErr) {
+				if diff := cmp.Diff(tt.err, sErr); diff != "" {
+					t.Errorf("%s", diff)
+				}
 			}
-		}
 
-		if diff := cmp.Diff(c.want, got); diff != "" {
-			t.Errorf("#%d %s", n, diff)
-		}
+			if diff := cmp.Diff(tt.want, got); diff != "" {
+				t.Errorf("%s", diff)
+			}
+		})
 	}
 }

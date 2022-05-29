@@ -11,7 +11,7 @@ import (
 
 // Test that the token splitter.
 func TestScanTokens(t *testing.T) {
-	cases := []struct {
+	tests := []struct {
 		input string
 		want  []string
 	}{
@@ -29,7 +29,7 @@ func TestScanTokens(t *testing.T) {
 		{"contract HelloWorld {", []string{"contract", " ", "HelloWorld", " ", "{"}},
 	}
 
-	for n, c := range cases {
+	for n, c := range tests {
 		buf := strings.NewReader(c.input)
 		s := bufio.NewScanner(buf)
 		s.Split(lexer.ScanTokens)
