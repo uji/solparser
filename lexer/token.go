@@ -104,7 +104,6 @@ func NewToken(ch string, pos Position) Token {
 
 type Position struct {
 	Column int
-	Size   int
 	Line   int
 }
 
