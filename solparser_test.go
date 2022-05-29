@@ -42,6 +42,42 @@ func TestParserParsePragmaDirective(t *testing.T) {
 				Msg: "not found pragma",
 			},
 		},
+		{
+			name:  "there is no pragma name",
+			input: "pragma ^0.8.13;",
+			want:  nil,
+			err: &solparser.Error{
+				Pos: lexer.Position{
+					Column: 8,
+					Line:   1,
+				},
+				Msg: "not found pragma name",
+			},
+		},
+		{
+			name:  "there is no Hat expression",
+			input: "pragma solidity 0.8.13;",
+			want:  nil,
+			err: &solparser.Error{
+				Pos: lexer.Position{
+					Column: 17,
+					Line:   1,
+				},
+				Msg: "not found Hat expression",
+			},
+		},
+		{
+			name:  "there is no Semicolon",
+			input: "pragma solidity ^0.8.13",
+			want:  nil,
+			err: &solparser.Error{
+				Pos: lexer.Position{
+					Column: 18,
+					Line:   1,
+				},
+				Msg: "not found Semicolon",
+			},
+		},
 	}
 
 	for _, tt := range tests {

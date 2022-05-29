@@ -46,13 +46,13 @@ func (p *Parser) ParsePragmaDirective() (*ast.PragmaDirective, error) {
 	p.lexer.Scan()
 	pragmaName := p.lexer.Token()
 	if pragmaName.TokenType != lexer.Unknown {
-		return nil, newError(pragmaName.Pos, "not found unkknown")
+		return nil, newError(pragmaName.Pos, "not found pragma name")
 	}
 
 	p.lexer.Scan()
 	expression := p.lexer.Token()
 	if expression.TokenType != lexer.Hat {
-		return nil, newError(expression.Pos, "not found expression")
+		return nil, newError(expression.Pos, "not found Hat expression")
 	}
 
 	p.lexer.Scan()
@@ -63,7 +63,7 @@ func (p *Parser) ParsePragmaDirective() (*ast.PragmaDirective, error) {
 
 	p.lexer.Scan()
 	if tkn := p.lexer.Token(); tkn.TokenType != lexer.Semicolon {
-		return nil, newError(tkn.Pos, "not found semicolon")
+		return nil, newError(tkn.Pos, "not found Semicolon")
 	}
 
 	return &ast.PragmaDirective{
