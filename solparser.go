@@ -40,30 +40,30 @@ func (p *Parser) Parse(input io.Reader) (*ast.SourceUnit, error) {
 func (p *Parser) ParsePragmaDirective() (*ast.PragmaDirective, error) {
 	p.lexer.Scan()
 	if tkn := p.lexer.Token(); tkn.TokenType != lexer.Pragma {
-		return nil, newError(tkn, "not found pragma")
+		return nil, newError(tkn.Pos, "not found pragma")
 	}
 
 	p.lexer.Scan()
 	pragmaName := p.lexer.Token()
 	if pragmaName.TokenType != lexer.Unknown {
-		return nil, newError(pragmaName, "not found unkknown")
+		return nil, newError(pragmaName.Pos, "not found unkknown")
 	}
 
 	p.lexer.Scan()
 	expression := p.lexer.Token()
 	if expression.TokenType != lexer.Hat {
-		return nil, newError(expression, "not found expression")
+		return nil, newError(expression.Pos, "not found expression")
 	}
 
 	p.lexer.Scan()
 	version := p.lexer.Token()
 	if version.TokenType != lexer.Unknown {
-		return nil, newError(version, "not found version")
+		return nil, newError(version.Pos, "not found version")
 	}
 
 	p.lexer.Scan()
 	if tkn := p.lexer.Token(); tkn.TokenType != lexer.Semicolon {
-		return nil, newError(tkn, "not found semicolon")
+		return nil, newError(tkn.Pos, "not found semicolon")
 	}
 
 	return &ast.PragmaDirective{

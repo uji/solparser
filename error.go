@@ -5,22 +5,22 @@ import (
 )
 
 type Error struct {
-	Token lexer.Token
-	Msg   string
+	Pos lexer.Position
+	Msg string
 }
 
 var _ error = &Error{}
 
-func newError(token lexer.Token, msg string) *Error {
+func newError(pos lexer.Position, msg string) *Error {
 	return &Error{
-		Token: token,
-		Msg:   msg,
+		Pos: pos,
+		Msg: msg,
 	}
 }
 
 func (e *Error) Error() string {
-	if e.Token.Pos.IsValid() {
-		return e.Token.Pos.String() + ": " + e.Msg
+	if e.Pos.IsValid() {
+		return e.Pos.String() + ": " + e.Msg
 	}
 	return e.Msg
 }

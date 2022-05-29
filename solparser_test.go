@@ -32,13 +32,9 @@ func TestParserParsePragmaDirective(t *testing.T) {
 			input: "solidity ^0.8.13;",
 			want:  nil,
 			err: &solparser.Error{
-				Token: lexer.Token{
-					TokenType: lexer.Unknown,
-					Text:      "solidity",
-					Pos: lexer.Position{
-						Column: 1,
-						Line:   1,
-					},
+				Pos: lexer.Position{
+					Column: 1,
+					Line:   1,
 				},
 				Msg: "not found pragma",
 			},
