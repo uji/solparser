@@ -6,10 +6,18 @@ import (
 	"unicode/utf8"
 )
 
+type scanner interface {
+	Scan() bool
+	Text() string
+	Err() error
+}
+
 type Lexer struct {
-	scanner *bufio.Scanner
-	token   Token
-	err     error
+	scanner scanner
+
+	// scan result
+	token Token
+	err   error
 
 	// position state
 	offset     int
