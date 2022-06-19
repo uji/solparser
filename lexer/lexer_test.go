@@ -1,52 +1,247 @@
-package lexer_test
+package lexer
 
 import (
-	"strings"
+	"errors"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/uji/solparser/lexer"
 )
 
-func TestLexer_Scan(t *testing.T) {
+type scanResult struct {
+	text string
+	err  error
+}
+
+type mockScanner struct {
+	calledCount int
+	results     []scanResult
+}
+
+func (s *mockScanner) Scan() bool {
+	if s.calledCount == len(s.results) {
+		return false
+	}
+	s.calledCount++
+	return true
+}
+func (s *mockScanner) Text() string {
+	return s.results[s.calledCount-1].text
+}
+func (s *mockScanner) Err() error {
+	return s.results[s.calledCount-1].err
+}
+
+func TestLexerScan(t *testing.T) {
 	tests := []struct {
-		name  string
-		input string
-		want  []lexer.Token
+		name        string
+		offset      int
+		lineOffset  int
+		scanResults []scanResult
+		result      bool
+		token       Token
+		err         error
 	}{
 		{
-			name:  "normal case",
-			input: "pragma solidity ^0.8.13;\n\ncontract HelloWorld { ",
-			want: []lexer.Token{
-				{lexer.Pragma, "pragma", lexer.Position{Column: 1, Line: 1}},
-				{lexer.Unknown, "solidity", lexer.Position{Column: 8, Line: 1}},
-				{lexer.Hat, "^", lexer.Position{Column: 17, Line: 1}},
-				{lexer.Unknown, "0.8.13", lexer.Position{Column: 18, Line: 1}},
-				{lexer.Semicolon, ";", lexer.Position{Column: 24, Line: 1}},
-				{lexer.Contract, "contract", lexer.Position{Column: 1, Line: 3}},
-				{lexer.Unknown, "HelloWorld", lexer.Position{Column: 10, Line: 3}},
-				{lexer.BraceL, "{", lexer.Position{Column: 21, Line: 3}},
+			name:       "normal",
+			offset:     4,
+			lineOffset: 5,
+			scanResults: []scanResult{
+				{
+					text: "pragma",
+					err:  nil,
+				},
+			},
+			result: true,
+			token: Token{
+				TokenType: Pragma,
+				Text:      "pragma",
+				Pos: Position{
+					Column: 5,
+					Line:   6,
+				},
 			},
 		},
+		{
+			name:       "when scan space",
+			offset:     4,
+			lineOffset: 5,
+			scanResults: []scanResult{
+				{
+					text: "  ",
+					err:  nil,
+				},
+				{
+					text: "^",
+					err:  nil,
+				},
+			},
+			result: true,
+			token: Token{
+				TokenType: Hat,
+				Text:      "^",
+				Pos: Position{
+					Column: 7,
+					Line:   6,
+				},
+			},
+		},
+		{
+			name:       "when scan \\n",
+			offset:     4,
+			lineOffset: 5,
+			scanResults: []scanResult{
+				{
+					text: "  ",
+					err:  nil,
+				},
+				{
+					text: "\n",
+					err:  nil,
+				},
+				{
+					text: "^",
+					err:  nil,
+				},
+			},
+			result: true,
+			token: Token{
+				TokenType: Hat,
+				Text:      "^",
+				Pos: Position{
+					Column: 1,
+					Line:   7,
+				},
+			},
+		},
+		{
+			name:        "when scan is done",
+			offset:      4,
+			lineOffset:  5,
+			scanResults: []scanResult{},
+			result:      false,
+			token:       Token{},
+		},
+		{
+			name:        "when peeked",
+			offset:      4,
+			lineOffset:  5,
+			scanResults: []scanResult{},
+			result:      false,
+			token:       Token{},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			s := &mockScanner{
+				results: tt.scanResults,
+			}
+			l := Lexer{
+				offset:     tt.offset,
+				lineOffset: tt.lineOffset,
+				scanner:    s,
+			}
+			if rslt := l.Scan(); rslt != tt.result {
+				t.Errorf("result is wrong, want: %t, got: %t", tt.result, rslt)
+			}
+			if err := l.Error(); err != tt.err {
+				t.Errorf("error is wrong, want: %s, got: %s", tt.err, err)
+			}
+			if diff := cmp.Diff(tt.token, l.Token()); diff != "" {
+				t.Errorf(diff)
+			}
+		})
 	}
 
-	for _, c := range tests {
-		t.Run(c.name, func(t *testing.T) {
-			buf := strings.NewReader(c.input)
-			l := lexer.New(buf)
-			got := make([]lexer.Token, 0, len(c.want))
-			for i := 0; i < len(c.want); i++ {
-				l.Scan()
-				got = append(got, l.Token())
+	t.Run("when peeked", func(t *testing.T) {
+		s := &mockScanner{
+			results: nil,
+		}
+		peekErr := errors.New("peekErr")
+		peekToken := Token{
+			TokenType: Hat,
+			Text:      "^",
+			Pos: Position{
+				Column: 7,
+				Line:   6,
+			},
+		}
+		l := Lexer{
+			offset:     4,
+			lineOffset: 6,
+			scanner:    s,
+			peeked:     true,
+			peekToken:  peekToken,
+			peekErr:    peekErr,
+		}
+		if rslt := l.Scan(); !rslt {
+			t.Errorf("result is wrong, want: true, got: true")
+		}
+		if err := l.Error(); err != peekErr {
+			t.Errorf("error is wrong, want: %s, got: %s", peekErr, err)
+		}
+		if diff := cmp.Diff(peekToken, l.Token()); diff != "" {
+			t.Errorf(diff)
+		}
+	})
+}
+
+func TestLexerPeek(t *testing.T) {
+	tests := []struct {
+		name        string
+		offset      int
+		lineOffset  int
+		scanResults []scanResult
+		result      bool
+		token       Token
+		err         error
+	}{
+		{
+			name:       "normal",
+			offset:     4,
+			lineOffset: 5,
+			scanResults: []scanResult{
+				{
+					text: "pragma",
+					err:  nil,
+				},
+			},
+			result: true,
+			token: Token{
+				TokenType: Pragma,
+				Text:      "pragma",
+				Pos: Position{
+					Column: 5,
+					Line:   6,
+				},
+			},
+		},
+		{
+			name:        "when scan is done",
+			offset:      4,
+			lineOffset:  5,
+			scanResults: []scanResult{},
+			result:      false,
+			token:       Token{},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			s := &mockScanner{
+				results: tt.scanResults,
 			}
-			if l.Scan() {
-				t.Errorf("scan ran too long, got %q", got)
+			l := Lexer{
+				offset:     tt.offset,
+				lineOffset: tt.lineOffset,
+				scanner:    s,
 			}
-			if diff := cmp.Diff(c.want, got); diff != "" {
-				t.Errorf("%s", diff)
+			if rslt := l.Peek(); tt.result != rslt {
+				t.Errorf("result is wrong, want: %t, got: %t", tt.result, rslt)
 			}
-			if err := l.Error(); err != nil {
-				t.Errorf("%v", err)
+			if err := l.PeekError(); err != tt.err {
+				t.Errorf("want: %s, got: %s", tt.err, err)
+			}
+			if diff := cmp.Diff(tt.token, l.PeekToken()); diff != "" {
+				t.Errorf(diff)
 			}
 		})
 	}

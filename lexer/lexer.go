@@ -22,6 +22,11 @@ type Lexer struct {
 	// position state
 	offset     int
 	lineOffset int
+
+	// peek state
+	peeked    bool
+	peekToken Token
+	peekErr   error
 }
 
 func New(input io.Reader) *Lexer {
@@ -33,40 +38,59 @@ func New(input io.Reader) *Lexer {
 	}
 }
 
-func (l *Lexer) Scan() (result bool) {
+func (l *Lexer) scan() (result bool, token Token, err error) {
+	offset := l.offset
+	lineOffset := l.lineOffset
+
 	// Scan until next token.
 	for {
 		if !l.scanner.Scan() {
-			return false
+			return false, Token{}, nil
 		}
 		if err := l.scanner.Err(); err != nil {
-			l.err = err
-			return false
+			return false, Token{}, err
 		}
-		result = true
-
 		txt := l.scanner.Text()
 		r, _ := utf8.DecodeRune([]byte(txt))
 		if r == '\n' {
-			l.lineOffset++
-			l.offset = 0
+			lineOffset++
+			offset = 0
 			continue
 		}
 		if isSpace(r) {
-			l.offset += len([]rune(txt))
+			offset += len([]rune(txt))
 			continue
 		}
 		break
 	}
-
 	txt := l.scanner.Text()
 	pos := Position{
-		Column: l.offset + 1,
-		Line:   l.lineOffset + 1,
+		Column: offset + 1,
+		Line:   lineOffset + 1,
 	}
-	l.token = NewToken(txt, pos)
 
-	l.offset += len([]rune(txt))
+	return true, NewToken(txt, pos), nil
+}
+
+func (l *Lexer) Scan() (result bool) {
+	if l.peeked {
+		l.token = l.peekToken
+		l.err = l.peekErr
+		l.peeked = false
+		return true
+	}
+
+	rslt, tkn, err := l.scan()
+	if err != nil {
+		l.err = err
+		return false
+	}
+	if !rslt {
+		return false
+	}
+	l.token = tkn
+	l.offset = tkn.Pos.Column - 1 + len([]rune(tkn.Text))
+	l.lineOffset = tkn.Pos.Line - 1
 
 	return true
 }
@@ -77,4 +101,28 @@ func (l Lexer) Token() Token {
 
 func (l Lexer) Error() error {
 	return l.err
+}
+
+func (l *Lexer) Peek() bool {
+	if l.peeked {
+		return true
+	}
+
+	rslt, tkn, err := l.scan()
+	if !rslt {
+		return false
+	}
+
+	l.peeked = true
+	l.peekToken = tkn
+	l.peekErr = err
+	return true
+}
+
+func (l Lexer) PeekToken() Token {
+	return l.peekToken
+}
+
+func (l Lexer) PeekError() error {
+	return l.peekErr
 }
