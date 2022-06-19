@@ -56,4 +56,5 @@ type ContractDefinition struct {
 type SourceUnit struct {
 	PragmaDirective    *PragmaDirective
 	ContractDefinition *ContractDefinition
+	FunctionDefinition *FunctionDefinition
 }
