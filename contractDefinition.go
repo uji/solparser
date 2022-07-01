@@ -8,20 +8,24 @@ import (
 )
 
 func (p *Parser) ParseContractDefinition() (*ast.ContractDefinition, error) {
+	var abstract bool
 	p.lexer.Scan()
-	keyward := p.lexer.Token()
-	if keyward.TokenType != lexer.Contract {
+	tkn := p.lexer.Token()
+	if tkn.TokenType == lexer.Abstract {
+		abstract = true
+		p.lexer.Scan()
+	}
+	if tkn.TokenType != lexer.Contract {
 		return nil, errors.New("not found contract definition")
 	}
 
 	p.lexer.Scan()
-	if p.lexer.Token().TokenType != lexer.BraceL {
+	if p.lexer.Token().TokenType != lexer.Unknown {
 		return nil, errors.New("not found left brace")
 	}
 
-	part, err := p.ParseContractPart()
-	if err != nil {
-		return nil, err
+	if p.lexer.Token().TokenType != lexer.BraceL {
+		return nil, errors.New("not found left brace")
 	}
 
 	p.lexer.Scan()
@@ -30,17 +34,6 @@ func (p *Parser) ParseContractDefinition() (*ast.ContractDefinition, error) {
 	}
 
 	return &ast.ContractDefinition{
-		ContractPart: part,
-	}, nil
-}
-
-func (p *Parser) ParseContractPart() (*ast.ContractPart, error) {
-	funcDef, err := p.ParseFunctionDefinition()
-	if err != nil {
-		return nil, err
-	}
-
-	return &ast.ContractPart{
-		FunctionDefinition: funcDef,
+		Abstract: abstract,
 	}, nil
 }

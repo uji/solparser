@@ -44,12 +44,16 @@ type FunctionDefinition struct {
 	ReturnParameters   *ReturnParameters
 }
 
-type ContractPart struct {
-	FunctionDefinition *FunctionDefinition
+type InheritanceSpecifier struct {
+	IdentifierPath   string
+	CallArgumentList CallArgumentList
 }
 
+type CallArgumentList struct{}
+
 type ContractDefinition struct {
-	ContractPart *ContractPart
+	Abstract              bool
+	InheritanceSpecifiers []*InheritanceSpecifier
 }
 
 // A File node represents a Solidity source file.
