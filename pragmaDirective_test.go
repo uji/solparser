@@ -8,7 +8,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/uji/solparser"
 	"github.com/uji/solparser/ast"
-	"github.com/uji/solparser/lexer"
+	"github.com/uji/solparser/token"
 )
 
 func TestParserParsePragmaDirective(t *testing.T) {
@@ -35,7 +35,7 @@ func TestParserParsePragmaDirective(t *testing.T) {
 			input: "solidity ^0.8.13;",
 			want:  nil,
 			err: &solparser.Error{
-				Pos: lexer.Position{
+				Pos: token.Position{
 					Column: 1,
 					Line:   1,
 				},
@@ -47,7 +47,7 @@ func TestParserParsePragmaDirective(t *testing.T) {
 			input: "pragma ^0.8.13;",
 			want:  nil,
 			err: &solparser.Error{
-				Pos: lexer.Position{
+				Pos: token.Position{
 					Column: 8,
 					Line:   1,
 				},
@@ -59,7 +59,7 @@ func TestParserParsePragmaDirective(t *testing.T) {
 			input: "pragma solidity 0.8.13;",
 			want:  nil,
 			err: &solparser.Error{
-				Pos: lexer.Position{
+				Pos: token.Position{
 					Column: 17,
 					Line:   1,
 				},
@@ -71,7 +71,7 @@ func TestParserParsePragmaDirective(t *testing.T) {
 			input: "pragma solidity ^0.8.13",
 			want:  nil,
 			err: &solparser.Error{
-				Pos: lexer.Position{
+				Pos: token.Position{
 					Column: 18,
 					Line:   1,
 				},

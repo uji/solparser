@@ -1,4 +1,4 @@
-package lexer
+package token
 
 import "fmt"
 
@@ -118,7 +118,7 @@ const (
 	While
 )
 
-func asMiscToken(r rune) TokenType {
+func AsMiscToken(r rune) TokenType {
 	switch r {
 	case '^':
 		return Hat
@@ -345,7 +345,7 @@ func asToken(str string) TokenType {
 	if len(r) != 1 {
 		return asKeyword(str)
 	}
-	return asMiscToken(r[0])
+	return AsMiscToken(r[0])
 }
 
 type Token struct {

@@ -4,32 +4,32 @@ import (
 	"errors"
 
 	"github.com/uji/solparser/ast"
-	"github.com/uji/solparser/lexer"
+	"github.com/uji/solparser/token"
 )
 
 func (p *Parser) ParseContractDefinition() (*ast.ContractDefinition, error) {
 	var abstract bool
 	p.lexer.Scan()
 	tkn := p.lexer.Token()
-	if tkn.TokenType == lexer.Abstract {
+	if tkn.TokenType == token.Abstract {
 		abstract = true
 		p.lexer.Scan()
 	}
-	if tkn.TokenType != lexer.Contract {
+	if tkn.TokenType != token.Contract {
 		return nil, errors.New("not found contract definition")
 	}
 
 	p.lexer.Scan()
-	if p.lexer.Token().TokenType != lexer.Unknown {
+	if p.lexer.Token().TokenType != token.Unknown {
 		return nil, errors.New("not found left brace")
 	}
 
-	if p.lexer.Token().TokenType != lexer.BraceL {
+	if p.lexer.Token().TokenType != token.BraceL {
 		return nil, errors.New("not found left brace")
 	}
 
 	p.lexer.Scan()
-	if p.lexer.Token().TokenType != lexer.BraceR {
+	if p.lexer.Token().TokenType != token.BraceR {
 		return nil, errors.New("not found right brace")
 	}
 

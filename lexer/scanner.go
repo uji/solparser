@@ -1,6 +1,10 @@
 package lexer
 
-import "unicode/utf8"
+import (
+	"unicode/utf8"
+
+	"github.com/uji/solparser/token"
+)
 
 // isSpace reports whether the character is a Unicode white space character.
 // We avoid dependency on the unicode package, but check validity of the implementation
@@ -28,7 +32,7 @@ func isSpace(r rune) bool {
 }
 
 func isMiscToken(r rune) bool {
-	return asMiscToken(r) != Unknown
+	return token.AsMiscToken(r) != token.Unknown
 }
 
 func ScanTokens(data []byte, atEOF bool) (advance int, token []byte, err error) {

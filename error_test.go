@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/uji/solparser"
-	"github.com/uji/solparser/lexer"
+	"github.com/uji/solparser/token"
 )
 
 func TestErrorError(t *testing.T) {
@@ -16,7 +16,7 @@ func TestErrorError(t *testing.T) {
 		{
 			name: "normal case",
 			err: solparser.Error{
-				Pos: lexer.Position{
+				Pos: token.Position{
 					Column: 1,
 					Line:   1,
 				},
@@ -27,7 +27,7 @@ func TestErrorError(t *testing.T) {
 		{
 			name: "invalid position case",
 			err: solparser.Error{
-				Pos: lexer.Position{
+				Pos: token.Position{
 					Column: 0,
 					Line:   1,
 				},

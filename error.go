@@ -1,17 +1,17 @@
 package solparser
 
 import (
-	"github.com/uji/solparser/lexer"
+	"github.com/uji/solparser/token"
 )
 
 type Error struct {
-	Pos lexer.Position
+	Pos token.Position
 	Msg string
 }
 
 var _ error = &Error{}
 
-func newError(pos lexer.Position, msg string) *Error {
+func newError(pos token.Position, msg string) *Error {
 	return &Error{
 		Pos: pos,
 		Msg: msg,

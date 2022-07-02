@@ -5,6 +5,7 @@ import (
 
 	"github.com/uji/solparser/ast"
 	"github.com/uji/solparser/lexer"
+	"github.com/uji/solparser/token"
 )
 
 type Parser struct {
@@ -33,19 +34,19 @@ func (p *Parser) Parse(input io.Reader) (*ast.SourceUnit, error) {
 	var functionDefinition *ast.FunctionDefinition
 
 	switch p.lexer.PeekToken().TokenType {
-	case lexer.Pragma:
+	case token.Pragma:
 		prgm, err := p.ParsePragmaDirective()
 		if err != nil {
 			return nil, err
 		}
 		pragmaDirective = prgm
-	case lexer.Abstract, lexer.Contract:
+	case token.Abstract, token.Contract:
 		cntrct, err := p.ParseContractDefinition()
 		if err != nil {
 			return nil, err
 		}
 		contractDefinition = cntrct
-	case lexer.Function:
+	case token.Function:
 		fnc, err := p.ParseFunctionDefinition()
 		if err != nil {
 			return nil, err

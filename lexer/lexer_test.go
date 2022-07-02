@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/uji/solparser/token"
 )
 
 type scanResult struct {
@@ -38,7 +39,7 @@ func TestLexerScan(t *testing.T) {
 		lineOffset  int
 		scanResults []scanResult
 		result      bool
-		token       Token
+		token       token.Token
 		err         error
 	}{
 		{
@@ -52,10 +53,10 @@ func TestLexerScan(t *testing.T) {
 				},
 			},
 			result: true,
-			token: Token{
-				TokenType: Pragma,
+			token: token.Token{
+				TokenType: token.Pragma,
 				Text:      "pragma",
-				Pos: Position{
+				Pos: token.Position{
 					Column: 5,
 					Line:   6,
 				},
@@ -76,10 +77,10 @@ func TestLexerScan(t *testing.T) {
 				},
 			},
 			result: true,
-			token: Token{
-				TokenType: Hat,
+			token: token.Token{
+				TokenType: token.Hat,
 				Text:      "^",
-				Pos: Position{
+				Pos: token.Position{
 					Column: 7,
 					Line:   6,
 				},
@@ -104,10 +105,10 @@ func TestLexerScan(t *testing.T) {
 				},
 			},
 			result: true,
-			token: Token{
-				TokenType: Hat,
+			token: token.Token{
+				TokenType: token.Hat,
 				Text:      "^",
-				Pos: Position{
+				Pos: token.Position{
 					Column: 1,
 					Line:   7,
 				},
@@ -119,7 +120,7 @@ func TestLexerScan(t *testing.T) {
 			lineOffset:  5,
 			scanResults: []scanResult{},
 			result:      false,
-			token:       Token{},
+			token:       token.Token{},
 		},
 		{
 			name:        "when peeked",
@@ -127,7 +128,7 @@ func TestLexerScan(t *testing.T) {
 			lineOffset:  5,
 			scanResults: []scanResult{},
 			result:      false,
-			token:       Token{},
+			token:       token.Token{},
 		},
 	}
 	for _, tt := range tests {
@@ -157,10 +158,10 @@ func TestLexerScan(t *testing.T) {
 			results: nil,
 		}
 		peekErr := errors.New("peekErr")
-		peekToken := Token{
-			TokenType: Hat,
+		peekToken := token.Token{
+			TokenType: token.Hat,
 			Text:      "^",
-			Pos: Position{
+			Pos: token.Position{
 				Column: 7,
 				Line:   6,
 			},
@@ -192,7 +193,7 @@ func TestLexerPeek(t *testing.T) {
 		lineOffset  int
 		scanResults []scanResult
 		result      bool
-		token       Token
+		token       token.Token
 		err         error
 	}{
 		{
@@ -206,10 +207,10 @@ func TestLexerPeek(t *testing.T) {
 				},
 			},
 			result: true,
-			token: Token{
-				TokenType: Pragma,
+			token: token.Token{
+				TokenType: token.Pragma,
 				Text:      "pragma",
-				Pos: Position{
+				Pos: token.Position{
 					Column: 5,
 					Line:   6,
 				},
@@ -221,7 +222,7 @@ func TestLexerPeek(t *testing.T) {
 			lineOffset:  5,
 			scanResults: []scanResult{},
 			result:      false,
-			token:       Token{},
+			token:       token.Token{},
 		},
 	}
 	for _, tt := range tests {

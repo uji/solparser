@@ -4,6 +4,8 @@ import (
 	"bufio"
 	"io"
 	"unicode/utf8"
+
+	"github.com/uji/solparser/token"
 )
 
 type scanner interface {
@@ -16,7 +18,7 @@ type Lexer struct {
 	scanner scanner
 
 	// scan result
-	token Token
+	token token.Token
 	err   error
 
 	// position state
@@ -25,7 +27,7 @@ type Lexer struct {
 
 	// peek state
 	peeked    bool
-	peekToken Token
+	peekToken token.Token
 	peekErr   error
 }
 
@@ -38,17 +40,17 @@ func New(input io.Reader) *Lexer {
 	}
 }
 
-func (l *Lexer) scan() (result bool, token Token, err error) {
+func (l *Lexer) scan() (result bool, tkn token.Token, err error) {
 	offset := l.offset
 	lineOffset := l.lineOffset
 
 	// Scan until next token.
 	for {
 		if !l.scanner.Scan() {
-			return false, Token{}, nil
+			return false, token.Token{}, nil
 		}
 		if err := l.scanner.Err(); err != nil {
-			return false, Token{}, err
+			return false, token.Token{}, err
 		}
 		txt := l.scanner.Text()
 		r, _ := utf8.DecodeRune([]byte(txt))
@@ -64,12 +66,12 @@ func (l *Lexer) scan() (result bool, token Token, err error) {
 		break
 	}
 	txt := l.scanner.Text()
-	pos := Position{
+	pos := token.Position{
 		Column: offset + 1,
 		Line:   lineOffset + 1,
 	}
 
-	return true, NewToken(txt, pos), nil
+	return true, token.NewToken(txt, pos), nil
 }
 
 func (l *Lexer) Scan() (result bool) {
@@ -95,7 +97,7 @@ func (l *Lexer) Scan() (result bool) {
 	return true
 }
 
-func (l Lexer) Token() Token {
+func (l Lexer) Token() token.Token {
 	return l.token
 }
 
@@ -119,7 +121,7 @@ func (l *Lexer) Peek() bool {
 	return true
 }
 
-func (l Lexer) PeekToken() Token {
+func (l Lexer) PeekToken() token.Token {
 	return l.peekToken
 }
 
