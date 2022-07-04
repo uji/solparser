@@ -132,3 +132,23 @@ type HexString struct {
 	SingleQuoted bool
 	String       string
 }
+
+type ElementaryTypeNameKind int
+
+const (
+	ElementaryTypeName_Address ElementaryTypeNameKind = iota + 1
+	ElementaryTypeName_AddressPayable
+	ElementaryTypeName_Bool
+	ElementaryTypeName_String
+	ElementaryTypeName_Bytes
+	ElementaryTypeName_SignedIntegerType
+	ElementaryTypeName_UnsignedIntegerType
+	ElementaryTypeName_FixedBytes
+	ElementaryTypeName_Fixed
+	ElementaryTypeName_Ufixed
+)
+
+type ElementaryTypeName struct {
+	Pos  token.Position
+	Kind ElementaryTypeNameKind
+}
