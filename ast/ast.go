@@ -58,9 +58,23 @@ type InheritanceSpecifier struct {
 
 type CallArgumentList struct{}
 
+type ContractBodyElement struct {
+	Node Node
+}
+
+func (c *ContractBodyElement) Pos() token.Position {
+	return c.Node.Pos()
+}
+
+func (c *ContractBodyElement) End() token.Position {
+	return c.Node.End()
+}
+
 type ContractDefinition struct {
+	Position              token.Position
 	Abstract              bool
 	InheritanceSpecifiers []*InheritanceSpecifier
+	ContractBodyElements  []*ContractBodyElement
 }
 
 // A File node represents a Solidity source file.
