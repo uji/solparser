@@ -73,8 +73,18 @@ type SourceUnit struct {
 type Literal Node // BooleanLiteral | StringLiteral | NumberLiteral | HexStringLiteral | UnicordStringLiteral
 
 type BooleanLiteral struct {
-	Pos  token.Position
-	Bool bool
+	Tkn token.Token
+}
+
+func (b *BooleanLiteral) Pos() token.Position {
+	return b.Tkn.Pos
+}
+
+func (b *BooleanLiteral) End() token.Position {
+	return token.Position{
+		Column: b.Tkn.Pos.Column + len(b.Tkn.Text),
+		Line:   b.Tkn.Pos.Line,
+	}
 }
 
 type StringLiteral struct {
