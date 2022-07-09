@@ -2,8 +2,6 @@ package lexer
 
 import (
 	"unicode/utf8"
-
-	"github.com/uji/solparser/token"
 )
 
 // isSpace reports whether the character is a Unicode white space character.
@@ -31,8 +29,12 @@ func isSpace(r rune) bool {
 	return false
 }
 
-func isMiscToken(r rune) bool {
-	return token.AsMiscToken(r) != token.Unknown
+func isSplitSymbol(r rune) bool {
+	switch r {
+	case '^', '~', '<', '>', '=', ':', ';', '(', ')', '{', '}':
+		return true
+	}
+	return false
 }
 
 func ScanTokens(data []byte, atEOF bool) (advance int, token []byte, err error) {
@@ -40,7 +42,7 @@ func ScanTokens(data []byte, atEOF bool) (advance int, token []byte, err error) 
 
 	// Return newline code or misk token.
 	r, width := utf8.DecodeRune(data[start:])
-	if r == '\n' || isMiscToken(r) {
+	if r == '\n' || isSplitSymbol(r) {
 		return start + width, data[start : start+width], nil
 	}
 
@@ -49,7 +51,7 @@ func ScanTokens(data []byte, atEOF bool) (advance int, token []byte, err error) 
 	for width, i := 0, start; i < len(data); i += width {
 		var r rune
 		r, width = utf8.DecodeRune(data[i:])
-		if r == '\n' || isMiscToken(r) || isSpace(r) != tokenIsSpace {
+		if r == '\n' || isSplitSymbol(r) || isSpace(r) != tokenIsSpace {
 			return i, data[start:i], nil
 		}
 	}
