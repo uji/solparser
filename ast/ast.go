@@ -167,4 +167,19 @@ type ElementaryTypeName struct {
 	Kind ElementaryTypeNameKind
 }
 
+type ReturnStatement struct {
+	Position   token.Position
+	Expression Expression
+}
+
+func (r *ReturnStatement) Pos() token.Position {
+	return r.Position
+}
+func (r *ReturnStatement) End() token.Position {
+	return token.Position{
+		Column: r.Expression.End().Column + 1,
+		Line:   r.Expression.End().Line,
+	}
+}
+
 type Expression Node
