@@ -58,17 +58,7 @@ type InheritanceSpecifier struct {
 
 type CallArgumentList struct{}
 
-type ContractBodyElement struct {
-	Node Node
-}
-
-func (c *ContractBodyElement) Pos() token.Position {
-	return c.Node.Pos()
-}
-
-func (c *ContractBodyElement) End() token.Position {
-	return c.Node.End()
-}
+type ContractBodyElement Node
 
 type ContractDefinition struct {
 	Position              token.Position
