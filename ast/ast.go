@@ -166,3 +166,5 @@ type ElementaryTypeName struct {
 	Pos  token.Position
 	Kind ElementaryTypeNameKind
 }
+
+type Expression Node
