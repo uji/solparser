@@ -73,17 +73,17 @@ type SourceUnit struct {
 type Literal Node // BooleanLiteral | StringLiteral | NumberLiteral | HexStringLiteral | UnicordStringLiteral
 
 type BooleanLiteral struct {
-	Tkn token.Token
+	Token token.Token
 }
 
 func (b *BooleanLiteral) Pos() token.Position {
-	return b.Tkn.Pos
+	return b.Token.Pos
 }
 
 func (b *BooleanLiteral) End() token.Position {
 	return token.Position{
-		Column: b.Tkn.Pos.Column + len(b.Tkn.Text),
-		Line:   b.Tkn.Pos.Line,
+		Column: b.Token.Pos.Column + len(b.Token.Text),
+		Line:   b.Token.Pos.Line,
 	}
 }
 
