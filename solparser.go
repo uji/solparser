@@ -60,3 +60,22 @@ func (p *Parser) Parse(input io.Reader) (*ast.SourceUnit, error) {
 		FunctionDefinition: functionDefinition,
 	}, nil
 }
+
+func (p *Parser) ParseBooleanLiteral() (*ast.BooleanLiteral, error) {
+	if !p.lexer.Scan() {
+		return nil, nil
+	}
+
+	if err := p.lexer.Error(); err != nil {
+		return nil, err
+	}
+
+	tkn := p.lexer.Token()
+	if tkn.TokenType != token.True && tkn.TokenType != token.False {
+		return nil, newError(tkn.Pos, "not found keyword true or false")
+	}
+
+	return &ast.BooleanLiteral{
+		Tkn: p.lexer.Token(),
+	}, nil
+}
