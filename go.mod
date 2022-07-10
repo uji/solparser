@@ -1,4 +1,4 @@
-module github.com/uji/solparser/parser
+module github.com/uji/solparser
 
 go 1.18
 
