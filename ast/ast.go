@@ -168,12 +168,12 @@ type ElementaryTypeName struct {
 }
 
 type ReturnStatement struct {
-	Position   token.Pos
+	Return     token.Pos
 	Expression Expression
 }
 
 func (r *ReturnStatement) Pos() token.Pos {
-	return r.Position
+	return r.Return
 }
 func (r *ReturnStatement) End() token.Pos {
 	return token.Pos{
