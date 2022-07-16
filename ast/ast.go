@@ -3,8 +3,8 @@ package ast
 import "github.com/uji/solparser/token"
 
 type Node interface {
-	Pos() token.Position
-	End() token.Position
+	Pos() token.Pos
+	End() token.Pos
 }
 
 type PragmaValue struct {
@@ -61,7 +61,7 @@ type CallArgumentList struct{}
 type ContractBodyElement Node
 
 type ContractDefinition struct {
-	Position              token.Position
+	Position              token.Pos
 	Abstract              bool
 	InheritanceSpecifiers []*InheritanceSpecifier
 	ContractBodyElements  []*ContractBodyElement
@@ -80,19 +80,19 @@ type BooleanLiteral struct {
 	Token token.Token
 }
 
-func (b *BooleanLiteral) Pos() token.Position {
+func (b *BooleanLiteral) Pos() token.Pos {
 	return b.Token.Pos
 }
 
-func (b *BooleanLiteral) End() token.Position {
-	return token.Position{
+func (b *BooleanLiteral) End() token.Pos {
+	return token.Pos{
 		Column: b.Token.Pos.Column + len(b.Token.Text),
 		Line:   b.Token.Pos.Line,
 	}
 }
 
 type StringLiteral struct {
-	Pos  token.Position
+	Pos  token.Pos
 	List []Node // EmptyStringLiteral | NonEmptyStringLiteral
 }
 
@@ -106,43 +106,43 @@ type NumberLiteral struct {
 }
 
 type NumberUnit struct {
-	Pos   token.Position
+	Pos   token.Pos
 	Value string
 }
 
 type EmptyStringLiteral struct {
-	Pos          token.Position
+	Pos          token.Pos
 	SingleQuoted bool
 }
 
 type NonEmptyStringLiteral struct {
-	Pos  token.Position
+	Pos  token.Pos
 	List []Node // SingleQuotedPrintable | DoubleQuotedPrintable | EscapeSequence
 }
 
 type SingleQuotedPrintable struct {
-	Pos    token.Position
+	Pos    token.Pos
 	String string
 }
 
 type DoubleQuotedPrintable struct {
-	Pos    token.Position
+	Pos    token.Pos
 	String string
 }
 
 type EscapeSequence struct {
-	Pos    token.Position
+	Pos    token.Pos
 	String string
 }
 
 // unicode-string-literal (https://github.com/ethereum/solidity/blob/develop/docs/grammar/SolidityParser.g4#L407)
 type UnicordStrings struct {
-	Pos  token.Position
+	Pos  token.Pos
 	List []Node // string | EscapeSequence
 }
 
 type HexString struct {
-	Pos          token.Position
+	Pos          token.Pos
 	SingleQuoted bool
 	String       string
 }
@@ -163,20 +163,20 @@ const (
 )
 
 type ElementaryTypeName struct {
-	Pos  token.Position
+	Pos  token.Pos
 	Kind ElementaryTypeNameKind
 }
 
 type ReturnStatement struct {
-	Position   token.Position
+	Position   token.Pos
 	Expression Expression
 }
 
-func (r *ReturnStatement) Pos() token.Position {
+func (r *ReturnStatement) Pos() token.Pos {
 	return r.Position
 }
-func (r *ReturnStatement) End() token.Position {
-	return token.Position{
+func (r *ReturnStatement) End() token.Pos {
+	return token.Pos{
 		Column: r.Expression.End().Column + 1,
 		Line:   r.Expression.End().Line,
 	}

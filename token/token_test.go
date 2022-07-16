@@ -8,12 +8,12 @@ import (
 
 func TestPosition_String(t *testing.T) {
 	cases := []struct {
-		pos  token.Position
+		pos  token.Pos
 		want string
 	}{
-		{token.Position{Column: 3, Line: 10}, "10:3"},
-		{token.Position{Column: 0, Line: 10}, "-"},
-		{token.Position{Column: 1, Line: 0}, "-"},
+		{token.Pos{Column: 3, Line: 10}, "10:3"},
+		{token.Pos{Column: 0, Line: 10}, "-"},
+		{token.Pos{Column: 1, Line: 0}, "-"},
 	}
 
 	for n, c := range cases {

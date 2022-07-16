@@ -16,7 +16,7 @@ func TestErrorError(t *testing.T) {
 		{
 			name: "normal case",
 			err: solparser.Error{
-				Pos: token.Position{
+				Pos: token.Pos{
 					Column: 1,
 					Line:   1,
 				},
@@ -27,7 +27,7 @@ func TestErrorError(t *testing.T) {
 		{
 			name: "invalid position case",
 			err: solparser.Error{
-				Pos: token.Position{
+				Pos: token.Pos{
 					Column: 0,
 					Line:   1,
 				},

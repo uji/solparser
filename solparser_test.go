@@ -25,7 +25,7 @@ func TestParserParseBooleanLiteral(t *testing.T) {
 				Token: token.Token{
 					TokenType: token.True,
 					Text:      "true",
-					Pos: token.Position{
+					Pos: token.Pos{
 						Column: 1,
 						Line:   1,
 					},
@@ -40,7 +40,7 @@ func TestParserParseBooleanLiteral(t *testing.T) {
 				Token: token.Token{
 					TokenType: token.False,
 					Text:      "false",
-					Pos: token.Position{
+					Pos: token.Pos{
 						Column: 1,
 						Line:   1,
 					},
@@ -53,7 +53,7 @@ func TestParserParseBooleanLiteral(t *testing.T) {
 			input: "solidity",
 			want:  nil,
 			err: &solparser.Error{
-				Pos: token.Position{
+				Pos: token.Pos{
 					Column: 1,
 					Line:   1,
 				},

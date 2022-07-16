@@ -340,10 +340,10 @@ func asToken(str string) TokenType {
 type Token struct {
 	TokenType TokenType
 	Text      string
-	Pos       Position
+	Pos       Pos
 }
 
-func NewToken(ch string, pos Position) Token {
+func NewToken(ch string, pos Pos) Token {
 	return Token{
 		TokenType: asToken(ch),
 		Text:      ch,
@@ -351,17 +351,17 @@ func NewToken(ch string, pos Position) Token {
 	}
 }
 
-type Position struct {
+type Pos struct {
 	Column int
 	Line   int
 }
 
-func (pos Position) IsValid() bool { return pos.Line > 0 && pos.Column > 0 }
+func (p Pos) IsValid() bool { return p.Line > 0 && p.Column > 0 }
 
-func (pos Position) String() string {
-	if !pos.IsValid() {
+func (p Pos) String() string {
+	if !p.IsValid() {
 		return "-"
 	}
 
-	return fmt.Sprintf("%d:%d", pos.Line, pos.Column)
+	return fmt.Sprintf("%d:%d", p.Line, p.Column)
 }

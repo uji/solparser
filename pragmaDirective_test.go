@@ -35,7 +35,7 @@ func TestParserParsePragmaDirective(t *testing.T) {
 			input: "solidity ^0.8.13;",
 			want:  nil,
 			err: &solparser.Error{
-				Pos: token.Position{
+				Pos: token.Pos{
 					Column: 1,
 					Line:   1,
 				},
@@ -47,7 +47,7 @@ func TestParserParsePragmaDirective(t *testing.T) {
 			input: "pragma ^0.8.13;",
 			want:  nil,
 			err: &solparser.Error{
-				Pos: token.Position{
+				Pos: token.Pos{
 					Column: 8,
 					Line:   1,
 				},
@@ -59,7 +59,7 @@ func TestParserParsePragmaDirective(t *testing.T) {
 			input: "pragma solidity 0.8.13;",
 			want:  nil,
 			err: &solparser.Error{
-				Pos: token.Position{
+				Pos: token.Pos{
 					Column: 17,
 					Line:   1,
 				},
@@ -71,7 +71,7 @@ func TestParserParsePragmaDirective(t *testing.T) {
 			input: "pragma solidity ^0.8.13",
 			want:  nil,
 			err: &solparser.Error{
-				Pos: token.Position{
+				Pos: token.Pos{
 					Column: 18,
 					Line:   1,
 				},

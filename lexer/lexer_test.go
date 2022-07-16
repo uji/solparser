@@ -56,7 +56,7 @@ func TestLexerScan(t *testing.T) {
 			token: token.Token{
 				TokenType: token.Pragma,
 				Text:      "pragma",
-				Pos: token.Position{
+				Pos: token.Pos{
 					Column: 5,
 					Line:   6,
 				},
@@ -80,7 +80,7 @@ func TestLexerScan(t *testing.T) {
 			token: token.Token{
 				TokenType: token.Hat,
 				Text:      "^",
-				Pos: token.Position{
+				Pos: token.Pos{
 					Column: 7,
 					Line:   6,
 				},
@@ -108,7 +108,7 @@ func TestLexerScan(t *testing.T) {
 			token: token.Token{
 				TokenType: token.Hat,
 				Text:      "^",
-				Pos: token.Position{
+				Pos: token.Pos{
 					Column: 1,
 					Line:   7,
 				},
@@ -161,7 +161,7 @@ func TestLexerScan(t *testing.T) {
 		peekToken := token.Token{
 			TokenType: token.Hat,
 			Text:      "^",
-			Pos: token.Position{
+			Pos: token.Pos{
 				Column: 7,
 				Line:   6,
 			},
@@ -210,7 +210,7 @@ func TestLexerPeek(t *testing.T) {
 			token: token.Token{
 				TokenType: token.Pragma,
 				Text:      "pragma",
-				Pos: token.Position{
+				Pos: token.Pos{
 					Column: 5,
 					Line:   6,
 				},

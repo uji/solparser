@@ -66,7 +66,7 @@ func (l *Lexer) scan() (result bool, tkn token.Token, err error) {
 		break
 	}
 	txt := l.scanner.Text()
-	pos := token.Position{
+	pos := token.Pos{
 		Column: offset + 1,
 		Line:   lineOffset + 1,
 	}

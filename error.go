@@ -5,13 +5,13 @@ import (
 )
 
 type Error struct {
-	Pos token.Position
+	Pos token.Pos
 	Msg string
 }
 
 var _ error = &Error{}
 
-func newError(pos token.Position, msg string) *Error {
+func newError(pos token.Pos, msg string) *Error {
 	return &Error{
 		Pos: pos,
 		Msg: msg,
