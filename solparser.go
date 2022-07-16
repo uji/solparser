@@ -76,6 +76,6 @@ func (p *Parser) ParseBooleanLiteral() (*ast.BooleanLiteral, error) {
 	}
 
 	return &ast.BooleanLiteral{
-		Tkn: p.lexer.Token(),
+		Token: p.lexer.Token(),
 	}, nil
 }

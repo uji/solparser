@@ -22,7 +22,7 @@ func TestParserParseBooleanLiteral(t *testing.T) {
 			name:  "true case",
 			input: "true",
 			want: &ast.BooleanLiteral{
-				Tkn: token.Token{
+				Token: token.Token{
 					TokenType: token.True,
 					Text:      "true",
 					Pos: token.Position{
@@ -37,7 +37,7 @@ func TestParserParseBooleanLiteral(t *testing.T) {
 			name:  "false case",
 			input: "false",
 			want: &ast.BooleanLiteral{
-				Tkn: token.Token{
+				Token: token.Token{
 					TokenType: token.False,
 					Text:      "false",
 					Pos: token.Position{
