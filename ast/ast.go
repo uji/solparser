@@ -74,7 +74,13 @@ type SourceUnit struct {
 	FunctionDefinition *FunctionDefinition
 }
 
-type Literal Node // BooleanLiteral | StringLiteral | NumberLiteral | HexStringLiteral | UnicordStringLiteral
+// ----------------------------------------------------------------------------
+// Literal Nodes
+
+type Literal interface {
+	Node
+	literalNode()
+}
 
 type BooleanLiteral struct {
 	Token token.Token
@@ -92,7 +98,6 @@ func (b *BooleanLiteral) End() token.Pos {
 }
 
 type StringLiteral struct {
-	Pos  token.Pos
 	List []Node // EmptyStringLiteral | NonEmptyStringLiteral
 }
 
@@ -104,6 +109,14 @@ type NumberLiteral struct {
 	Number     Node // DecimalNumber | HexNumber
 	NumberUnit *NumberUnit
 }
+
+func (*BooleanLiteral) literalNode()       {}
+func (*StringLiteral) literalNode()        {}
+func (*HexStringLiteral) literalNode()     {}
+func (*UnicordStringLiteral) literalNode() {}
+func (*NumberLiteral) literalNode()        {}
+
+// ----------------------------------------------------------------------------
 
 type NumberUnit struct {
 	Pos   token.Pos
