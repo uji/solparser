@@ -130,23 +130,70 @@ type EmptyStringLiteral struct {
 
 type NonEmptyStringLiteral struct {
 	Pos  token.Pos
-	List []Node // SingleQuotedPrintable | DoubleQuotedPrintable | EscapeSequence
+	List []Printable
+}
+
+// ----------------------------------------------------------------------------
+// Printable Nodes
+
+type Printable interface {
+	Node
+	printableNode()
 }
 
 type SingleQuotedPrintable struct {
-	Pos    token.Pos
+	Begin  token.Pos
 	String string
+}
+
+func (s *SingleQuotedPrintable) Pos() token.Pos {
+	return s.Begin
+}
+
+func (s *SingleQuotedPrintable) End() token.Pos {
+	return token.Pos{
+		Column: s.Begin.Column + len(s.String) + 1,
+		Line:   s.Begin.Line,
+	}
 }
 
 type DoubleQuotedPrintable struct {
-	Pos    token.Pos
+	Begin  token.Pos
 	String string
 }
 
+func (d *DoubleQuotedPrintable) Pos() token.Pos {
+	return d.Begin
+}
+
+func (d *DoubleQuotedPrintable) End() token.Pos {
+	return token.Pos{
+		Column: d.Begin.Column + len(d.String) + 1,
+		Line:   d.Begin.Line,
+	}
+}
+
 type EscapeSequence struct {
-	Pos    token.Pos
+	Begin  token.Pos
 	String string
 }
+
+func (e *EscapeSequence) Pos() token.Pos {
+	return e.Begin
+}
+
+func (e *EscapeSequence) End() token.Pos {
+	return token.Pos{
+		Column: e.Begin.Column + len(e.String),
+		Line:   e.Begin.Line,
+	}
+}
+
+func (*SingleQuotedPrintable) printableNode() {}
+func (*DoubleQuotedPrintable) printableNode() {}
+func (*EscapeSequence) printableNode()        {}
+
+// ----------------------------------------------------------------------------
 
 // unicode-string-literal (https://github.com/ethereum/solidity/blob/develop/docs/grammar/SolidityParser.g4#L407)
 type UnicordStrings struct {
