@@ -33,7 +33,7 @@ type Lexer struct {
 
 func New(input io.Reader) *Lexer {
 	s := bufio.NewScanner(input)
-	s.Split(ScanTokens)
+	s.Split(Scan)
 
 	return &Lexer{
 		scanner: s,

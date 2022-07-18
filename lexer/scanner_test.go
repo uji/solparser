@@ -10,7 +10,7 @@ import (
 )
 
 // Test that the token splitter.
-func TestScanTokens(t *testing.T) {
+func TestScan(t *testing.T) {
 	tests := []struct {
 		input string
 		want  []string
@@ -32,7 +32,7 @@ func TestScanTokens(t *testing.T) {
 	for n, c := range tests {
 		buf := strings.NewReader(c.input)
 		s := bufio.NewScanner(buf)
-		s.Split(lexer.ScanTokens)
+		s.Split(lexer.Scan)
 
 		got := make([]string, 0, len(c.want))
 		for i := 0; i < len(c.want); i++ {

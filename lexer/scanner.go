@@ -37,7 +37,7 @@ func isSplitSymbol(r rune) bool {
 	return false
 }
 
-func ScanTokens(data []byte, atEOF bool) (advance int, token []byte, err error) {
+func Scan(data []byte, atEOF bool) (advance int, token []byte, err error) {
 	start := 0
 
 	// Return newline code or misk token.
