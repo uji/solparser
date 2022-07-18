@@ -78,7 +78,7 @@ func TestLexerScan(t *testing.T) {
 			},
 			result: true,
 			token: token.Token{
-				TokenType: token.Hat,
+				TokenType: token.BitXor,
 				Text:      "^",
 				Pos: token.Pos{
 					Column: 7,
@@ -106,7 +106,7 @@ func TestLexerScan(t *testing.T) {
 			},
 			result: true,
 			token: token.Token{
-				TokenType: token.Hat,
+				TokenType: token.BitXor,
 				Text:      "^",
 				Pos: token.Pos{
 					Column: 1,
@@ -159,7 +159,7 @@ func TestLexerScan(t *testing.T) {
 		}
 		peekErr := errors.New("peekErr")
 		peekToken := token.Token{
-			TokenType: token.Hat,
+			TokenType: token.BitXor,
 			Text:      "^",
 			Pos: token.Pos{
 				Column: 7,

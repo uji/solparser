@@ -19,8 +19,8 @@ func (p *Parser) ParsePragmaDirective() (*ast.PragmaDirective, error) {
 
 	p.lexer.Scan()
 	expression := p.lexer.Token()
-	if expression.TokenType != token.Hat {
-		return nil, newError(expression.Pos, "not found Hat expression")
+	if expression.TokenType != token.BitXor {
+		return nil, newError(expression.Pos, "not found BitXor expression")
 	}
 
 	p.lexer.Scan()

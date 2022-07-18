@@ -55,7 +55,7 @@ func TestParserParsePragmaDirective(t *testing.T) {
 			},
 		},
 		{
-			name:  "there is no Hat expression",
+			name:  "there is no BitXor expression",
 			input: "pragma solidity 0.8.13;",
 			want:  nil,
 			err: &solparser.Error{
@@ -63,7 +63,7 @@ func TestParserParsePragmaDirective(t *testing.T) {
 					Column: 17,
 					Line:   1,
 				},
-				Msg: "not found Hat expression",
+				Msg: "not found BitXor expression",
 			},
 		},
 		{

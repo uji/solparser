@@ -24,12 +24,12 @@ func (p *Parser) ParseContractDefinition() (*ast.ContractDefinition, error) {
 		return nil, errors.New("not found left brace")
 	}
 
-	if p.lexer.Token().TokenType != token.BraceL {
+	if p.lexer.Token().TokenType != token.LBrace {
 		return nil, errors.New("not found left brace")
 	}
 
 	p.lexer.Scan()
-	if p.lexer.Token().TokenType != token.BraceR {
+	if p.lexer.Token().TokenType != token.RBrace {
 		return nil, errors.New("not found right brace")
 	}
 

@@ -8,17 +8,60 @@ const (
 	Invalid TokenType = iota
 	Unknown
 
-	Hat
-	Tilde
-	Greater
-	Less
-	Equal
+	LParen
+	RParen
+	LBrack
+	RBrack
+	LBrace
+	RBrace
 	Colon
-	ParenL
-	ParenR
-	BraceL
-	BraceR
 	Semicolon
+	Period
+	Conditional
+	DoubleArrow
+	RightArrow
+
+	Assign
+	AssignBitOr
+	AssignBitXor
+	AssignBitAnd
+	AssignShl
+	AssignSar
+	AssignShr
+	AssignAdd
+	AssignSub
+	AssignMul
+	AssignDiv
+	AssignMod
+
+	Comma
+	Or
+	And
+	BitOr
+	BitXor
+	BitAnd
+	Shl
+	Sar
+	Shr
+	Add
+	Sub
+	Mul
+	Div
+	Mod
+	Exp
+
+	Equal
+	NotEqual
+	LessThan
+	GreaterThan
+	LessThanOrEqual
+	GreaterThanOrEqual
+	Not
+	BitNot
+	Inc
+	Dec
+	DoubleQuote
+	SingleQuote
 
 	// Reserved Keyword
 	After
@@ -120,28 +163,108 @@ const (
 
 func asKeyword(str string) TokenType {
 	switch str {
-	case "^":
-		return Hat
-	case "~":
-		return Tilde
-	case "<":
-		return Less
-	case ">":
-		return Greater
-	case "=":
-		return Equal
+	case "(":
+		return LParen
+	case ")":
+		return RParen
+	case "[":
+		return LBrack
+	case "]":
+		return RBrack
+	case "{":
+		return LBrace
+	case "}":
+		return RBrace
 	case ":":
 		return Colon
 	case ";":
 		return Semicolon
-	case "(":
-		return ParenL
-	case ")":
-		return ParenR
-	case "{":
-		return BraceL
-	case "}":
-		return BraceR
+	case ".":
+		return Period
+	case "?":
+		return Conditional
+	case "=>":
+		return DoubleArrow
+	case "->":
+		return RightArrow
+	case "=":
+		return Assign
+	case "|=":
+		return AssignBitOr
+	case "^=":
+		return AssignBitXor
+	case "&=":
+		return AssignBitAnd
+	case "<<=":
+		return AssignShl
+	case ">>=":
+		return AssignSar
+	case ">>>=":
+		return AssignShr
+	case "+=":
+		return AssignAdd
+	case "-=":
+		return AssignSub
+	case "*=":
+		return AssignMul
+	case "/=":
+		return AssignDiv
+	case "%=":
+		return AssignMod
+	case ",":
+		return Comma
+	case "||":
+		return Or
+	case "&&":
+		return And
+	case "|":
+		return BitOr
+	case "^":
+		return BitXor
+	case "&":
+		return BitAnd
+	case "<<":
+		return Shl
+	case ">>":
+		return Sar
+	case ">>>":
+		return Shr
+	case "+":
+		return Add
+	case "-":
+		return Sub
+	case "*":
+		return Mul
+	case "/":
+		return Div
+	case "%":
+		return Mod
+	case "**":
+		return Exp
+	case "==":
+		return Equal
+	case "!=":
+		return NotEqual
+	case "<":
+		return LessThan
+	case ">":
+		return GreaterThan
+	case "<=":
+		return LessThanOrEqual
+	case ">=":
+		return GreaterThanOrEqual
+	case "!":
+		return Not
+	case "~":
+		return BitNot
+	case "++":
+		return Inc
+	case "--":
+		return Dec
+	case `"`:
+		return DoubleQuote
+	case `\'`:
+		return SingleQuote
 	case "after":
 		return After
 	case "alias":
