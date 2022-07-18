@@ -31,7 +31,7 @@ func isSpace(r rune) bool {
 
 func isSplitSymbol(r rune) bool {
 	switch r {
-	case '^', '~', '<', '>', '=', ':', ';', '(', ')', '{', '}':
+	case '(', ')', '[', ']', '{', '}', ':', ';', '?', '=', '|', '^', '&', '<', '>', '+', '-', '*', '/', '%', ',', '!', '~', '"', '\'', '\\':
 		return true
 	}
 	return false

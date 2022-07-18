@@ -27,6 +27,7 @@ func TestScan(t *testing.T) {
 		{"0.8.13;", []string{"0.8.13", ";"}},
 		{"pragma solidity ^0.8.13;", []string{"pragma", " ", "solidity", " ", "^", "0.8.13", ";"}},
 		{"contract HelloWorld {", []string{"contract", " ", "HelloWorld", " ", "{"}},
+		{`\'test\'`, []string{`\`, "'", "test", `\`, "'"}},
 	}
 
 	for n, c := range tests {
