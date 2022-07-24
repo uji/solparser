@@ -1,59 +1,34 @@
 package lexer
 
 import (
-	"errors"
+	"bufio"
+	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/uji/solparser/token"
 )
 
-type scanResult struct {
-	text string
-	err  error
-}
-
-type mockScanner struct {
-	calledCount int
-	results     []scanResult
-}
-
-func (s *mockScanner) Scan() bool {
-	if s.calledCount == len(s.results) {
-		return false
-	}
-	s.calledCount++
-	return true
-}
-func (s *mockScanner) Text() string {
-	return s.results[s.calledCount-1].text
-}
-func (s *mockScanner) Err() error {
-	return s.results[s.calledCount-1].err
-}
-
-func TestLexerScan(t *testing.T) {
+func testLexerScan(t *testing.T) {
 	tests := []struct {
-		name        string
-		offset      int
-		lineOffset  int
-		scanResults []scanResult
-		result      bool
-		token       token.Token
-		err         error
+		name       string
+		offset     int
+		lineOffset int
+		input      string
+		peeked     bool
+		peekToken  token.Token
+		peekErr    error
+		wantResult bool
+		wantErr    error
+		wantToken  token.Token
 	}{
 		{
 			name:       "normal",
 			offset:     4,
 			lineOffset: 5,
-			scanResults: []scanResult{
-				{
-					text: "pragma",
-					err:  nil,
-				},
-			},
-			result: true,
-			token: token.Token{
+			input:      "pragma",
+			wantResult: true,
+			wantToken: token.Token{
 				TokenType: token.Pragma,
 				Text:      "pragma",
 				Pos: token.Pos{
@@ -66,18 +41,9 @@ func TestLexerScan(t *testing.T) {
 			name:       "when scan space",
 			offset:     4,
 			lineOffset: 5,
-			scanResults: []scanResult{
-				{
-					text: "  ",
-					err:  nil,
-				},
-				{
-					text: "^",
-					err:  nil,
-				},
-			},
-			result: true,
-			token: token.Token{
+			input:      "  ^",
+			wantResult: true,
+			wantToken: token.Token{
 				TokenType: token.BitXor,
 				Text:      "^",
 				Pos: token.Pos{
@@ -90,22 +56,9 @@ func TestLexerScan(t *testing.T) {
 			name:       "when scan \\n",
 			offset:     4,
 			lineOffset: 5,
-			scanResults: []scanResult{
-				{
-					text: "  ",
-					err:  nil,
-				},
-				{
-					text: "\n",
-					err:  nil,
-				},
-				{
-					text: "^",
-					err:  nil,
-				},
-			},
-			result: true,
-			token: token.Token{
+			input:      "  \n^",
+			wantResult: true,
+			wantToken: token.Token{
 				TokenType: token.BitXor,
 				Text:      "^",
 				Pos: token.Pos{
@@ -115,98 +68,80 @@ func TestLexerScan(t *testing.T) {
 			},
 		},
 		{
-			name:        "when scan is done",
-			offset:      4,
-			lineOffset:  5,
-			scanResults: []scanResult{},
-			result:      false,
-			token:       token.Token{},
+			name:       "when scan is done",
+			offset:     4,
+			lineOffset: 5,
+			input:      "",
+			wantResult: false,
+			wantToken:  token.Token{},
 		},
 		{
-			name:        "when peeked",
-			offset:      4,
-			lineOffset:  5,
-			scanResults: []scanResult{},
-			result:      false,
-			token:       token.Token{},
+			name:       "when peeked",
+			offset:     4,
+			lineOffset: 5,
+			input:      "",
+			peeked:     true,
+			peekToken: token.Token{
+				TokenType: token.BitXor,
+				Text:      "^",
+				Pos: token.Pos{
+					Column: 4,
+					Line:   6,
+				},
+			},
+			wantResult: true,
+			wantToken: token.Token{
+				TokenType: token.BitXor,
+				Text:      "",
+				Pos: token.Pos{
+					Column: 4,
+					Line:   6,
+				},
+			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			s := &mockScanner{
-				results: tt.scanResults,
-			}
+			s := bufio.NewScanner(strings.NewReader(tt.input))
+			s.Split(Scan)
+
 			l := Lexer{
 				offset:     tt.offset,
 				lineOffset: tt.lineOffset,
 				scanner:    s,
+				peeked:     tt.peeked,
+				peekToken:  tt.peekToken,
+				peekErr:    tt.peekErr,
 			}
-			if rslt := l.Scan(); rslt != tt.result {
-				t.Errorf("result is wrong, want: %t, got: %t", tt.result, rslt)
+			if rslt := l.Scan(); rslt != tt.wantResult {
+				t.Errorf("result is wrong, want: %t, got: %t", tt.wantResult, rslt)
 			}
-			if err := l.Error(); err != tt.err {
-				t.Errorf("error is wrong, want: %s, got: %s", tt.err, err)
+			if err := l.Error(); err != tt.wantErr {
+				t.Errorf("error is wrong, want: %s, got: %s", tt.wantErr, err)
 			}
-			if diff := cmp.Diff(tt.token, l.Token()); diff != "" {
+			if diff := cmp.Diff(tt.wantToken, l.Token()); diff != "" {
 				t.Errorf(diff)
 			}
 		})
 	}
-
-	t.Run("when peeked", func(t *testing.T) {
-		s := &mockScanner{
-			results: nil,
-		}
-		peekErr := errors.New("peekErr")
-		peekToken := token.Token{
-			TokenType: token.BitXor,
-			Text:      "^",
-			Pos: token.Pos{
-				Column: 7,
-				Line:   6,
-			},
-		}
-		l := Lexer{
-			offset:     4,
-			lineOffset: 6,
-			scanner:    s,
-			peeked:     true,
-			peekToken:  peekToken,
-			peekErr:    peekErr,
-		}
-		if rslt := l.Scan(); !rslt {
-			t.Errorf("result is wrong, want: true, got: true")
-		}
-		if err := l.Error(); err != peekErr {
-			t.Errorf("error is wrong, want: %s, got: %s", peekErr, err)
-		}
-		if diff := cmp.Diff(peekToken, l.Token()); diff != "" {
-			t.Errorf(diff)
-		}
-	})
 }
 
 func TestLexerPeek(t *testing.T) {
 	tests := []struct {
-		name        string
-		offset      int
-		lineOffset  int
-		scanResults []scanResult
-		result      bool
-		token       token.Token
-		err         error
+		name       string
+		offset     int
+		lineOffset int
+		input      string
+		result     bool
+		token      token.Token
+		err        error
 	}{
 		{
 			name:       "normal",
 			offset:     4,
 			lineOffset: 5,
-			scanResults: []scanResult{
-				{
-					text: "pragma",
-					err:  nil,
-				},
-			},
-			result: true,
+			input:      "pragma",
+			result:     true,
 			token: token.Token{
 				TokenType: token.Pragma,
 				Text:      "pragma",
@@ -217,19 +152,19 @@ func TestLexerPeek(t *testing.T) {
 			},
 		},
 		{
-			name:        "when scan is done",
-			offset:      4,
-			lineOffset:  5,
-			scanResults: []scanResult{},
-			result:      false,
-			token:       token.Token{},
+			name:       "when scan is done",
+			offset:     4,
+			lineOffset: 5,
+			input:      "",
+			result:     false,
+			token:      token.Token{},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			s := &mockScanner{
-				results: tt.scanResults,
-			}
+			s := bufio.NewScanner(strings.NewReader(tt.input))
+			s.Split(Scan)
+
 			l := Lexer{
 				offset:     tt.offset,
 				lineOffset: tt.lineOffset,
