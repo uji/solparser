@@ -75,11 +75,20 @@ type SourceUnit struct {
 }
 
 // ----------------------------------------------------------------------------
+// Expression Nodes
+
+type Expression interface {
+	Node
+	expressionNode()
+}
+
+// ----------------------------------------------------------------------------
 // Literal Nodes
 
 type Literal interface {
 	Node
 	literalNode()
+	expressionNode()
 }
 
 type BooleanLiteral struct {
@@ -115,6 +124,12 @@ func (*StringLiteral) literalNode()        {}
 func (*HexStringLiteral) literalNode()     {}
 func (*UnicordStringLiteral) literalNode() {}
 func (*NumberLiteral) literalNode()        {}
+
+func (*BooleanLiteral) expressionNode()       {}
+func (*StringLiteral) expressionNode()        {}
+func (*HexStringLiteral) expressionNode()     {}
+func (*UnicordStringLiteral) expressionNode() {}
+func (*NumberLiteral) expressionNode()        {}
 
 // ----------------------------------------------------------------------------
 
@@ -241,5 +256,3 @@ func (r *ReturnStatement) End() token.Pos {
 		Line:   r.Expression.End().Line,
 	}
 }
-
-type Expression Node
