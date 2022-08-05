@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/uji/solparser/lexer"
 )
 
 func TestSplit(t *testing.T) {
@@ -32,7 +31,7 @@ func TestSplit(t *testing.T) {
 	for n, c := range tests {
 		buf := strings.NewReader(c.input)
 		s := bufio.NewScanner(buf)
-		s.Split(lexer.Scan)
+		s.Split(Split)
 
 		got := make([]string, 0, len(c.want))
 		for i := 0; i < len(c.want); i++ {
@@ -112,6 +111,70 @@ func TestScannerScan(t *testing.T) {
 			}
 
 			if text := s.Text(); text != tt.wantText {
+				t.Errorf("want: %s, got: %s", tt.wantText, text)
+			}
+		})
+	}
+}
+
+func TestScannerPeek(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		peeked   bool
+		peekText string
+		peekErr  error
+		want     bool
+		wantErr  error
+		wantText string
+	}{
+		{
+			name:     "when not peeked",
+			input:    "pragma solidity",
+			want:     true,
+			wantErr:  nil,
+			wantText: "pragma",
+		},
+		{
+			name:     "when scan is done",
+			input:    "",
+			want:     false,
+			wantErr:  nil,
+			wantText: "",
+		},
+		{
+			name:     "when peeked",
+			input:    "",
+			peeked:   true,
+			peekText: "peekedText",
+			want:     true,
+			wantErr:  nil,
+			wantText: "peekedText",
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			scanner := bufio.NewScanner(strings.NewReader(tt.input))
+			scanner.Split(Split)
+
+			s := Scanner{
+				scanner:  scanner,
+				peeked:   tt.peeked,
+				peekText: tt.peekText,
+				peekErr:  tt.peekErr,
+			}
+
+			if rslt := s.Peek(); rslt != tt.want {
+				t.Errorf("want: %t, got: %t", tt.want, rslt)
+			}
+
+			if err := s.PeekErr(); err != tt.wantErr {
+				t.Errorf("want: %s, got: %s", tt.wantErr, err)
+			}
+
+			if text := s.PeekText(); text != tt.wantText {
 				t.Errorf("want: %s, got: %s", tt.wantText, text)
 			}
 		})
