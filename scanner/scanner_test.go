@@ -55,7 +55,8 @@ func TestScan(t *testing.T) {
 }
 
 func TestScannerScan(t *testing.T) {
-	tests := map[string]struct {
+	tests := []struct {
+		name     string
 		input    string
 		peeked   bool
 		peekText string
@@ -64,19 +65,22 @@ func TestScannerScan(t *testing.T) {
 		wantErr  error
 		wantText string
 	}{
-		"normal": {
+		{
+			name:     "normal",
 			input:    "pragma solidity",
 			want:     true,
 			wantErr:  nil,
 			wantText: "pragma",
 		},
-		"when scan is done": {
+		{
+			name:     "when scan is done",
 			input:    "",
 			want:     false,
 			wantErr:  nil,
 			wantText: "",
 		},
-		"when peeked": {
+		{
+			name:     "when peeked",
 			input:    "",
 			peeked:   true,
 			peekText: "peekedText",
@@ -86,8 +90,9 @@ func TestScannerScan(t *testing.T) {
 		},
 	}
 
-	for name, tt := range tests {
-		t.Run(name, func(t *testing.T) {
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
 			scanner := bufio.NewScanner(strings.NewReader(tt.input))
 			scanner.Split(Split)
 
