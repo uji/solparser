@@ -9,7 +9,7 @@ import (
 	"github.com/uji/solparser/lexer"
 )
 
-func TestScan(t *testing.T) {
+func TestSplit(t *testing.T) {
 	tests := []struct {
 		input string
 		want  []string
