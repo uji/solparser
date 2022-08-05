@@ -1,11 +1,11 @@
 package lexer
 
 import (
-	"bufio"
 	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/uji/solparser/scanner"
 	"github.com/uji/solparser/token"
 )
 
@@ -101,9 +101,9 @@ func testLexerScan(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
+		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			s := bufio.NewScanner(strings.NewReader(tt.input))
-			s.Split(Scan)
+			s := scanner.New(strings.NewReader(tt.input))
 
 			l := Lexer{
 				offset:     tt.offset,
@@ -161,9 +161,9 @@ func TestLexerPeek(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
+		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			s := bufio.NewScanner(strings.NewReader(tt.input))
-			s.Split(Scan)
+			s := scanner.New(strings.NewReader(tt.input))
 
 			l := Lexer{
 				offset:     tt.offset,
