@@ -31,6 +31,14 @@ func IsSpace(r rune) bool {
 	return false
 }
 
+func isMultiLengthOperatorSymbol(r rune) bool {
+	switch r {
+	case '=', '|', '^', '&', '+', '-', '*', '/', '%', '<', '>', '!':
+		return true
+	}
+	return false
+}
+
 func isSplitSymbol(r rune) bool {
 	switch r {
 	case '(', ')', '[', ']', '{', '}', ':', ';', '?', '=', '|', '^', '&', '<', '>', '+', '-', '*', '/', '%', ',', '!', '~', '"', '\'', '\\':
@@ -39,12 +47,61 @@ func isSplitSymbol(r rune) bool {
 	return false
 }
 
+// TODO: cover all patterns.
+// scanOperatorLength return operator length at the prefix of data.
+func scanOperatorLength(data []byte) (length int) {
+	if len(data) < 1 {
+		return 0
+	}
+
+	r1, _ := utf8.DecodeRune(data)
+	if !isSplitSymbol(r1) {
+		return 0
+	}
+	if len(data) < 2 || !isMultiLengthOperatorSymbol(r1) {
+		return 1
+	}
+
+	r2, _ := utf8.DecodeRune(data[1:])
+	switch r1 {
+	case '=':
+		if r2 == '>' {
+			return 2
+		}
+	case '|':
+		if r2 == '=' || r2 == '|' {
+			return 2
+		}
+	case '+':
+		if r2 == '=' || r2 == '+' {
+			return 2
+		}
+	case '<':
+		switch r2 {
+		case '=':
+			return 2
+		case '<':
+			r3, _ := utf8.DecodeRune(data[2:])
+			if r3 == '=' {
+				return 3
+			}
+			return 2
+		}
+	}
+	return 1
+}
+
 func Split(data []byte, atEOF bool) (advance int, token []byte, err error) {
 	start := 0
 
-	// Return newline code or misk token.
 	r, width := utf8.DecodeRune(data[start:])
-	if r == '\n' || isSplitSymbol(r) {
+	// Return operator.
+	if isSplitSymbol(r) {
+		w := scanOperatorLength(data[start:])
+		return start + w, data[start : start+w], nil
+	}
+	// Return newline code.
+	if r == '\n' {
 		return start + width, data[start : start+width], nil
 	}
 

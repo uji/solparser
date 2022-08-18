@@ -26,7 +26,9 @@ func TestSplit(t *testing.T) {
 		{"pragma solidity ^0.8.13;", []string{"pragma", " ", "solidity", " ", "^", "0.8.13", ";"}},
 		{"contract HelloWorld {", []string{"contract", " ", "HelloWorld", " ", "{"}},
 		{`\'test\'`, []string{`\`, "'", "test", `\`, "'"}},
-		{"a ++ b", []string{"a", " ", "+", "+", " ", "b"}},
+		{"a ++ b", []string{"a", " ", "++", " ", "b"}},
+		{"a =>b", []string{"a", " ", "=>", "b"}},
+		{"a<<= b", []string{"a", "<<=", " ", "b"}},
 	}
 
 	for n, c := range tests {
