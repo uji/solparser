@@ -8,60 +8,60 @@ const (
 	Invalid TokenType = iota
 	Unknown
 
-	LParen
-	RParen
-	LBrack
-	RBrack
-	LBrace
-	RBrace
-	Colon
-	Semicolon
-	Period
-	Conditional
-	DoubleArrow
-	RightArrow
+	LParen      // (
+	RParen      // )
+	LBrack      // [
+	RBrack      // ]
+	LBrace      // {
+	RBrace      // }
+	Colon       // :
+	Semicolon   // ;
+	Period      // .
+	Conditional // ?
+	DoubleArrow // =>
+	RightArrow  // ->
 
-	Assign
-	AssignBitOr
-	AssignBitXor
-	AssignBitAnd
-	AssignShl
-	AssignSar
-	AssignShr
-	AssignAdd
-	AssignSub
-	AssignMul
-	AssignDiv
-	AssignMod
+	Assign       // =
+	AssignBitOr  // |=
+	AssignBitXor // ^=
+	AssignBitAnd // &=
+	AssignShl    // <<=
+	AssignSar    // >>=
+	AssignShr    // >>>=
+	AssignAdd    // +=
+	AssignSub    // -=
+	AssignMul    // *=
+	AssignDiv    // /=
+	AssignMod    // %=
 
-	Comma
-	Or
-	And
-	BitOr
-	BitXor
-	BitAnd
-	Shl
-	Sar
-	Shr
-	Add
-	Sub
-	Mul
-	Div
-	Mod
-	Exp
+	Comma  // ,
+	Or     // ||
+	And    // &&
+	BitOr  // |
+	BitXor // ^
+	BitAnd // &
+	Shl    // <<
+	Sar    // >>
+	Shr    // >>>
+	Add    // +
+	Sub    // -
+	Mul    // *
+	Div    // /
+	Mod    // %
+	Exp    // **
 
-	Equal
-	NotEqual
-	LessThan
-	GreaterThan
-	LessThanOrEqual
-	GreaterThanOrEqual
-	Not
-	BitNot
-	Inc
-	Dec
-	DoubleQuote
-	SingleQuote
+	Equal              // =
+	NotEqual           // !=
+	LessThan           // <
+	GreaterThan        // >
+	LessThanOrEqual    // <=
+	GreaterThanOrEqual // >=
+	Not                // !
+	BitNot             // ~
+	Inc                // ++
+	Dec                // --
+	DoubleQuote        // "
+	SingleQuote        // '
 
 	// Reserved Keyword
 	After
