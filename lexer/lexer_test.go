@@ -9,7 +9,7 @@ import (
 	"github.com/uji/solparser/token"
 )
 
-func testLexerScan(t *testing.T) {
+func TestLexerScan(t *testing.T) {
 	tests := []struct {
 		name       string
 		offset     int
@@ -92,7 +92,7 @@ func testLexerScan(t *testing.T) {
 			wantResult: true,
 			wantToken: token.Token{
 				TokenType: token.BitXor,
-				Text:      "",
+				Text:      "^",
 				Pos: token.Pos{
 					Column: 4,
 					Line:   6,
