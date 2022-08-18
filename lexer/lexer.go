@@ -8,32 +8,6 @@ import (
 	"github.com/uji/solparser/token"
 )
 
-// isSpace reports whether the character is a Unicode white space character.
-// We avoid dependency on the unicode package, but check validity of the implementation
-// in the tests.
-// TODO: remove function because scanner package has same function.
-func isSpace(r rune) bool {
-	if r <= '\u00FF' {
-		// Obvious ASCII ones: \t through \r plus space. Plus two Latin-1 oddballs.
-		switch r {
-		case ' ', '\t', '\v', '\f', '\r':
-			return true
-		case '\u0085', '\u00A0':
-			return true
-		}
-		return false
-	}
-	// High-valued ones.
-	if '\u2000' <= r && r <= '\u200a' {
-		return true
-	}
-	switch r {
-	case '\u1680', '\u2028', '\u2029', '\u202f', '\u205f', '\u3000':
-		return true
-	}
-	return false
-}
-
 type Lexer struct {
 	scanner *scanner.Scanner
 
@@ -78,7 +52,7 @@ func (l *Lexer) scan() (result bool, tkn token.Token, err error) {
 			offset = 0
 			continue
 		}
-		if isSpace(r) {
+		if scanner.IsSpace(r) {
 			offset += len([]rune(txt))
 			continue
 		}
