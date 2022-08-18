@@ -6,10 +6,10 @@ import (
 	"unicode/utf8"
 )
 
-// isSpace reports whether the character is a Unicode white space character.
+// IsSpace reports whether the character is a Unicode white space character.
 // We avoid dependency on the unicode package, but check validity of the implementation
 // in the tests.
-func isSpace(r rune) bool {
+func IsSpace(r rune) bool {
 	if r <= '\u00FF' {
 		// Obvious ASCII ones: \t through \r plus space. Plus two Latin-1 oddballs.
 		switch r {
@@ -48,12 +48,12 @@ func Split(data []byte, atEOF bool) (advance int, token []byte, err error) {
 		return start + width, data[start : start+width], nil
 	}
 
-	tokenIsSpace := isSpace(r)
+	tokenIsSpace := IsSpace(r)
 	// Scan until isSpace result changed, marking end of word.
 	for width, i := 0, start; i < len(data); i += width {
 		var r rune
 		r, width = utf8.DecodeRune(data[i:])
-		if r == '\n' || isSplitSymbol(r) || isSpace(r) != tokenIsSpace {
+		if r == '\n' || isSplitSymbol(r) || IsSpace(r) != tokenIsSpace {
 			return i, data[start:i], nil
 		}
 	}
