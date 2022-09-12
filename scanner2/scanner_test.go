@@ -1,0 +1,82 @@
+package scanner
+
+import (
+	"io"
+	"strings"
+	"testing"
+
+	"github.com/google/go-cmp/cmp"
+	"github.com/uji/solparser/token"
+)
+
+func TestScannerScan(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		wantPoss []token.Pos
+		wantLits []string
+	}{
+		{
+			name:  "normal",
+			input: "pragma solidity ^0.8.13;",
+			wantPoss: []token.Pos{
+				{
+					Column: 1,
+					Line:   1,
+				},
+				{
+					Column: 8,
+					Line:   1,
+				},
+				{
+					Column: 17,
+					Line:   1,
+				},
+				{
+					Column: 18,
+					Line:   1,
+				},
+				{
+					Column: 24,
+					Line:   1,
+				},
+			},
+			wantLits: []string{
+				"pragma",
+				"solidity",
+				"^",
+				"0.8.13",
+				";",
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			s := New(strings.NewReader(tt.input))
+
+			poss := make([]token.Pos, 0, len(tt.wantPoss))
+			lits := make([]string, 0, len(tt.wantLits))
+
+			for {
+				pos, lit, err := s.Scan()
+				if err == io.EOF {
+					break
+				}
+				if err != nil {
+					t.Errorf("got unexpected error: %v", err)
+				}
+				poss = append(poss, pos)
+				lits = append(lits, lit)
+			}
+
+			if diff := cmp.Diff(poss, tt.wantPoss); diff != "" {
+				t.Errorf(diff)
+			}
+			if diff := cmp.Diff(lits, tt.wantLits); diff != "" {
+				t.Errorf(diff)
+			}
+		})
+	}
+}

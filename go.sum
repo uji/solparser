@@ -1,2 +1,4 @@
+github.com/SteelSeries/bufrr v0.0.0-20161129220322-72103137aa3c h1:SlXEIQaashOxRg92emqhRAAUma1GmJW4t1y49om03Ck=
+github.com/SteelSeries/bufrr v0.0.0-20161129220322-72103137aa3c/go.mod h1:B80GUChy+pCjfTRNgr9KKXfMOGNhVwl2cQqyMjoyQ5s=
 github.com/google/go-cmp v0.5.8 h1:e6P7q2lk1O+qJJb4BtCQXlK8vWEO8V1ZeuEdJNOqZyg=
 github.com/google/go-cmp v0.5.8/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
