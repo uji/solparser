@@ -71,10 +71,10 @@ func TestScannerScan(t *testing.T) {
 				lits = append(lits, lit)
 			}
 
-			if diff := cmp.Diff(poss, tt.wantPoss); diff != "" {
+			if diff := cmp.Diff(tt.wantPoss, poss); diff != "" {
 				t.Errorf(diff)
 			}
-			if diff := cmp.Diff(lits, tt.wantLits); diff != "" {
+			if diff := cmp.Diff(tt.wantLits, lits); diff != "" {
 				t.Errorf(diff)
 			}
 		})

@@ -74,47 +74,65 @@ func (s *Scanner) readRune() (rune, error) {
 	if r == '\n' {
 		s.offset = 0
 		s.lineOffset++
-	} else {
-		s.offset++
+		return r, nil
 	}
+	s.offset++
 	return r, nil
 }
 
+func (s *Scanner) unreadRune() error {
+	if err := s.r.UnreadRune(); err != nil {
+		return err
+	}
+	s.offset--
+	return nil
+}
+
 func (s *Scanner) Scan() (token.Pos, string, error) {
+	ch, err := s.readRune()
+	if err != nil {
+		return token.Pos{}, "", err
+	}
+	if ch == bufrr.EOF {
+		return token.Pos{}, "", io.EOF
+	}
+	if isSplitSymbol(ch) {
+		return token.Pos{
+			Column: s.offset,
+			Line:   s.lineOffset + 1,
+		}, string(ch), nil
+	}
+
+	// skip space.
+	for isSpace(ch) {
+		ch, err = s.readRune()
+		if err != nil {
+			return token.Pos{}, "", err
+		}
+	}
+
+	runes := []rune{ch}
 	pos := token.Pos{
-		Column: s.offset + 1,
+		Column: s.offset,
 		Line:   s.lineOffset + 1,
 	}
 
-	var char rune
 	for {
 		ch, err := s.readRune()
 		if err != nil {
 			return token.Pos{}, "", err
 		}
-		if ch == bufrr.EOF {
-			return token.Pos{}, "", io.EOF
-		}
-		if !isSpace(ch) {
-			char = ch
+		if isSpace(ch) || ch == bufrr.EOF {
 			break
 		}
-	}
-	runes := []rune{char}
-
-	for {
-		ch, err := s.readRune()
-		if err != nil {
-			return token.Pos{}, "", err
+		if isSplitSymbol(ch) {
+			// unread to be read in the next scan.
+			if err := s.unreadRune(); err != nil {
+				return token.Pos{}, "", err
+			}
+			break
 		}
-		if !isSpace(ch) && !isSplitSymbol(ch) && ch != bufrr.EOF {
-			runes = append(runes, ch)
-			continue
-		}
-		if err := s.r.UnreadRune(); err != nil {
-			return token.Pos{}, "", err
-		}
-		break
+		runes = append(runes, ch)
 	}
 
 	return pos, string(runes), nil
