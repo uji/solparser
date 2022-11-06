@@ -125,7 +125,6 @@ func (s *Scanner) Scan() (token.Pos, string, error) {
 		}
 		runes = append(runes, ch)
 	}
-	return pos, string(runes), nil
 }
 
 func (s *Scanner) Peek() (pos token.Pos, lit string, err error) {
