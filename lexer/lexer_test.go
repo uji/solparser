@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	scanner "github.com/uji/solparser/scanner2"
+	"github.com/uji/solparser/scanner"
 	"github.com/uji/solparser/token"
 )
 
