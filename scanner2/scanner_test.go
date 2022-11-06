@@ -49,6 +49,29 @@ func TestScannerScan(t *testing.T) {
 				";",
 			},
 		},
+		{
+			name:  "normal",
+			input: "pragma\n solidity",
+			wantPoss: []token.Pos{
+				{
+					Column: 1,
+					Line:   1,
+				},
+				{
+					Column: 7,
+					Line:   1,
+				},
+				{
+					Column: 2,
+					Line:   2,
+				},
+			},
+			wantLits: []string{
+				"pragma",
+				"\n",
+				"solidity",
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -65,7 +88,7 @@ func TestScannerScan(t *testing.T) {
 					break
 				}
 				if err != nil {
-					t.Errorf("got unexpected error: %v", err)
+					t.Fatalf("got unexpected error: %s", err)
 				}
 				poss = append(poss, pos)
 				lits = append(lits, lit)
