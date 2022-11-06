@@ -1,6 +1,7 @@
 package lexer
 
 import (
+	"io"
 	"strings"
 	"testing"
 
@@ -20,26 +21,26 @@ func TestLexerScan(t *testing.T) {
 		wantErr    error
 		wantToken  token.Token
 	}{
-		// TODO: fix test after implementing new scanner.
-		// {
-		// 	name:       "normal",
-		// 	input:      "pragma",
-		// 	wantResult: true,
-		// 	wantToken: token.Token{
-		// 		TokenType: token.Pragma,
-		// 		Text:      "pragma",
-		// 		Pos: token.Pos{
-		// 			Column: 5,
-		// 			Line:   6,
-		// 		},
-		// 	},
-		// },
-		// {
-		// 	name:       "when scan is done",
-		// 	input:      "",
-		// 	wantResult: false,
-		// 	wantToken:  token.Token{},
-		// },
+		{
+			name:       "normal",
+			input:      "pragma",
+			wantResult: true,
+			wantToken: token.Token{
+				TokenType: token.Pragma,
+				Text:      "pragma",
+				Pos: token.Pos{
+					Column: 1,
+					Line:   1,
+				},
+			},
+		},
+		{
+			name:       "when scan is done",
+			input:      "",
+			wantResult: false,
+			wantToken:  token.Token{},
+			wantErr:    io.EOF,
+		},
 		{
 			name:   "when peeked",
 			input:  "",
@@ -103,8 +104,8 @@ func TestLexerPeek(t *testing.T) {
 				TokenType: token.Pragma,
 				Text:      "pragma",
 				Pos: token.Pos{
-					Column: 5,
-					Line:   6,
+					Column: 1,
+					Line:   1,
 				},
 			},
 		},
