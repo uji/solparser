@@ -2,7 +2,6 @@ package lexer
 
 import (
 	"io"
-	"unicode/utf8"
 
 	"github.com/uji/solparser/scanner"
 	"github.com/uji/solparser/token"
@@ -14,10 +13,6 @@ type Lexer struct {
 	// scan result
 	token token.Token
 	err   error
-
-	// position state
-	offset     int
-	lineOffset int
 
 	// peek state
 	peeked    bool
@@ -34,37 +29,12 @@ func New(input io.Reader) *Lexer {
 }
 
 func (l *Lexer) scan() (result bool, tkn token.Token, err error) {
-	offset := l.offset
-	lineOffset := l.lineOffset
-
-	// Scan until next token.
-	for {
-		if !l.scanner.Scan() {
-			return false, token.Token{}, nil
-		}
-		if err := l.scanner.Err(); err != nil {
-			return false, token.Token{}, err
-		}
-		txt := l.scanner.Text()
-		r, _ := utf8.DecodeRune([]byte(txt))
-		if r == '\n' {
-			lineOffset++
-			offset = 0
-			continue
-		}
-		if scanner.IsSpace(r) {
-			offset += len([]rune(txt))
-			continue
-		}
-		break
-	}
-	txt := l.scanner.Text()
-	pos := token.Pos{
-		Column: offset + 1,
-		Line:   lineOffset + 1,
+	pos, lit, err := l.scanner.Scan()
+	if err != nil {
+		return false, token.Token{}, err
 	}
 
-	return true, token.NewToken(txt, pos), nil
+	return true, token.NewToken(lit, pos), nil
 }
 
 func (l *Lexer) Scan() (result bool) {
@@ -84,8 +54,6 @@ func (l *Lexer) Scan() (result bool) {
 		return false
 	}
 	l.token = tkn
-	l.offset = tkn.Pos.Column - 1 + len([]rune(tkn.Text))
-	l.lineOffset = tkn.Pos.Line - 1
 
 	return true
 }

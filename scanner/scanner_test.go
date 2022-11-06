@@ -1,184 +1,104 @@
 package scanner
 
 import (
-	"bufio"
+	"io"
 	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/uji/solparser/token"
 )
-
-func TestSplit(t *testing.T) {
-	tests := []struct {
-		input string
-		want  []string
-	}{
-		{"", []string{}},
-		{" ", []string{" "}},
-		{"\n", []string{"\n"}},
-		{"a", []string{"a"}},
-		{" a ", []string{" ", "a", " "}},
-		{"abc  def ", []string{"abc", "  ", "def", " "}},
-		{"a\tb\nc\r\td\f", []string{"a", "\t", "b", "\n", "c", "\r\t", "d", "\f"}},
-		{"e\vf\u0085g\u00a0\n", []string{"e", "\v", "f", "\u0085", "g", "\u00a0", "\n"}},
-		{"^0.8.13", []string{"^", "0.8.13"}},
-		{"0.8.13;", []string{"0.8.13", ";"}},
-		{"pragma solidity ^0.8.13;", []string{"pragma", " ", "solidity", " ", "^", "0.8.13", ";"}},
-		{"contract HelloWorld {", []string{"contract", " ", "HelloWorld", " ", "{"}},
-		{`\'test\'`, []string{`\`, "'", "test", `\`, "'"}},
-		{"a ++ b", []string{"a", " ", "++", " ", "b"}},
-		{"a =>b", []string{"a", " ", "=>", "b"}},
-		{"a<<= b", []string{"a", "<<=", " ", "b"}},
-	}
-
-	for n, c := range tests {
-		buf := strings.NewReader(c.input)
-		s := bufio.NewScanner(buf)
-		s.Split(Split)
-
-		got := make([]string, 0, len(c.want))
-		for i := 0; i < len(c.want); i++ {
-			if !s.Scan() {
-				break
-			}
-			got = append(got, s.Text())
-		}
-		if s.Scan() {
-			t.Errorf("#%d: scan ran too long, got %q", n, s.Text())
-		}
-		if diff := cmp.Diff(c.want, got); diff != "" {
-			t.Errorf("#%d: %s", n, diff)
-		}
-		err := s.Err()
-		if err != nil {
-			t.Errorf("#%d: %v", n, err)
-		}
-	}
-}
 
 func TestScannerScan(t *testing.T) {
 	tests := []struct {
 		name     string
 		input    string
-		peeked   bool
-		peekText string
-		peekErr  error
-		want     bool
-		wantErr  error
-		wantText string
+		wantPoss []token.Pos
+		wantLits []string
 	}{
 		{
-			name:     "normal",
-			input:    "pragma solidity",
-			want:     true,
-			wantErr:  nil,
-			wantText: "pragma",
+			name:  "normal",
+			input: "pragma solidity ^0.8.13;",
+			wantPoss: []token.Pos{
+				{
+					Column: 1,
+					Line:   1,
+				},
+				{
+					Column: 8,
+					Line:   1,
+				},
+				{
+					Column: 17,
+					Line:   1,
+				},
+				{
+					Column: 18,
+					Line:   1,
+				},
+				{
+					Column: 24,
+					Line:   1,
+				},
+			},
+			wantLits: []string{
+				"pragma",
+				"solidity",
+				"^",
+				"0.8.13",
+				";",
+			},
 		},
 		{
-			name:     "when scan is done",
-			input:    "",
-			want:     false,
-			wantErr:  nil,
-			wantText: "",
-		},
-		{
-			name:     "when peeked",
-			input:    "",
-			peeked:   true,
-			peekText: "peekedText",
-			want:     true,
-			wantErr:  nil,
-			wantText: "peekedText",
+			name:  "normal",
+			input: "pragma\n solidity",
+			wantPoss: []token.Pos{
+				{
+					Column: 1,
+					Line:   1,
+				},
+				{
+					Column: 7,
+					Line:   1,
+				},
+				{
+					Column: 2,
+					Line:   2,
+				},
+			},
+			wantLits: []string{
+				"pragma",
+				"\n",
+				"solidity",
+			},
 		},
 	}
 
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			scanner := bufio.NewScanner(strings.NewReader(tt.input))
-			scanner.Split(Split)
+			s := New(strings.NewReader(tt.input))
 
-			s := Scanner{
-				scanner:  scanner,
-				peeked:   tt.peeked,
-				peekText: tt.peekText,
-				peekErr:  tt.peekErr,
+			poss := make([]token.Pos, 0, len(tt.wantPoss))
+			lits := make([]string, 0, len(tt.wantLits))
+
+			for {
+				pos, lit, err := s.Scan()
+				if err == io.EOF {
+					break
+				}
+				if err != nil {
+					t.Fatalf("got unexpected error: %s", err)
+				}
+				poss = append(poss, pos)
+				lits = append(lits, lit)
 			}
 
-			if rslt := s.Scan(); rslt != tt.want {
-				t.Errorf("want: %t, got: %t", tt.want, rslt)
+			if diff := cmp.Diff(tt.wantPoss, poss); diff != "" {
+				t.Errorf(diff)
 			}
-
-			if err := s.Err(); err != tt.wantErr {
-				t.Errorf("want: %s, got: %s", tt.wantErr, err)
-			}
-
-			if text := s.Text(); text != tt.wantText {
-				t.Errorf("want: %s, got: %s", tt.wantText, text)
-			}
-		})
-	}
-}
-
-func TestScannerPeek(t *testing.T) {
-	tests := []struct {
-		name     string
-		input    string
-		peeked   bool
-		peekText string
-		peekErr  error
-		want     bool
-		wantErr  error
-		wantText string
-	}{
-		{
-			name:     "when not peeked",
-			input:    "pragma solidity",
-			want:     true,
-			wantErr:  nil,
-			wantText: "pragma",
-		},
-		{
-			name:     "when scan is done",
-			input:    "",
-			want:     false,
-			wantErr:  nil,
-			wantText: "",
-		},
-		{
-			name:     "when peeked",
-			input:    "",
-			peeked:   true,
-			peekText: "peekedText",
-			want:     true,
-			wantErr:  nil,
-			wantText: "peekedText",
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			scanner := bufio.NewScanner(strings.NewReader(tt.input))
-			scanner.Split(Split)
-
-			s := Scanner{
-				scanner:  scanner,
-				peeked:   tt.peeked,
-				peekText: tt.peekText,
-				peekErr:  tt.peekErr,
-			}
-
-			if rslt := s.Peek(); rslt != tt.want {
-				t.Errorf("want: %t, got: %t", tt.want, rslt)
-			}
-
-			if err := s.PeekErr(); err != tt.wantErr {
-				t.Errorf("want: %s, got: %s", tt.wantErr, err)
-			}
-
-			if text := s.PeekText(); text != tt.wantText {
-				t.Errorf("want: %s, got: %s", tt.wantText, text)
+			if diff := cmp.Diff(tt.wantLits, lits); diff != "" {
+				t.Errorf(diff)
 			}
 		})
 	}

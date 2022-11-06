@@ -1,15 +1,32 @@
 package scanner
 
 import (
-	"bufio"
 	"io"
-	"unicode/utf8"
+
+	"github.com/SteelSeries/bufrr"
+	"github.com/uji/solparser/token"
 )
 
-// IsSpace reports whether the character is a Unicode white space character.
+type Scanner struct {
+	// source
+	r *bufrr.Reader
+
+	// position state
+	offset     int
+	lineOffset int
+}
+
+func New(reader io.Reader) *Scanner {
+	r := bufrr.NewReader(reader)
+	return &Scanner{
+		r: r,
+	}
+}
+
+// isSpace reports whether the character is a Unicode white space character.
 // We avoid dependency on the unicode package, but check validity of the implementation
 // in the tests.
-func IsSpace(r rune) bool {
+func isSpace(r rune) bool {
 	if r <= '\u00FF' {
 		// Obvious ASCII ones: \t through \r plus space. Plus two Latin-1 oddballs.
 		switch r {
@@ -47,147 +64,69 @@ func isSplitSymbol(r rune) bool {
 	return false
 }
 
-// TODO: cover all patterns.
-// scanOperatorLength return operator length at the prefix of data.
-func scanOperatorLength(data []byte) (length int) {
-	if len(data) < 1 {
-		return 0
-	}
+const invalidRune = -1
 
-	r1, _ := utf8.DecodeRune(data)
-	if !isSplitSymbol(r1) {
-		return 0
+func (s *Scanner) readRune() (rune, error) {
+	r, _, err := s.r.ReadRune()
+	if err != nil {
+		return invalidRune, err
 	}
-	if len(data) < 2 || !isMultiLengthOperatorSymbol(r1) {
-		return 1
-	}
-
-	r2, _ := utf8.DecodeRune(data[1:])
-	switch r1 {
-	case '=':
-		if r2 == '>' {
-			return 2
-		}
-	case '|':
-		if r2 == '=' || r2 == '|' {
-			return 2
-		}
-	case '+':
-		if r2 == '=' || r2 == '+' {
-			return 2
-		}
-	case '<':
-		switch r2 {
-		case '=':
-			return 2
-		case '<':
-			r3, _ := utf8.DecodeRune(data[2:])
-			if r3 == '=' {
-				return 3
-			}
-			return 2
-		}
-	}
-	return 1
-}
-
-func Split(data []byte, atEOF bool) (advance int, token []byte, err error) {
-	start := 0
-
-	r, width := utf8.DecodeRune(data[start:])
-	// Return operator.
-	if isSplitSymbol(r) {
-		w := scanOperatorLength(data[start:])
-		return start + w, data[start : start+w], nil
-	}
-	// Return newline code.
 	if r == '\n' {
-		return start + width, data[start : start+width], nil
+		s.offset = 0
+		s.lineOffset++
+		return r, nil
 	}
+	s.offset++
+	return r, nil
+}
 
-	tokenIsSpace := IsSpace(r)
-	// Scan until isSpace result changed, marking end of word.
-	for width, i := 0, start; i < len(data); i += width {
-		var r rune
-		r, width = utf8.DecodeRune(data[i:])
-		if r == '\n' || isSplitSymbol(r) || IsSpace(r) != tokenIsSpace {
-			return i, data[start:i], nil
+func (s *Scanner) Scan() (token.Pos, string, error) {
+	runes := make([]rune, 1)
+	for {
+		// Retain the state before reading.
+		c := s.offset + 1
+		l := s.lineOffset + 1
+
+		ch, err := s.readRune()
+		if err != nil {
+			return token.Pos{}, "", err
+		}
+		if ch == bufrr.EOF {
+			return token.Pos{}, "", io.EOF
+		}
+		if isSplitSymbol(ch) || ch == '\n' {
+			return token.Pos{
+				Column: c,
+				Line:   l,
+			}, string(ch), nil
+		}
+		if !isSpace(ch) {
+			runes[0] = ch
+			break
 		}
 	}
-	// If we're at EOF, we have a final, non-empty, non-terminated word. Return it.
-	if atEOF && len(data) > start {
-		return len(data), data[start:], nil
+
+	pos := token.Pos{
+		Column: s.offset,
+		Line:   s.lineOffset + 1,
 	}
-	// Request more data.
-	return start, nil, nil
-}
 
-type Scanner struct {
-	scanner *bufio.Scanner
-
-	// scan result
-	text string
-	err  error
-
-	// peek state
-	peeked   bool
-	peekText string
-	peekErr  error
-}
-
-func New(input io.Reader) *Scanner {
-	s := bufio.NewScanner(input)
-	s.Split(Split)
-
-	return &Scanner{
-		scanner: s,
+	for {
+		ch, _, err := s.r.PeekRune()
+		if err != nil {
+			return token.Pos{}, "", err
+		}
+		if isSpace(ch) || isSplitSymbol(ch) || ch == '\n' || ch == bufrr.EOF {
+			return pos, string(runes), nil
+		}
+		ch, err = s.readRune()
+		if err != nil {
+			return token.Pos{}, "", err
+		}
+		runes = append(runes, ch)
 	}
 }
 
-func (s *Scanner) Scan() bool {
-	if s.peeked {
-		s.text = s.peekText
-		s.err = s.peekErr
-		s.peeked = false
-		return true
-	}
-
-	if !s.scanner.Scan() {
-		return false
-	}
-
-	s.text = s.scanner.Text()
-	s.err = s.scanner.Err()
-	return true
-}
-
-func (s Scanner) Text() string {
-	return s.text
-}
-
-func (s Scanner) Err() error {
-	return s.err
-}
-
-func (s *Scanner) Peek() bool {
-	if s.peeked {
-		return true
-	}
-
-	if !s.scanner.Scan() {
-		return false
-	}
-
-	s.peeked = true
-	s.peekText = s.scanner.Text()
-	s.peekErr = s.scanner.Err()
-	return true
-}
-
-func (s Scanner) PeekText() string {
-	return s.peekText
-}
-
-func (s Scanner) PeekErr() error {
-	return s.peekErr
+func (s *Scanner) Peek() (pos token.Pos, lit string, err error) {
+	return token.Pos{}, "", nil
 }
