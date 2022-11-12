@@ -9,8 +9,10 @@ import (
 
 func (p *Parser) ParseContractDefinition() (*ast.ContractDefinition, error) {
 	var abstract bool
-	p.lexer.Scan()
-	tkn := p.lexer.Token()
+	tkn, err := p.lexer.Scan()
+	if err != nil {
+		return nil, err
+	}
 	if tkn.TokenType == token.Abstract {
 		abstract = true
 		p.lexer.Scan()
@@ -19,17 +21,27 @@ func (p *Parser) ParseContractDefinition() (*ast.ContractDefinition, error) {
 		return nil, errors.New("not found contract definition")
 	}
 
-	p.lexer.Scan()
-	if p.lexer.Token().TokenType != token.Unknown {
+	tkn, err = p.lexer.Scan()
+	if err != nil {
+		return nil, err
+	}
+	if tkn.TokenType != token.Unknown {
 		return nil, errors.New("not found left brace")
 	}
 
-	if p.lexer.Token().TokenType != token.LBrace {
+	tkn, err = p.lexer.Scan()
+	if err != nil {
+		return nil, err
+	}
+	if tkn.TokenType != token.LBrace {
 		return nil, errors.New("not found left brace")
 	}
 
-	p.lexer.Scan()
-	if p.lexer.Token().TokenType != token.RBrace {
+	tkn, err = p.lexer.Scan()
+	if err != nil {
+		return nil, err
+	}
+	if tkn.TokenType != token.RBrace {
 		return nil, errors.New("not found right brace")
 	}
 

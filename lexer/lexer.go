@@ -10,10 +10,6 @@ import (
 type Lexer struct {
 	scanner *scanner.Scanner
 
-	// scan result
-	token token.Token
-	err   error
-
 	// peek state
 	peeked    bool
 	peekToken token.Token
@@ -37,33 +33,14 @@ func (l *Lexer) scan() (result bool, tkn token.Token, err error) {
 	return true, token.NewToken(lit, pos), nil
 }
 
-func (l *Lexer) Scan() (result bool) {
+func (l *Lexer) Scan() (token.Token, error) {
 	if l.peeked {
-		l.token = l.peekToken
-		l.err = l.peekErr
 		l.peeked = false
-		return true
+		return l.peekToken, l.peekErr
 	}
 
-	rslt, tkn, err := l.scan()
-	if err != nil {
-		l.err = err
-		return false
-	}
-	if !rslt {
-		return false
-	}
-	l.token = tkn
-
-	return true
-}
-
-func (l Lexer) Token() token.Token {
-	return l.token
-}
-
-func (l Lexer) Error() error {
-	return l.err
+	_, tkn, err := l.scan()
+	return tkn, err
 }
 
 func (l *Lexer) Peek() bool {

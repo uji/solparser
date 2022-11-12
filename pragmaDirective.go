@@ -6,31 +6,43 @@ import (
 )
 
 func (p *Parser) ParsePragmaDirective() (*ast.PragmaDirective, error) {
-	p.lexer.Scan()
-	if tkn := p.lexer.Token(); tkn.TokenType != token.Pragma {
+	tkn, err := p.lexer.Scan()
+	if err != nil {
+		return nil, err
+	}
+	if tkn.TokenType != token.Pragma {
 		return nil, newError(tkn.Pos, "not found pragma")
 	}
 
-	p.lexer.Scan()
-	pragmaName := p.lexer.Token()
+	pragmaName, err := p.lexer.Scan()
+	if err != nil {
+		return nil, err
+	}
 	if pragmaName.TokenType != token.Unknown {
 		return nil, newError(pragmaName.Pos, "not found pragma name")
 	}
 
-	p.lexer.Scan()
-	expression := p.lexer.Token()
+	expression, err := p.lexer.Scan()
+	if err != nil {
+		return nil, err
+	}
 	if expression.TokenType != token.BitXor {
 		return nil, newError(expression.Pos, "not found BitXor expression")
 	}
 
-	p.lexer.Scan()
-	version := p.lexer.Token()
+	version, err := p.lexer.Scan()
+	if err != nil {
+		return nil, err
+	}
 	if version.TokenType != token.Unknown {
 		return nil, newError(version.Pos, "not found version")
 	}
 
-	p.lexer.Scan()
-	if tkn := p.lexer.Token(); tkn.TokenType != token.Semicolon {
+	tkn, err = p.lexer.Scan()
+	if err != nil {
+		return nil, err
+	}
+	if tkn.TokenType != token.Semicolon {
 		return nil, newError(tkn.Pos, "not found Semicolon")
 	}
 

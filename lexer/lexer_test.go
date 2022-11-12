@@ -12,19 +12,17 @@ import (
 
 func TestLexerScan(t *testing.T) {
 	tests := []struct {
-		name       string
-		input      string
-		peeked     bool
-		peekToken  token.Token
-		peekErr    error
-		wantResult bool
-		wantErr    error
-		wantToken  token.Token
+		name      string
+		input     string
+		peeked    bool
+		peekToken token.Token
+		peekErr   error
+		wantErr   error
+		wantToken token.Token
 	}{
 		{
-			name:       "normal",
-			input:      "pragma",
-			wantResult: true,
+			name:  "normal",
+			input: "pragma",
 			wantToken: token.Token{
 				TokenType: token.Pragma,
 				Text:      "pragma",
@@ -35,11 +33,10 @@ func TestLexerScan(t *testing.T) {
 			},
 		},
 		{
-			name:       "when scan is done",
-			input:      "",
-			wantResult: false,
-			wantToken:  token.Token{},
-			wantErr:    io.EOF,
+			name:      "when scan is done",
+			input:     "",
+			wantToken: token.Token{},
+			wantErr:   io.EOF,
 		},
 		{
 			name:   "when peeked",
@@ -53,7 +50,6 @@ func TestLexerScan(t *testing.T) {
 					Line:   6,
 				},
 			},
-			wantResult: true,
 			wantToken: token.Token{
 				TokenType: token.BitXor,
 				Text:      "^",
@@ -75,13 +71,11 @@ func TestLexerScan(t *testing.T) {
 				peekToken: tt.peekToken,
 				peekErr:   tt.peekErr,
 			}
-			if rslt := l.Scan(); rslt != tt.wantResult {
-				t.Errorf("result is wrong, want: %t, got: %t", tt.wantResult, rslt)
-			}
-			if err := l.Error(); err != tt.wantErr {
+			tkn, err := l.Scan()
+			if err != tt.wantErr {
 				t.Errorf("error is wrong, want: %s, got: %s", tt.wantErr, err)
 			}
-			if diff := cmp.Diff(tt.wantToken, l.Token()); diff != "" {
+			if diff := cmp.Diff(tt.wantToken, tkn); diff != "" {
 				t.Errorf(diff)
 			}
 		})
