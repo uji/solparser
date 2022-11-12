@@ -24,13 +24,13 @@ func New(input io.Reader) *Lexer {
 	}
 }
 
-func (l *Lexer) scan() (result bool, tkn token.Token, err error) {
+func (l *Lexer) scan() (tkn token.Token, err error) {
 	pos, lit, err := l.scanner.Scan()
 	if err != nil {
-		return false, token.Token{}, err
+		return token.Token{}, err
 	}
 
-	return true, token.NewToken(lit, pos), nil
+	return token.NewToken(lit, pos), nil
 }
 
 func (l *Lexer) Scan() (token.Token, error) {
@@ -39,8 +39,7 @@ func (l *Lexer) Scan() (token.Token, error) {
 		return l.peekToken, l.peekErr
 	}
 
-	_, tkn, err := l.scan()
-	return tkn, err
+	return l.scan()
 }
 
 func (l *Lexer) Peek() (token.Token, error) {
@@ -48,7 +47,7 @@ func (l *Lexer) Peek() (token.Token, error) {
 		return l.peekToken, l.peekErr
 	}
 
-	_, tkn, err := l.scan()
+	tkn, err := l.scan()
 	l.peeked = true
 	l.peekToken = tkn
 	l.peekErr = err
