@@ -1,0 +1,11 @@
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Temporary file directory
+/tmp/
+
+# Go workspace file
+go.work
+
+# Dependency directory
+/vendor/
