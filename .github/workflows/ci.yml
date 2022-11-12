@@ -25,4 +25,4 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: test
-        run: go test ./... -v
+        run: go test -race -cover -shuffle=on ./...
