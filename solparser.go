@@ -21,11 +21,11 @@ func New(input io.Reader) *Parser {
 }
 
 func (p *Parser) Parse(input io.Reader) (*ast.SourceUnit, error) {
-	if !p.lexer.Peek() {
+	tkn, err := p.lexer.Peek()
+	if err == io.EOF {
 		return nil, nil
 	}
-
-	if err := p.lexer.PeekError(); err != nil {
+	if err != nil {
 		return nil, err
 	}
 
@@ -33,7 +33,7 @@ func (p *Parser) Parse(input io.Reader) (*ast.SourceUnit, error) {
 	var contractDefinition *ast.ContractDefinition
 	var functionDefinition *ast.FunctionDefinition
 
-	switch p.lexer.PeekToken().TokenType {
+	switch tkn.TokenType {
 	case token.Pragma:
 		prgm, err := p.ParsePragmaDirective()
 		if err != nil {

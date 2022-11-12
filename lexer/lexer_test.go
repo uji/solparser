@@ -84,16 +84,14 @@ func TestLexerScan(t *testing.T) {
 
 func TestLexerPeek(t *testing.T) {
 	tests := []struct {
-		name   string
-		input  string
-		result bool
-		token  token.Token
-		err    error
+		name  string
+		input string
+		token token.Token
+		err   error
 	}{
 		{
-			name:   "normal",
-			input:  "pragma",
-			result: true,
+			name:  "normal",
+			input: "pragma",
 			token: token.Token{
 				TokenType: token.Pragma,
 				Text:      "pragma",
@@ -104,10 +102,10 @@ func TestLexerPeek(t *testing.T) {
 			},
 		},
 		{
-			name:   "when scan is done",
-			input:  "",
-			result: false,
-			token:  token.Token{},
+			name:  "when scan is done",
+			input: "",
+			token: token.Token{},
+			err:   io.EOF,
 		},
 	}
 	for _, tt := range tests {
@@ -118,13 +116,11 @@ func TestLexerPeek(t *testing.T) {
 			l := Lexer{
 				scanner: s,
 			}
-			if rslt := l.Peek(); tt.result != rslt {
-				t.Errorf("result is wrong, want: %t, got: %t", tt.result, rslt)
-			}
-			if err := l.PeekError(); err != tt.err {
+			tkn, err := l.Peek()
+			if err != tt.err {
 				t.Errorf("want: %s, got: %s", tt.err, err)
 			}
-			if diff := cmp.Diff(tt.token, l.PeekToken()); diff != "" {
+			if diff := cmp.Diff(tt.token, tkn); diff != "" {
 				t.Errorf(diff)
 			}
 		})

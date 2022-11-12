@@ -43,26 +43,14 @@ func (l *Lexer) Scan() (token.Token, error) {
 	return tkn, err
 }
 
-func (l *Lexer) Peek() bool {
+func (l *Lexer) Peek() (token.Token, error) {
 	if l.peeked {
-		return true
+		return l.peekToken, l.peekErr
 	}
 
-	rslt, tkn, err := l.scan()
-	if !rslt {
-		return false
-	}
-
+	_, tkn, err := l.scan()
 	l.peeked = true
 	l.peekToken = tkn
 	l.peekErr = err
-	return true
-}
-
-func (l Lexer) PeekToken() token.Token {
-	return l.peekToken
-}
-
-func (l Lexer) PeekError() error {
-	return l.peekErr
+	return l.peekToken, l.peekErr
 }
