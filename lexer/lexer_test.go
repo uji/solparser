@@ -10,14 +10,10 @@ import (
 	"github.com/uji/solparser/token"
 )
 
-func TestLexerScan(t *testing.T) {
+func TestLexer_Scan(t *testing.T) {
 	tests := []struct {
 		name      string
 		input     string
-		peeked    bool
-		peekToken token.Token
-		peekErr   error
-		wantErr   error
 		wantToken token.Token
 	}{
 		{
@@ -32,57 +28,65 @@ func TestLexerScan(t *testing.T) {
 				},
 			},
 		},
-		{
-			name:      "when scan is done",
-			input:     "",
-			wantToken: token.Token{},
-			wantErr:   io.EOF,
-		},
-		{
-			name:   "when peeked",
-			input:  "",
-			peeked: true,
-			peekToken: token.Token{
-				TokenType: token.BitXor,
-				Text:      "^",
-				Pos: token.Pos{
-					Column: 4,
-					Line:   6,
-				},
-			},
-			wantToken: token.Token{
-				TokenType: token.BitXor,
-				Text:      "^",
-				Pos: token.Pos{
-					Column: 4,
-					Line:   6,
-				},
-			},
-		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			s := scanner.New(strings.NewReader(tt.input))
-
 			l := Lexer{
-				scanner:   s,
-				peeked:    tt.peeked,
-				peekToken: tt.peekToken,
-				peekErr:   tt.peekErr,
+				scanner: s,
 			}
+
 			tkn, err := l.Scan()
-			if err != tt.wantErr {
-				t.Errorf("error is wrong, want: %s, got: %s", tt.wantErr, err)
+			if err != nil {
+				t.Errorf("error is not nil, got: %s", err)
 			}
 			if diff := cmp.Diff(tt.wantToken, tkn); diff != "" {
 				t.Errorf(diff)
 			}
 		})
 	}
+
+	t.Run("when scan is done", func(t *testing.T) {
+		s := scanner.New(strings.NewReader(""))
+		l := Lexer{
+			scanner: s,
+		}
+
+		_, err := l.Scan()
+		if err != io.EOF {
+			t.Errorf("error is not io.EOF, got: %s", err)
+		}
+	})
+
+	t.Run("when peeked", func(t *testing.T) {
+		peekToken := token.Token{
+			TokenType: token.BitXor,
+			Text:      "^",
+			Pos: token.Pos{
+				Column: 4,
+				Line:   6,
+			},
+		}
+		s := scanner.New(strings.NewReader(""))
+		l := Lexer{
+			scanner:   s,
+			peeked:    true,
+			peekToken: peekToken,
+			peekErr:   nil,
+		}
+
+		tkn, err := l.Scan()
+		if err != nil {
+			t.Errorf("error is not nil, got: %s", err)
+		}
+		if diff := cmp.Diff(peekToken, tkn); diff != "" {
+			t.Errorf(diff)
+		}
+	})
 }
 
-func TestLexerPeek(t *testing.T) {
+func TestLexer_Peek(t *testing.T) {
 	tests := []struct {
 		name  string
 		input string
