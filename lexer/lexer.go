@@ -1,6 +1,7 @@
 package lexer
 
 import (
+	"errors"
 	"io"
 
 	"github.com/uji/solparser/scanner"
@@ -52,4 +53,30 @@ func (l *Lexer) Peek() (token.Token, error) {
 	l.peekToken = tkn
 	l.peekErr = err
 	return l.peekToken, l.peekErr
+}
+
+func (l *Lexer) ScanStringLiteral() (token.Token, error) {
+	firstPos, lit, err := l.scanner.Scan()
+	if err != nil {
+		return token.Token{}, err
+	}
+	if lit != `"` {
+		return token.Token{}, errors.New("test") // TODO: include Pos in error
+	}
+
+	txt := lit
+	for {
+		_, lit, err := l.scanner.Scan()
+		if err != nil {
+			return token.Token{}, err
+		}
+		txt = txt + lit
+		if lit == `"` {
+			return token.Token{
+				TokenType: token.StringLiteral,
+				Text:      txt,
+				Pos:       firstPos,
+			}, nil
+		}
+	}
 }

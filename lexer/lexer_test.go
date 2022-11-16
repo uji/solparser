@@ -130,3 +130,34 @@ func TestLexer_Peek(t *testing.T) {
 		})
 	}
 }
+
+func TestLexer_ScanStringLiteral(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		wantText string
+	}{
+		{
+			name:     "double-quoted-printable",
+			input:    `"Hello world!!";`,
+			wantText: `"Hello world!!"`,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			s := scanner.New(strings.NewReader(tt.input))
+			l := Lexer{
+				scanner: s,
+			}
+
+			tkn, err := l.ScanStringLiteral()
+			if err != nil {
+				t.Errorf("error is not nil, got: %s", err)
+			}
+			if diff := cmp.Diff(tt.wantText, tkn.Text); diff != "" {
+				t.Errorf(diff)
+			}
+		})
+	}
+}
