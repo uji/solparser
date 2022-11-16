@@ -16,7 +16,7 @@ func TestParserParseBooleanLiteral(t *testing.T) {
 		name  string
 		input string
 		want  *ast.BooleanLiteral
-		err   *solparser.Error
+		err   *token.PosError
 	}{
 		{
 			name:  "true case",
@@ -52,7 +52,7 @@ func TestParserParseBooleanLiteral(t *testing.T) {
 			name:  "not true or false",
 			input: "solidity",
 			want:  nil,
-			err: &solparser.Error{
+			err: &token.PosError{
 				Pos: token.Pos{
 					Column: 1,
 					Line:   1,
@@ -69,7 +69,7 @@ func TestParserParseBooleanLiteral(t *testing.T) {
 
 			got, err := p.ParseBooleanLiteral()
 
-			var sErr *solparser.Error
+			var sErr *token.PosError
 			if errors.As(err, &sErr) {
 				if diff := cmp.Diff(tt.err, sErr); diff != "" {
 					t.Errorf("%s", diff)

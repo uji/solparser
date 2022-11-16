@@ -16,7 +16,7 @@ func TestParserParsePragmaDirective(t *testing.T) {
 		name  string
 		input string
 		want  *ast.PragmaDirective
-		err   *solparser.Error
+		err   *token.PosError
 	}{
 		{
 			name:  "normal case",
@@ -34,7 +34,7 @@ func TestParserParsePragmaDirective(t *testing.T) {
 			name:  "there is no pragma keyword",
 			input: "solidity ^0.8.13;",
 			want:  nil,
-			err: &solparser.Error{
+			err: &token.PosError{
 				Pos: token.Pos{
 					Column: 1,
 					Line:   1,
@@ -46,7 +46,7 @@ func TestParserParsePragmaDirective(t *testing.T) {
 			name:  "there is no pragma name",
 			input: "pragma ^0.8.13;",
 			want:  nil,
-			err: &solparser.Error{
+			err: &token.PosError{
 				Pos: token.Pos{
 					Column: 8,
 					Line:   1,
@@ -58,7 +58,7 @@ func TestParserParsePragmaDirective(t *testing.T) {
 			name:  "there is no BitXor expression",
 			input: "pragma solidity 0.8.13;",
 			want:  nil,
-			err: &solparser.Error{
+			err: &token.PosError{
 				Pos: token.Pos{
 					Column: 17,
 					Line:   1,
@@ -70,7 +70,7 @@ func TestParserParsePragmaDirective(t *testing.T) {
 			name:  "there is no Semicolon",
 			input: "pragma solidity ^0.8.13",
 			want:  nil,
-			err: &solparser.Error{
+			err: &token.PosError{
 				Pos: token.Pos{
 					Column: 18,
 					Line:   1,
@@ -87,7 +87,7 @@ func TestParserParsePragmaDirective(t *testing.T) {
 
 			got, err := p.ParsePragmaDirective()
 
-			var sErr *solparser.Error
+			var sErr *token.PosError
 			if errors.As(err, &sErr) {
 				if diff := cmp.Diff(tt.err, sErr); diff != "" {
 					t.Errorf("%s", diff)

@@ -68,7 +68,7 @@ func (p *Parser) ParseBooleanLiteral() (*ast.BooleanLiteral, error) {
 	}
 
 	if tkn.TokenType != token.True && tkn.TokenType != token.False {
-		return nil, newError(tkn.Pos, "not found keyword true or false")
+		return nil, token.NewPosError(tkn.Pos, "not found keyword true or false")
 	}
 
 	return &ast.BooleanLiteral{

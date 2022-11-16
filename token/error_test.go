@@ -1,21 +1,20 @@
-package solparser_test
+package token_test
 
 import (
 	"testing"
 
-	"github.com/uji/solparser"
 	"github.com/uji/solparser/token"
 )
 
-func TestErrorError(t *testing.T) {
+func TestError_PosError(t *testing.T) {
 	tests := []struct {
 		name string
-		err  solparser.Error
+		err  token.PosError
 		want string
 	}{
 		{
 			name: "normal case",
-			err: solparser.Error{
+			err: token.PosError{
 				Pos: token.Pos{
 					Column: 1,
 					Line:   1,
@@ -26,7 +25,7 @@ func TestErrorError(t *testing.T) {
 		},
 		{
 			name: "invalid position case",
-			err: solparser.Error{
+			err: token.PosError{
 				Pos: token.Pos{
 					Column: 0,
 					Line:   1,
