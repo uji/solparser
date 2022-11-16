@@ -159,6 +159,15 @@ const (
 	View
 	Virtual
 	While
+
+	// Literal
+	TrueLiteral
+	FalseLiteral
+	Number
+	StringLiteral
+	UnicodeStringLiteral
+	HexStringLiteral
+	CommentLiteral
 )
 
 func asKeyword(str string) TokenType {
