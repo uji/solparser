@@ -1,7 +1,6 @@
 package lexer
 
 import (
-	"errors"
 	"io"
 
 	"github.com/uji/solparser/scanner"
@@ -61,7 +60,7 @@ func (l *Lexer) ScanStringLiteral() (token.Token, error) {
 		return token.Token{}, err
 	}
 	if lit != `"` {
-		return token.Token{}, errors.New("test") // TODO: include Pos in error
+		return token.Token{}, token.NewPosError(firstPos, `not found "`)
 	}
 
 	txt := lit

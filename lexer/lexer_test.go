@@ -1,6 +1,7 @@
 package lexer
 
 import (
+	"errors"
 	"io"
 	"strings"
 	"testing"
@@ -160,4 +161,27 @@ func TestLexer_ScanStringLiteral(t *testing.T) {
 			}
 		})
 	}
+
+	t.Run(`not found "`, func(t *testing.T) {
+		s := scanner.New(strings.NewReader("a"))
+		l := Lexer{
+			scanner: s,
+		}
+		exptErr := &token.PosError{
+			Pos: token.Pos{
+				Column: 1,
+				Line:   1,
+			},
+			Msg: `not found "`,
+		}
+
+		_, err := l.ScanStringLiteral()
+		var pErr *token.PosError
+		if !errors.As(err, &pErr) {
+			t.Errorf("error is unexpected, got: %s", err)
+		}
+		if diff := cmp.Diff(pErr, exptErr); diff != "" {
+			t.Errorf(diff)
+		}
+	})
 }
