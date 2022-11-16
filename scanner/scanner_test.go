@@ -25,7 +25,15 @@ func TestScannerScan(t *testing.T) {
 					Line:   1,
 				},
 				{
+					Column: 7,
+					Line:   1,
+				},
+				{
 					Column: 8,
+					Line:   1,
+				},
+				{
+					Column: 16,
 					Line:   1,
 				},
 				{
@@ -43,7 +51,9 @@ func TestScannerScan(t *testing.T) {
 			},
 			wantLits: []string{
 				"pragma",
+				" ",
 				"solidity",
+				" ",
 				"^",
 				"0.8.13",
 				";",
@@ -62,6 +72,10 @@ func TestScannerScan(t *testing.T) {
 					Line:   1,
 				},
 				{
+					Column: 1,
+					Line:   2,
+				},
+				{
 					Column: 2,
 					Line:   2,
 				},
@@ -69,6 +83,7 @@ func TestScannerScan(t *testing.T) {
 			wantLits: []string{
 				"pragma",
 				"\n",
+				" ",
 				"solidity",
 			},
 		},
