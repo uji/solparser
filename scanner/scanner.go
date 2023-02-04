@@ -23,10 +23,10 @@ func New(reader io.Reader) *Scanner {
 	}
 }
 
-// isSpace reports whether the character is a Unicode white space character.
+// IsSpace reports whether the character is a Unicode white space character.
 // We avoid dependency on the unicode package, but check validity of the implementation
 // in the tests.
-func isSpace(r rune) bool {
+func IsSpace(r rune) bool {
 	if r <= '\u00FF' {
 		// Obvious ASCII ones: \t through \r plus space. Plus two Latin-1 oddballs.
 		switch r {
@@ -97,7 +97,7 @@ func (s *Scanner) Scan() (token.Pos, string, error) {
 		return startPos, string(ch), nil
 	}
 
-	readingSpace := isSpace(ch)
+	readingSpace := IsSpace(ch)
 	runes := []rune{ch}
 
 	for {
@@ -105,7 +105,7 @@ func (s *Scanner) Scan() (token.Pos, string, error) {
 		if err != nil {
 			return token.Pos{}, "", err
 		}
-		if isSpace(ch) != readingSpace || isSplitSymbol(ch) || ch == '\n' || ch == bufrr.EOF {
+		if IsSpace(ch) != readingSpace || isSplitSymbol(ch) || ch == '\n' || ch == bufrr.EOF {
 			return startPos, string(runes), nil
 		}
 		ch, err = s.readRune()

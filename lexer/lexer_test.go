@@ -29,6 +29,18 @@ func TestLexer_Scan(t *testing.T) {
 				},
 			},
 		},
+		{
+			name:  "There is a space at the beginning",
+			input: " pragma",
+			wantToken: token.Token{
+				TokenType: token.Pragma,
+				Text:      "pragma",
+				Pos: token.Pos{
+					Column: 2,
+					Line:   1,
+				},
+			},
+		},
 	}
 	for _, tt := range tests {
 		tt := tt
