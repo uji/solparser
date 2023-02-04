@@ -30,7 +30,7 @@ func (l *Lexer) scan() (tkn token.Token, err error) {
 		return token.Token{}, err
 	}
 
-	if scanner.IsSpace([]rune(lit)[0]) {
+	if token.IsSpace([]rune(lit)[0]) {
 		return l.scan()
 	}
 

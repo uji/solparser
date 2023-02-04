@@ -23,31 +23,6 @@ func New(reader io.Reader) *Scanner {
 	}
 }
 
-// IsSpace reports whether the character is a Unicode white space character.
-// We avoid dependency on the unicode package, but check validity of the implementation
-// in the tests.
-func IsSpace(r rune) bool {
-	if r <= '\u00FF' {
-		// Obvious ASCII ones: \t through \r plus space. Plus two Latin-1 oddballs.
-		switch r {
-		case ' ', '\t', '\v', '\f', '\r':
-			return true
-		case '\u0085', '\u00A0':
-			return true
-		}
-		return false
-	}
-	// High-valued ones.
-	if '\u2000' <= r && r <= '\u200a' {
-		return true
-	}
-	switch r {
-	case '\u1680', '\u2028', '\u2029', '\u202f', '\u205f', '\u3000':
-		return true
-	}
-	return false
-}
-
 func isMultiLengthOperatorSymbol(r rune) bool {
 	switch r {
 	case '=', '|', '^', '&', '+', '-', '*', '/', '%', '<', '>', '!':
@@ -97,7 +72,7 @@ func (s *Scanner) Scan() (token.Pos, string, error) {
 		return startPos, string(ch), nil
 	}
 
-	readingSpace := IsSpace(ch)
+	readingSpace := token.IsSpace(ch)
 	runes := []rune{ch}
 
 	for {
@@ -105,7 +80,7 @@ func (s *Scanner) Scan() (token.Pos, string, error) {
 		if err != nil {
 			return token.Pos{}, "", err
 		}
-		if IsSpace(ch) != readingSpace || isSplitSymbol(ch) || ch == '\n' || ch == bufrr.EOF {
+		if token.IsSpace(ch) != readingSpace || isSplitSymbol(ch) || ch == bufrr.EOF {
 			return startPos, string(runes), nil
 		}
 		ch, err = s.readRune()
