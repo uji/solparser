@@ -155,6 +155,12 @@ func TestLexer_ScanStringLiteral(t *testing.T) {
 			input:    `"Hello world!!";`,
 			wantText: `"Hello world!!"`,
 		},
+		// TODO
+		// {
+		// 	name:     "single-quoted-printable",
+		// 	input:    `\'Hello world!!\';`,
+		// 	wantText: `\'Hello world!!\'`,
+		// },
 	}
 	for _, tt := range tests {
 		tt := tt
@@ -184,7 +190,7 @@ func TestLexer_ScanStringLiteral(t *testing.T) {
 				Column: 1,
 				Line:   1,
 			},
-			Msg: `not found "`,
+			Msg: `not found " or \'`,
 		}
 
 		_, err := l.ScanStringLiteral()

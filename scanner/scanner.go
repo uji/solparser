@@ -25,7 +25,7 @@ func New(reader io.Reader) *Scanner {
 
 func isMultiLengthOperatorSymbol(r rune) bool {
 	switch r {
-	case '=', '|', '^', '&', '+', '-', '*', '/', '%', '<', '>', '!':
+	case '=', '|', '^', '&', '+', '-', '*', '/', '\\', '%', '<', '>', '!':
 		return true
 	}
 	return false

@@ -1,6 +1,7 @@
 package lexer
 
 import (
+	"fmt"
 	"io"
 
 	"github.com/uji/solparser/scanner"
@@ -58,23 +59,25 @@ func (l *Lexer) Peek() (token.Token, error) {
 	return l.peekToken, l.peekErr
 }
 
+// ScanStringLiteral parse NonEmptyStringLiteral or EmptyStringLiteral then return StringLiteral token.
 func (l *Lexer) ScanStringLiteral() (token.Token, error) {
 	firstPos, lit, err := l.scanner.Scan()
 	if err != nil {
 		return token.Token{}, err
 	}
-	if lit != `"` {
-		return token.Token{}, token.NewPosError(firstPos, `not found "`)
+	fmt.Println(firstPos, lit)
+	if lit != `"` && lit != `\'` {
+		return token.Token{}, token.NewPosError(firstPos, `not found " or \'`)
 	}
 
-	txt := lit
+	quote, txt := lit, lit
 	for {
 		_, lit, err := l.scanner.Scan()
 		if err != nil {
 			return token.Token{}, err
 		}
 		txt = txt + lit
-		if lit == `"` {
+		if lit == quote {
 			return token.Token{
 				TokenType: token.StringLiteral,
 				Text:      txt,
