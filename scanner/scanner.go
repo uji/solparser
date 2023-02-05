@@ -128,11 +128,9 @@ func (s *Scanner) Scan() (token.Pos, string, error) {
 
 	ch, _, err := s.r.PeekRune()
 	if err != nil {
-		s.readRune()
 		return token.Pos{}, "", err
 	}
 	if ch == bufrr.EOF {
-		s.readRune()
 		return token.Pos{}, "", io.EOF
 	}
 	if isSplitSymbol(ch) {
@@ -144,10 +142,12 @@ func (s *Scanner) Scan() (token.Pos, string, error) {
 		return startPos, oprt, nil
 	}
 
-	s.readRune()
+	if _, err := s.readRune(); err != nil {
+		return token.Pos{}, "", err
+	}
 
 	readingSpace := token.IsSpace(ch)
-	runes := []rune{ch}
+	rslt := []rune{ch}
 
 	for {
 		ch, _, err := s.r.PeekRune()
@@ -155,13 +155,12 @@ func (s *Scanner) Scan() (token.Pos, string, error) {
 			return token.Pos{}, "", err
 		}
 		if token.IsSpace(ch) != readingSpace || isSplitSymbol(ch) || ch == bufrr.EOF {
-			return startPos, string(runes), nil
+			return startPos, string(rslt), nil
 		}
-		ch, err = s.readRune()
-		if err != nil {
+		if _, err = s.readRune(); err != nil {
 			return token.Pos{}, "", err
 		}
-		runes = append(runes, ch)
+		rslt = append(rslt, ch)
 	}
 }
 
