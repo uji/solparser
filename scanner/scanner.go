@@ -24,15 +24,7 @@ func New(reader io.Reader) *Scanner {
 	}
 }
 
-func isMultiLengthOperatorSymbol(r rune) bool {
-	switch r {
-	case '=', '|', '^', '&', '+', '-', '*', '/', '\\', '%', '<', '>', '!':
-		return true
-	}
-	return false
-}
-
-func isSplitSymbol(r rune) bool {
+func isOperatorRune(r rune) bool {
 	switch r {
 	case '(', ')', '[', ']', '{', '}', ':', ';', '?', '=', '|', '^', '&', '<', '>', '+', '-', '*', '/', '%', ',', '!', '~', '"', '\'', '\\':
 		return true
@@ -56,62 +48,81 @@ func (s *Scanner) readRune() (rune, error) {
 	return r, nil
 }
 
+var (
+	errNotOperator = errors.New("Not operator.")
+)
+
 func (s *Scanner) scanOperator() (string, error) {
-	ch, _, err := s.r.PeekRune()
+	ch1, _, err := s.r.PeekRune()
 	if err != nil {
 		return "", err
 	}
-	if !isSplitSymbol(ch) {
-		return "", errors.New("Not operator")
+	if !isOperatorRune(ch1) {
+		return "", errNotOperator
 	}
-	s.readRune()
-	if !isMultiLengthOperatorSymbol(ch) {
-		return string(ch), nil
+	if _, err := s.readRune(); err != nil {
+		return "", err
 	}
 	ch2, _, err := s.r.PeekRune()
 	if err != nil {
-		return string(ch), nil
+		return string(ch1), nil
 	}
-	oprt := string([]rune{ch, ch2})
+	oprt := string([]rune{ch1, ch2})
 	switch oprt {
 	case "=>", "->", "|=", "^=", "&=", "+=", "-=", "*=", "/=", "%=", "==", "||", "&&", "**", "!=", "<-", ">-", "++", "--", `\'`:
-		s.readRune()
+		if _, err := s.readRune(); err != nil {
+			return "", err
+		}
 		return oprt, nil
 	case "<<":
-		s.readRune()
-		ch, _, err := s.r.PeekRune()
-		if err != nil {
-			return oprt, nil
+		if _, err := s.readRune(); err != nil {
+			return "", err
 		}
-		if ch == '=' {
-			return "<<=", nil
-		}
-		return oprt, nil
-	case ">>":
-		s.readRune()
 		ch3, _, err := s.r.PeekRune()
 		if err != nil {
 			return oprt, nil
 		}
 		if ch3 == '=' {
+			if _, err := s.readRune(); err != nil {
+				return "", err
+			}
+			return "<<=", nil
+		}
+		return oprt, nil
+	case ">>":
+		if _, err := s.readRune(); err != nil {
+			return "", err
+		}
+		ch3, _, err := s.r.PeekRune()
+		if err != nil {
+			return oprt, nil
+		}
+		if ch3 == '=' {
+			if _, err := s.readRune(); err != nil {
+				return "", err
+			}
 			return ">>=", nil
 		}
 		if ch3 == '>' {
-			s.readRune()
+			if _, err := s.readRune(); err != nil {
+				return "", err
+			}
 			oprt = ">>>"
 			ch4, _, err := s.r.PeekRune()
 			if err != nil {
 				return oprt, nil
 			}
 			if ch4 == '=' {
-				s.readRune()
+				if _, err := s.readRune(); err != nil {
+					return "", err
+				}
 				return ">>>=", nil
 			}
 			return oprt, nil
 		}
 		return oprt, nil
 	}
-	return string(ch), nil
+	return string(ch1), nil
 }
 
 // Scan divides a string into the smallest units from the bufrr.Reader and returns them one by one.
@@ -133,7 +144,7 @@ func (s *Scanner) Scan() (token.Pos, string, error) {
 	if ch == bufrr.EOF {
 		return token.Pos{}, "", io.EOF
 	}
-	if isSplitSymbol(ch) {
+	if isOperatorRune(ch) {
 		// scan operator.
 		oprt, err := s.scanOperator()
 		if err != nil {
@@ -154,7 +165,7 @@ func (s *Scanner) Scan() (token.Pos, string, error) {
 		if err != nil {
 			return token.Pos{}, "", err
 		}
-		if token.IsSpace(ch) != readingSpace || isSplitSymbol(ch) || ch == bufrr.EOF {
+		if token.IsSpace(ch) != readingSpace || isOperatorRune(ch) || ch == bufrr.EOF {
 			return startPos, string(rslt), nil
 		}
 		if _, err = s.readRune(); err != nil {

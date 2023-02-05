@@ -1,6 +1,7 @@
 package scanner
 
 import (
+	"errors"
 	"io"
 	"strings"
 	"testing"
@@ -53,7 +54,7 @@ func TestScannerScan(t *testing.T) {
 			},
 		},
 		{
-			name:  "there are multi length operators",
+			name:  "there are operators",
 			input: `a >> \'test\'`,
 			wantPoss: []token.Pos{
 				{Column: 1, Line: 1},
@@ -101,6 +102,43 @@ func TestScannerScan(t *testing.T) {
 			}
 			if diff := cmp.Diff(tt.wantLits, lits); diff != "" {
 				t.Errorf(diff)
+			}
+		})
+	}
+}
+
+func TestScanner_scanOperator(t *testing.T) {
+	tests := []struct {
+		input   string
+		want    string
+		wantErr error
+	}{
+		{input: "^0.8.13", want: "^"},
+		{input: "=>>", want: "=>"},
+		{input: "<< ", want: "<<"},
+		{input: "<<=a", want: "<<="},
+		{input: ">>1", want: ">>"},
+		{input: ">>=x", want: ">>="},
+		{input: ">>>>", want: ">>>"},
+		{input: ">>>==", want: ">>>="},
+		{input: "pragma", wantErr: errNotOperator},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.input, func(t *testing.T) {
+			s := New(strings.NewReader(tt.input))
+
+			got, err := s.scanOperator()
+			if !errors.Is(err, tt.wantErr) {
+				t.Error(err)
+			}
+			if got != tt.want {
+				t.Errorf("got: %s, want: %s", got, tt.want)
+			}
+			expectedOffset := len(tt.want)
+			if s.offset != expectedOffset {
+				t.Errorf("offset is %d, expected is %d", s.offset, expectedOffset)
 			}
 		})
 	}
