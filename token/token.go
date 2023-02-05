@@ -61,7 +61,7 @@ const (
 	Inc                // ++
 	Dec                // --
 	DoubleQuote        // "
-	SingleQuote        // '
+	SingleQuote        // ' or \'
 
 	// Reserved Keyword
 	After

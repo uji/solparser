@@ -155,12 +155,11 @@ func TestLexer_ScanStringLiteral(t *testing.T) {
 			input:    `"Hello world!!";`,
 			wantText: `"Hello world!!"`,
 		},
-		// TODO
-		// {
-		// 	name:     "single-quoted-printable",
-		// 	input:    `\'Hello world!!\';`,
-		// 	wantText: `\'Hello world!!\'`,
-		// },
+		{
+			name:     "single-quoted-printable",
+			input:    `\'Hello world!!\';`,
+			wantText: `\'Hello world!!\'`,
+		},
 	}
 	for _, tt := range tests {
 		tt := tt

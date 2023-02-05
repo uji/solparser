@@ -20,34 +20,13 @@ func TestScannerScan(t *testing.T) {
 			name:  "normal",
 			input: "pragma solidity ^0.8.13;",
 			wantPoss: []token.Pos{
-				{
-					Column: 1,
-					Line:   1,
-				},
-				{
-					Column: 7,
-					Line:   1,
-				},
-				{
-					Column: 8,
-					Line:   1,
-				},
-				{
-					Column: 16,
-					Line:   1,
-				},
-				{
-					Column: 17,
-					Line:   1,
-				},
-				{
-					Column: 18,
-					Line:   1,
-				},
-				{
-					Column: 24,
-					Line:   1,
-				},
+				{Column: 1, Line: 1},
+				{Column: 7, Line: 1},
+				{Column: 8, Line: 1},
+				{Column: 16, Line: 1},
+				{Column: 17, Line: 1},
+				{Column: 18, Line: 1},
+				{Column: 24, Line: 1},
 			},
 			wantLits: []string{
 				"pragma",
@@ -60,31 +39,39 @@ func TestScannerScan(t *testing.T) {
 			},
 		},
 		{
-			name:  "normal",
+			name:  "there is newline character",
 			input: "pragma\n solidity",
 			wantPoss: []token.Pos{
-				{
-					Column: 1,
-					Line:   1,
-				},
-				{
-					Column: 7,
-					Line:   1,
-				},
-				{
-					Column: 1,
-					Line:   2,
-				},
-				{
-					Column: 2,
-					Line:   2,
-				},
+				{Column: 1, Line: 1},
+				{Column: 7, Line: 1},
+				{Column: 2, Line: 2},
 			},
 			wantLits: []string{
 				"pragma",
-				"\n",
-				" ",
+				"\n ",
 				"solidity",
+			},
+		},
+		{
+			name:  "there are multi length operators",
+			input: `a >> \'test\'`,
+			wantPoss: []token.Pos{
+				{Column: 1, Line: 1},
+				{Column: 2, Line: 1},
+				{Column: 3, Line: 1},
+				{Column: 5, Line: 1},
+				{Column: 6, Line: 1},
+				{Column: 8, Line: 1},
+				{Column: 12, Line: 1},
+			},
+			wantLits: []string{
+				"a",
+				" ",
+				">>",
+				" ",
+				`\'`,
+				"test",
+				`\'`,
 			},
 		},
 	}
