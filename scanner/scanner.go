@@ -15,6 +15,12 @@ type Scanner struct {
 	// position state
 	offset     int
 	lineOffset int
+
+	// peek state
+	peeked  bool
+	peekStr string
+	peekPos token.Pos
+	peekErr error
 }
 
 func New(reader io.Reader) *Scanner {
@@ -125,13 +131,13 @@ func (s *Scanner) scanOperator() (string, error) {
 	return string(ch1), nil
 }
 
-// Scan divides a string into the smallest units from the bufrr.Reader and returns them one by one.
+// scan flow
 //
 // - If first rune is an error or EOF, return an error and exit.
 // - If first rune is operator character, scan operator.
 // - If first rune is a space character, scan until the end of the blank character.
 // - Else scan to next space or operator string.
-func (s *Scanner) Scan() (token.Pos, string, error) {
+func (s *Scanner) scan() (token.Pos, string, error) {
 	startPos := token.Pos{
 		Column: s.offset + 1,
 		Line:   s.lineOffset + 1,
@@ -175,6 +181,28 @@ func (s *Scanner) Scan() (token.Pos, string, error) {
 	}
 }
 
-func (s *Scanner) Peek() (pos token.Pos, lit string, err error) {
-	return token.Pos{}, "", nil
+// Scan divides a string into the smallest units from the bufrr.Reader and returns them one by one.
+func (s *Scanner) Scan() (token.Pos, string, error) {
+	if s.peeked {
+		s.peeked = false
+		return s.peekPos, s.peekStr, s.peekErr
+	}
+
+	return s.scan()
+}
+
+// Peek reads ahead and returns the result of Scan.
+// The offset is unchanged.
+func (s *Scanner) Peek() (pos token.Pos, str string, err error) {
+	if s.peeked {
+		return s.peekPos, s.peekStr, s.peekErr
+	}
+
+	s.peeked = true
+
+	pos, str, err = s.scan()
+	s.peekPos = pos
+	s.peekStr = str
+	s.peekErr = err
+	return
 }
