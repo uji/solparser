@@ -1,7 +1,7 @@
 package lexer
 
 import (
-	"fmt"
+	"errors"
 	"io"
 
 	"github.com/uji/solparser/scanner"
@@ -26,16 +26,26 @@ func New(input io.Reader) *Lexer {
 }
 
 func (l *Lexer) scan() (tkn token.Token, err error) {
-	pos, lit, err := l.scanner.Scan()
+	pos, str, err := l.scanner.Peek()
 	if err != nil {
 		return token.Token{}, err
 	}
+	if str == "" {
+		return token.Token{}, errors.New("Empty character scanned.")
+	}
 
-	if token.IsSpace([]rune(lit)[0]) {
+	if str == `"` || str == `\"` {
+		return l.ScanStringLiteral()
+	}
+
+	l.scanner.Scan()
+
+	// If space, scan for the next token
+	if token.IsSpace([]rune(str)[0]) {
 		return l.scan()
 	}
 
-	return token.NewToken(lit, pos), nil
+	return token.NewToken(str, pos), nil
 }
 
 func (l *Lexer) Scan() (token.Token, error) {
@@ -61,23 +71,22 @@ func (l *Lexer) Peek() (token.Token, error) {
 
 // ScanStringLiteral parse NonEmptyStringLiteral or EmptyStringLiteral then return StringLiteral token.
 func (l *Lexer) ScanStringLiteral() (token.Token, error) {
-	firstPos, lit, err := l.scanner.Scan()
+	firstPos, str, err := l.scanner.Scan()
 	if err != nil {
 		return token.Token{}, err
 	}
-	fmt.Println(firstPos, lit)
-	if lit != `"` && lit != `\'` {
+	if str != `"` && str != `\'` {
 		return token.Token{}, token.NewPosError(firstPos, `not found " or \'`)
 	}
 
-	quote, txt := lit, lit
+	quote, txt := str, str
 	for {
-		_, lit, err := l.scanner.Scan()
+		_, str, err := l.scanner.Scan()
 		if err != nil {
 			return token.Token{}, err
 		}
-		txt = txt + lit
-		if lit == quote {
+		txt = txt + str
+		if str == quote {
 			return token.Token{
 				TokenType: token.StringLiteral,
 				Text:      txt,

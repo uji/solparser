@@ -41,6 +41,18 @@ func TestLexer_Scan(t *testing.T) {
 				},
 			},
 		},
+		{
+			name:  "There is a StringLiteral",
+			input: `"pragma"`,
+			wantToken: token.Token{
+				TokenType: token.StringLiteral,
+				Text:      `"pragma"`,
+				Pos: token.Pos{
+					Column: 1,
+					Line:   1,
+				},
+			},
+		},
 	}
 	for _, tt := range tests {
 		tt := tt
