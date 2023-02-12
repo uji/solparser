@@ -11,7 +11,7 @@ import (
 	"github.com/uji/solparser/token"
 )
 
-func TestParserParseBooleanLiteral(t *testing.T) {
+func TestParser_ParseBooleanLiteral(t *testing.T) {
 	tests := []struct {
 		name  string
 		input string
@@ -23,7 +23,7 @@ func TestParserParseBooleanLiteral(t *testing.T) {
 			input: "true",
 			want: &ast.BooleanLiteral{
 				Token: token.Token{
-					TokenType: token.True,
+					TokenType: token.TrueLiteral,
 					Text:      "true",
 					Pos: token.Pos{
 						Column: 1,
@@ -38,7 +38,7 @@ func TestParserParseBooleanLiteral(t *testing.T) {
 			input: "false",
 			want: &ast.BooleanLiteral{
 				Token: token.Token{
-					TokenType: token.False,
+					TokenType: token.FalseLiteral,
 					Text:      "false",
 					Pos: token.Pos{
 						Column: 1,

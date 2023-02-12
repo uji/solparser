@@ -20,7 +20,7 @@ func New(input io.Reader) *Parser {
 	}
 }
 
-func (p *Parser) Parse(input io.Reader) (*ast.SourceUnit, error) {
+func (p *Parser) Parse() (*ast.SourceUnit, error) {
 	tkn, err := p.lexer.Peek()
 	if err == io.EOF {
 		return nil, nil
@@ -67,7 +67,7 @@ func (p *Parser) ParseBooleanLiteral() (*ast.BooleanLiteral, error) {
 		return nil, err
 	}
 
-	if tkn.TokenType != token.True && tkn.TokenType != token.False {
+	if tkn.TokenType != token.TrueLiteral && tkn.TokenType != token.FalseLiteral {
 		return nil, token.NewPosError(tkn.Pos, "not found keyword true or false")
 	}
 

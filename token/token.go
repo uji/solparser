@@ -120,7 +120,6 @@ const (
 	Event
 	External
 	Fallback
-	False
 	Fixed
 	For
 	From
@@ -152,7 +151,6 @@ const (
 	Storage
 	String
 	Struct
-	True
 	Try
 	Type
 	Using
@@ -383,7 +381,7 @@ func asKeyword(str string) TokenType {
 	case "fallback":
 		return Fallback
 	case "false":
-		return False
+		return FalseLiteral
 	case "fixed":
 		return Fixed
 	case "for":
@@ -447,7 +445,7 @@ func asKeyword(str string) TokenType {
 	case "struct":
 		return Struct
 	case "true":
-		return True
+		return TrueLiteral
 	case "try":
 		return Try
 	case "type":
