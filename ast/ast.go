@@ -106,8 +106,19 @@ func (b *BooleanLiteral) End() token.Pos {
 	}
 }
 
+// EmptyStringLiteral | NonEmptyStringLiteral
 type StringLiteral struct {
-	List []Node // EmptyStringLiteral | NonEmptyStringLiteral
+	Str      string
+	Position token.Pos
+	EndPos   token.Pos
+}
+
+func (s StringLiteral) Pos() token.Pos {
+	return s.Position
+}
+
+func (s StringLiteral) End() token.Pos {
+	return s.EndPos
 }
 
 type HexStringLiteral []*HexString
