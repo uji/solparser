@@ -72,7 +72,7 @@ func TestParserParsePragmaDirective(t *testing.T) {
 			want:  nil,
 			err: &token.PosError{
 				Pos: token.Pos{
-					Column: 18,
+					Column: 24,
 					Line:   1,
 				},
 				Msg: "not found Semicolon",

@@ -2,7 +2,6 @@ package scanner
 
 import (
 	"errors"
-	"io"
 	"strings"
 	"testing"
 
@@ -88,11 +87,11 @@ func TestScanner_Scan(t *testing.T) {
 
 			for {
 				pos, str, err := s.Scan()
-				if err == io.EOF {
-					break
-				}
 				if err != nil {
 					t.Fatalf("got unexpected error: %s", err)
+				}
+				if str == token.EOSString {
+					break
 				}
 				poss = append(poss, pos)
 				strs = append(strs, str)

@@ -133,7 +133,6 @@ func (s *Scanner) scanOperator() (string, error) {
 
 // scan flow
 //
-// - If first rune is an error or EOF, return an error and exit.
 // - If first rune is operator character, scan operator.
 // - If first rune is a space character, scan until the end of the blank character.
 // - Else scan to next space or operator string.
@@ -148,7 +147,7 @@ func (s *Scanner) scan() (token.Pos, string, error) {
 		return token.Pos{}, "", err
 	}
 	if ch == bufrr.EOF {
-		return token.Pos{}, "", io.EOF
+		return startPos, token.EOSString, nil
 	}
 	if isOperatorRune(ch) {
 		// scan operator.

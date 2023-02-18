@@ -2,7 +2,6 @@ package lexer
 
 import (
 	"errors"
-	"io"
 	"strings"
 	"testing"
 
@@ -78,9 +77,20 @@ func TestLexer_Scan(t *testing.T) {
 			scanner: s,
 		}
 
-		_, err := l.Scan()
-		if err != io.EOF {
-			t.Errorf("error is not io.EOF, got: %s", err)
+		got, err := l.Scan()
+		if err != nil {
+			t.Errorf("got error: %s", err)
+		}
+		want := token.Token{
+			TokenType: token.EOS,
+			Text:      token.EOSString,
+			Pos: token.Pos{
+				Column: 1,
+				Line:   1,
+			},
+		}
+		if diff := cmp.Diff(want, got); diff != "" {
+			t.Error(diff)
 		}
 	})
 
@@ -133,8 +143,14 @@ func TestLexer_Peek(t *testing.T) {
 		{
 			name:  "when scan is done",
 			input: "",
-			token: token.Token{},
-			err:   io.EOF,
+			token: token.Token{
+				TokenType: token.EOS,
+				Text:      token.EOSString,
+				Pos: token.Pos{
+					Column: 1,
+					Line:   1,
+				},
+			},
 		},
 	}
 	for _, tt := range tests {

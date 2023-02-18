@@ -1,12 +1,18 @@
 package token
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/SteelSeries/bufrr"
+)
 
 type TokenType int
 
 const (
 	Invalid TokenType = iota
 	Unknown
+
+	EOS // End of source indicator.
 
 	LParen      // (
 	RParen      // )
@@ -168,8 +174,12 @@ const (
 	CommentLiteral
 )
 
+var EOSString string = string([]rune{bufrr.EOF})
+
 func asKeyword(str string) TokenType {
 	switch str {
+	case EOSString:
+		return EOS
 	case "(":
 		return LParen
 	case ")":
