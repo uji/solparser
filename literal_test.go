@@ -19,7 +19,7 @@ func TestParser_ParseLiteral(t *testing.T) {
 		err   *token.PosError
 	}{
 		{
-			name:  "StringLiteral",
+			name:  "normal",
 			input: `"Hello World!!";`,
 			want: &ast.StringLiteral{
 				Str: `"Hello World!!"`,
@@ -34,6 +34,39 @@ func TestParser_ParseLiteral(t *testing.T) {
 			},
 			err: nil,
 		},
+		{
+			name:  `Including \n`,
+			input: "\"Hello \nWorld!!\";",
+			want: &ast.StringLiteral{
+				Str: "\"Hello \nWorld!!\"",
+				Position: token.Pos{
+					Column: 1,
+					Line:   1,
+				},
+				EndPos: token.Pos{
+					Column: 8,
+					Line:   2,
+				},
+			},
+			err: nil,
+		},
+		// TODO
+		// {
+		// 	name:  `Next token is \n`,
+		// 	input: "\"Hello World!!\"\n",
+		// 	want: &ast.StringLiteral{
+		// 		Str: `"Hello World!!"`,
+		// 		Position: token.Pos{
+		// 			Column: 1,
+		// 			Line:   1,
+		// 		},
+		// 		EndPos: token.Pos{
+		// 			Column: 15,
+		// 			Line:   1,
+		// 		},
+		// 	},
+		// 	err: nil,
+		// },
 		{
 			name:  "Not Literal",
 			input: "pragma",
