@@ -29,10 +29,6 @@ type ModifierList struct {
 	StateMutability *StateMutability
 }
 
-type TypeName struct {
-	ElementalyTypeName string
-}
-
 type EventParameter struct {
 	TypeName *TypeName
 }
@@ -73,6 +69,30 @@ type SourceUnit struct {
 	ContractDefinition *ContractDefinition
 	FunctionDefinition *FunctionDefinition
 }
+
+// ----------------------------------------------------------------------------
+// TypeName Nodes
+
+type TypeName interface {
+	Node
+	typeNameNode()
+}
+
+type ElementaryTypeName []token.Token
+
+func (e ElementaryTypeName) Pos() token.Pos {
+	return e[0].Pos
+}
+
+func (e ElementaryTypeName) End() token.Pos {
+	// TODO
+	return token.Pos{
+		Column: 1,
+		Line:   1,
+	}
+}
+
+func (e ElementaryTypeName) typeNameNode() {}
 
 // ----------------------------------------------------------------------------
 // Expression Nodes
@@ -230,26 +250,6 @@ type HexString struct {
 	Pos          token.Pos
 	SingleQuoted bool
 	String       string
-}
-
-type ElementaryTypeNameKind int
-
-const (
-	ElementaryTypeName_Address ElementaryTypeNameKind = iota + 1
-	ElementaryTypeName_AddressPayable
-	ElementaryTypeName_Bool
-	ElementaryTypeName_String
-	ElementaryTypeName_Bytes
-	ElementaryTypeName_SignedIntegerType
-	ElementaryTypeName_UnsignedIntegerType
-	ElementaryTypeName_FixedBytes
-	ElementaryTypeName_Fixed
-	ElementaryTypeName_Ufixed
-)
-
-type ElementaryTypeName struct {
-	Pos  token.Pos
-	Kind ElementaryTypeNameKind
 }
 
 // ----------------------------------------------------------------------------
