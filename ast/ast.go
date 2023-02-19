@@ -253,6 +253,22 @@ type ElementaryTypeName struct {
 }
 
 // ----------------------------------------------------------------------------
+
+type Block struct {
+	LBracePos token.Pos
+	RBracePos token.Pos
+	Nodes     []Node // statement | unblocked-block
+}
+
+func (b Block) Pos() token.Pos {
+	return b.LBracePos
+}
+
+func (b Block) End() token.Pos {
+	return b.RBracePos
+}
+
+// ----------------------------------------------------------------------------
 // Statement Nodes
 
 type Statement interface {
