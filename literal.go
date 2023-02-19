@@ -22,9 +22,9 @@ func (p *Parser) ParseLiteral() (ast.Literal, error) {
 	}
 
 	return &ast.StringLiteral{
-		Str:      tkn.Text,
-		Position: tkn.Pos,
-		EndPos: token.Pos{
+		Value: tkn.Text,
+		From:  tkn.Pos,
+		To: token.Pos{
 			Column: peek.Pos.Column - 1,
 			Line:   peek.Pos.Line,
 		},

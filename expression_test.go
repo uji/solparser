@@ -22,12 +22,12 @@ func TestParser_ParseExpression(t *testing.T) {
 			name:  "Literal",
 			input: `"Hello World!!";`,
 			want: &ast.StringLiteral{
-				Str: `"Hello World!!"`,
-				Position: token.Pos{
+				Value: `"Hello World!!"`,
+				From: token.Pos{
 					Column: 1,
 					Line:   1,
 				},
-				EndPos: token.Pos{
+				To: token.Pos{
 					Column: 15,
 					Line:   1,
 				},

@@ -22,12 +22,12 @@ func TestParser_ParseLiteral(t *testing.T) {
 			name:  "normal",
 			input: `"Hello World!!";`,
 			want: &ast.StringLiteral{
-				Str: `"Hello World!!"`,
-				Position: token.Pos{
+				Value: `"Hello World!!"`,
+				From: token.Pos{
 					Column: 1,
 					Line:   1,
 				},
-				EndPos: token.Pos{
+				To: token.Pos{
 					Column: 15,
 					Line:   1,
 				},
@@ -38,12 +38,12 @@ func TestParser_ParseLiteral(t *testing.T) {
 			name:  `Including \n`,
 			input: "\"Hello \nWorld!!\";",
 			want: &ast.StringLiteral{
-				Str: "\"Hello \nWorld!!\"",
-				Position: token.Pos{
+				Value: "\"Hello \nWorld!!\"",
+				From: token.Pos{
 					Column: 1,
 					Line:   1,
 				},
-				EndPos: token.Pos{
+				To: token.Pos{
 					Column: 8,
 					Line:   2,
 				},

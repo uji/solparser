@@ -108,17 +108,16 @@ func (b *BooleanLiteral) End() token.Pos {
 
 // EmptyStringLiteral | NonEmptyStringLiteral
 type StringLiteral struct {
-	Str      string
-	Position token.Pos
-	EndPos   token.Pos
+	From, To token.Pos
+	Value    string
 }
 
 func (s StringLiteral) Pos() token.Pos {
-	return s.Position
+	return s.From
 }
 
 func (s StringLiteral) End() token.Pos {
-	return s.EndPos
+	return s.To
 }
 
 type HexStringLiteral []*HexString
