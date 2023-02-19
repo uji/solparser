@@ -29,13 +29,12 @@ type ModifierList struct {
 	StateMutability *StateMutability
 }
 
-type EventParameter struct {
-	TypeName *TypeName
+// Parameter is type of ParameterList elements
+type Parameter struct {
+	TypeName TypeName
 }
 
-type ParameterList struct {
-	EventParameter *EventParameter
-}
+type ParameterList []*Parameter
 
 type ReturnParameters struct {
 	ParameterList *ParameterList
