@@ -252,17 +252,25 @@ type ElementaryTypeName struct {
 	Kind ElementaryTypeNameKind
 }
 
+// ----------------------------------------------------------------------------
+// Statement Nodes
+
+type Statement interface {
+	Node
+	statementNode()
+}
+
 type ReturnStatement struct {
-	Return     token.Pos
+	From       token.Pos
+	SemiPos    token.Pos
 	Expression Expression
 }
 
 func (r *ReturnStatement) Pos() token.Pos {
-	return r.Return
+	return r.From
 }
 func (r *ReturnStatement) End() token.Pos {
-	return token.Pos{
-		Column: r.Expression.End().Column + 1,
-		Line:   r.Expression.End().Line,
-	}
+	return r.SemiPos
 }
+
+func (s *ReturnStatement) statementNode() {}
