@@ -17,11 +17,8 @@ type PragmaDirective struct {
 	PragmaValue PragmaValue
 }
 
-type FunctionDescriptor struct {
-	Name string
-}
-
 type ModifierList struct {
+	Visibility      *Visibility
 	StateMutability *StateMutability
 }
 
@@ -36,14 +33,24 @@ type ParameterList []*Parameter
 
 type StateMutability = token.Token
 
-type ReturnParameters struct {
-	ParameterList *ParameterList
+// identifier | fallback | recevie
+type FunctionDescriptor = token.Token
+
+type FunctionDefinitionReturns struct {
+	From          token.Pos
+	LParen        token.Pos
+	ParameterList ParameterList
+	RParen        token.Pos
 }
 
 type FunctionDefinition struct {
-	FunctionDescriptor *FunctionDescriptor
+	From               token.Pos
+	FunctionDescriptor FunctionDescriptor
+	LParen             token.Pos
+	RParen             token.Pos
 	ModifierList       *ModifierList
-	ReturnParameters   *ReturnParameters
+	Returns            *FunctionDefinitionReturns
+	Block              *Block
 }
 
 type InheritanceSpecifier struct {
