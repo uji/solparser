@@ -1,51 +1,60 @@
 package solparser
 
 import (
-	"errors"
-
 	"github.com/uji/solparser/ast"
 	"github.com/uji/solparser/token"
 )
 
 func (p *Parser) ParseContractDefinition() (*ast.ContractDefinition, error) {
-	var abstract bool
-	tkn, err := p.lexer.Scan()
+	cntr, err := p.lexer.Scan()
 	if err != nil {
 		return nil, err
 	}
-	if tkn.TokenType == token.Abstract {
-		abstract = true
-		p.lexer.Scan()
+	var abstractPos *token.Pos
+	if cntr.TokenType == token.Abstract {
+		pos := cntr.Pos
+		abstractPos = &pos
+		cntr, err = p.lexer.Scan()
+		if err != nil {
+			return nil, err
+		}
 	}
-	if tkn.TokenType != token.Contract {
-		return nil, errors.New("not found contract definition")
+	if cntr.TokenType != token.Contract {
+		return nil, token.NewPosError(cntr.Pos, "not found contract keyword.")
 	}
 
-	tkn, err = p.lexer.Scan()
+	i, err := p.ParseIdentifier()
 	if err != nil {
 		return nil, err
-	}
-	if tkn.TokenType != token.Identifier {
-		return nil, errors.New("not found left brace")
 	}
 
-	tkn, err = p.lexer.Scan()
+	lbrace, err := p.lexer.Scan()
 	if err != nil {
 		return nil, err
 	}
-	if tkn.TokenType != token.LBrace {
-		return nil, errors.New("not found left brace")
+	if lbrace.TokenType != token.LBrace {
+		return nil, token.NewPosError(lbrace.Pos, "not found left brace.")
 	}
 
-	tkn, err = p.lexer.Scan()
+	fn, err := p.ParseFunctionDefinition()
 	if err != nil {
 		return nil, err
 	}
-	if tkn.TokenType != token.RBrace {
-		return nil, errors.New("not found right brace")
+
+	rbrace, err := p.lexer.Scan()
+	if err != nil {
+		return nil, err
+	}
+	if rbrace.TokenType != token.RBrace {
+		return nil, token.NewPosError(rbrace.Pos, "not found right brace.")
 	}
 
 	return &ast.ContractDefinition{
-		Abstract: abstract,
+		Abstract:             abstractPos,
+		Contract:             cntr.Pos,
+		Identifier:           i,
+		LBrace:               lbrace.Pos,
+		ContractBodyElements: []ast.ContractBodyElement{fn},
+		RBrace:               rbrace.Pos,
 	}, nil
 }

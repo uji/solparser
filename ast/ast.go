@@ -53,20 +53,35 @@ type FunctionDefinition struct {
 	Block              *Block
 }
 
+func (f FunctionDefinition) Pos() token.Pos {
+	return f.From
+}
+
+func (f FunctionDefinition) End() token.Pos {
+	return f.Block.End()
+}
+
 type InheritanceSpecifier struct {
 	IdentifierPath   string
 	CallArgumentList CallArgumentList
 }
 
+type ContractBodyElement interface {
+	Node
+	contractBodyElementNode()
+}
+
+func (f *FunctionDefinition) contractBodyElementNode() {}
+
 type CallArgumentList struct{}
 
-type ContractBodyElement Node
-
 type ContractDefinition struct {
-	Position              token.Pos
-	Abstract              bool
-	InheritanceSpecifiers []*InheritanceSpecifier
-	ContractBodyElements  []*ContractBodyElement
+	Abstract             *token.Pos
+	Contract             token.Pos
+	Identifier           Identifier
+	LBrace               token.Pos
+	ContractBodyElements []ContractBodyElement
+	RBrace               token.Pos
 }
 
 // A File node represents a Solidity source file.
