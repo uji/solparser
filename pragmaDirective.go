@@ -18,7 +18,7 @@ func (p *Parser) ParsePragmaDirective() (*ast.PragmaDirective, error) {
 	if err != nil {
 		return nil, err
 	}
-	if pragmaName.TokenType != token.Unknown {
+	if pragmaName.TokenType == token.Semicolon {
 		return nil, token.NewPosError(pragmaName.Pos, "not found pragma name")
 	}
 
@@ -34,7 +34,7 @@ func (p *Parser) ParsePragmaDirective() (*ast.PragmaDirective, error) {
 	if err != nil {
 		return nil, err
 	}
-	if version.TokenType != token.Unknown {
+	if version.TokenType != token.Identifier {
 		return nil, token.NewPosError(version.Pos, "not found version")
 	}
 

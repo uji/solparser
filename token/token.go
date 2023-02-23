@@ -10,7 +10,6 @@ type TokenType int
 
 const (
 	Invalid TokenType = iota
-	Unknown
 
 	EOS // End of source indicator.
 
@@ -172,6 +171,9 @@ const (
 	UnicodeStringLiteral
 	HexStringLiteral
 	CommentLiteral
+
+	// Not keywords or future reserved words
+	Identifier
 )
 
 var EOSString string = string([]rune{bufrr.EOF})
@@ -470,7 +472,7 @@ func asKeyword(str string) TokenType {
 		return While
 	}
 
-	return Unknown
+	return Identifier
 }
 
 func asToken(str string) TokenType {

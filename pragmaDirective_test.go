@@ -48,10 +48,10 @@ func TestParserParsePragmaDirective(t *testing.T) {
 			want:  nil,
 			err: &token.PosError{
 				Pos: token.Pos{
-					Column: 8,
+					Column: 9,
 					Line:   1,
 				},
-				Msg: "not found pragma name",
+				Msg: "not found BitXor expression",
 			},
 		},
 		{

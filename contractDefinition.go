@@ -25,7 +25,7 @@ func (p *Parser) ParseContractDefinition() (*ast.ContractDefinition, error) {
 	if err != nil {
 		return nil, err
 	}
-	if tkn.TokenType != token.Unknown {
+	if tkn.TokenType != token.Identifier {
 		return nil, errors.New("not found left brace")
 	}
 
