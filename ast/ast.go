@@ -21,13 +21,11 @@ type FunctionDescriptor struct {
 	Name string
 }
 
-type StateMutability struct {
-	Pure bool
-}
-
 type ModifierList struct {
 	StateMutability *StateMutability
 }
+
+type Visibility = token.Token
 
 // Parameter is type of ParameterList elements
 type Parameter struct {
@@ -35,6 +33,8 @@ type Parameter struct {
 }
 
 type ParameterList []*Parameter
+
+type StateMutability = token.Token
 
 type ReturnParameters struct {
 	ParameterList *ParameterList
