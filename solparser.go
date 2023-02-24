@@ -21,44 +21,44 @@ func New(input io.Reader) *Parser {
 }
 
 func (p *Parser) Parse() (*ast.SourceUnit, error) {
-	tkn, err := p.lexer.Peek()
-	if err == io.EOF {
-		return nil, nil
-	}
-	if err != nil {
-		return nil, err
-	}
-
 	var pragmaDirective *ast.PragmaDirective
 	var contractDefinition *ast.ContractDefinition
 	var functionDefinition *ast.FunctionDefinition
+	for {
+		tkn, err := p.lexer.Peek()
+		if err != nil {
+			return nil, err
+		}
 
-	switch tkn.TokenType {
-	case token.Pragma:
-		prgm, err := p.ParsePragmaDirective()
-		if err != nil {
-			return nil, err
+		switch tkn.TokenType {
+		case token.Pragma:
+			prgm, err := p.ParsePragmaDirective()
+			if err != nil {
+				return nil, err
+			}
+			pragmaDirective = prgm
+		case token.Abstract, token.Contract:
+			cntrct, err := p.ParseContractDefinition()
+			if err != nil {
+				return nil, err
+			}
+			contractDefinition = cntrct
+		case token.Function:
+			fnc, err := p.ParseFunctionDefinition()
+			if err != nil {
+				return nil, err
+			}
+			functionDefinition = fnc
+		case token.EOS:
+			return &ast.SourceUnit{
+				PragmaDirective:    pragmaDirective,
+				ContractDefinition: contractDefinition,
+				FunctionDefinition: functionDefinition,
+			}, nil
+		default:
+			return nil, token.NewPosError(tkn.Pos, "invalid")
 		}
-		pragmaDirective = prgm
-	case token.Abstract, token.Contract:
-		cntrct, err := p.ParseContractDefinition()
-		if err != nil {
-			return nil, err
-		}
-		contractDefinition = cntrct
-	case token.Function:
-		fnc, err := p.ParseFunctionDefinition()
-		if err != nil {
-			return nil, err
-		}
-		functionDefinition = fnc
 	}
-
-	return &ast.SourceUnit{
-		PragmaDirective:    pragmaDirective,
-		ContractDefinition: contractDefinition,
-		FunctionDefinition: functionDefinition,
-	}, nil
 }
 
 func (p *Parser) ParseBooleanLiteral() (*ast.BooleanLiteral, error) {
