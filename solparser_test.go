@@ -29,11 +29,25 @@ contract HelloWorld {
 }`,
 			want: &ast.SourceUnit{
 				PragmaDirective: &ast.PragmaDirective{
-					PragmaName: "solidity",
-					PragmaValue: ast.PragmaValue{
-						Version:    "0.8.13",
-						Expression: "^",
+					Pragma: token.Pos{Column: 1, Line: 1},
+					PragmaTokens: []*token.Token{
+						{
+							TokenType: token.Identifier,
+							Text:      "solidity",
+							Pos:       token.Pos{Column: 8, Line: 1},
+						},
+						{
+							TokenType: token.BitXor,
+							Text:      "^",
+							Pos:       token.Pos{Column: 17, Line: 1},
+						},
+						{
+							TokenType: token.Identifier,
+							Text:      "0.8.13",
+							Pos:       token.Pos{Column: 18, Line: 1},
+						},
 					},
+					Semicolon: token.Pos{Column: 24, Line: 1},
 				},
 				ContractDefinition: &ast.ContractDefinition{
 					Contract: token.Pos{Column: 1, Line: 3},

@@ -6,51 +6,33 @@ import (
 )
 
 func (p *Parser) ParsePragmaDirective() (*ast.PragmaDirective, error) {
-	tkn, err := p.lexer.Scan()
+	prgm, err := p.lexer.Scan()
 	if err != nil {
 		return nil, err
 	}
-	if tkn.TokenType != token.Pragma {
-		return nil, token.NewPosError(tkn.Pos, "not found pragma")
+	if prgm.TokenType != token.Pragma {
+		return nil, token.NewPosError(prgm.Pos, "not found pragma")
 	}
 
-	pragmaName, err := p.lexer.Scan()
-	if err != nil {
-		return nil, err
+	tkns := make([]*token.Token, 0, 1)
+	for {
+		tkn, err := p.lexer.Scan()
+		if err != nil {
+			return nil, err
+		}
+		if tkn.TokenType == token.EOS {
+			return nil, token.NewPosError(tkn.Pos, "not found Semicolon.")
+		}
+		if tkn.TokenType == token.Semicolon {
+			if len(tkns) == 0 {
+				return nil, token.NewPosError(tkn.Pos, "not found pragma tokens.")
+			}
+			return &ast.PragmaDirective{
+				Pragma:       prgm.Pos,
+				PragmaTokens: tkns,
+				Semicolon:    tkn.Pos,
+			}, nil
+		}
+		tkns = append(tkns, &tkn)
 	}
-	if pragmaName.TokenType == token.Semicolon {
-		return nil, token.NewPosError(pragmaName.Pos, "not found pragma name")
-	}
-
-	expression, err := p.lexer.Scan()
-	if err != nil {
-		return nil, err
-	}
-	if expression.TokenType != token.BitXor {
-		return nil, token.NewPosError(expression.Pos, "not found BitXor expression")
-	}
-
-	version, err := p.lexer.Scan()
-	if err != nil {
-		return nil, err
-	}
-	if version.TokenType != token.Identifier {
-		return nil, token.NewPosError(version.Pos, "not found version")
-	}
-
-	tkn, err = p.lexer.Scan()
-	if err != nil {
-		return nil, err
-	}
-	if tkn.TokenType != token.Semicolon {
-		return nil, token.NewPosError(tkn.Pos, "not found Semicolon")
-	}
-
-	return &ast.PragmaDirective{
-		PragmaName: pragmaName.Text,
-		PragmaValue: ast.PragmaValue{
-			Version:    version.Text,
-			Expression: expression.Text,
-		},
-	}, nil
 }

@@ -7,14 +7,10 @@ type Node interface {
 	End() token.Pos
 }
 
-type PragmaValue struct {
-	Version    string
-	Expression string
-}
-
 type PragmaDirective struct {
-	PragmaName  string
-	PragmaValue PragmaValue
+	Pragma       token.Pos
+	PragmaTokens []*token.Token
+	Semicolon    token.Pos
 }
 
 type ModifierList struct {
