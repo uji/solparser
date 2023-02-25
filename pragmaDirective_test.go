@@ -1,11 +1,9 @@
 package solparser_test
 
 import (
-	"errors"
 	"strings"
 	"testing"
 
-	"github.com/google/go-cmp/cmp"
 	"github.com/uji/solparser"
 	"github.com/uji/solparser/ast"
 	"github.com/uji/solparser/token"
@@ -13,91 +11,34 @@ import (
 
 func TestParser_ParsePragmaDirective(t *testing.T) {
 	tests := []struct {
-		name  string
 		input string
 		want  *ast.PragmaDirective
 		err   *token.PosError
 	}{
 		{
-			name:  "normal case",
 			input: "pragma solidity ^0.8.13;",
 			want: &ast.PragmaDirective{
-				Pragma: token.Pos{Column: 1, Line: 1},
+				Pragma: pos(1, 1),
 				PragmaTokens: []*token.Token{
-					{
-						TokenType: token.Identifier,
-						Text:      "solidity",
-						Pos:       token.Pos{Column: 8, Line: 1},
-					},
-					{
-						TokenType: token.BitXor,
-						Text:      "^",
-						Pos:       token.Pos{Column: 17, Line: 1},
-					},
-					{
-						TokenType: token.Identifier,
-						Text:      "0.8.13",
-						Pos:       token.Pos{Column: 18, Line: 1},
-					},
+					{TokenType: token.Identifier, Text: "solidity", Pos: pos(8, 1)},
+					{TokenType: token.BitXor, Text: "^", Pos: pos(17, 1)},
+					{TokenType: token.Identifier, Text: "0.8.13", Pos: pos(18, 1)},
 				},
-				Semicolon: token.Pos{Column: 24, Line: 1},
+				Semicolon: pos(24, 1),
 			},
 		},
-		{
-			name:  "there is no pragma keyword",
-			input: "solidity ^0.8.13;",
-			want:  nil,
-			err: &token.PosError{
-				Pos: token.Pos{
-					Column: 1,
-					Line:   1,
-				},
-				Msg: "not found pragma",
-			},
-		},
-		{
-			name:  "there is no pragma tokens",
-			input: "pragma ;",
-			want:  nil,
-			err: &token.PosError{
-				Pos: token.Pos{
-					Column: 8,
-					Line:   1,
-				},
-				Msg: "not found pragma tokens.",
-			},
-		},
-		{
-			name:  "there is no Semicolon",
-			input: "pragma solidity ^0.8.13",
-			want:  nil,
-			err: &token.PosError{
-				Pos: token.Pos{
-					Column: 24,
-					Line:   1,
-				},
-				Msg: "not found Semicolon.",
-			},
-		},
+		{input: "solidity ^0.8.13;", err: perr(pos(1, 1), "not found pragma.")},
+		{input: "pragma ;", err: perr(pos(8, 1), "not found pragma tokens.")},
+		{input: "pragma solidity ^0.8.13", err: perr(pos(24, 1), "not found Semicolon.")},
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, func(*testing.T) {
+		t.Run(tt.input, func(*testing.T) {
 			r := strings.NewReader(tt.input)
 			p := solparser.New(r)
 
 			got, err := p.ParsePragmaDirective()
-
-			var sErr *token.PosError
-			if errors.As(err, &sErr) {
-				if diff := cmp.Diff(tt.err, sErr); diff != "" {
-					t.Errorf("%s", diff)
-				}
-			}
-
-			if diff := cmp.Diff(tt.want, got); diff != "" {
-				t.Errorf("%s", diff)
-			}
+			assert(t, got, tt.want, err, tt.err)
 		})
 	}
 }

@@ -11,7 +11,7 @@ func (p *Parser) ParsePragmaDirective() (*ast.PragmaDirective, error) {
 		return nil, err
 	}
 	if prgm.TokenType != token.Pragma {
-		return nil, token.NewPosError(prgm.Pos, "not found pragma")
+		return nil, token.NewPosError(prgm.Pos, "not found pragma.")
 	}
 
 	tkns := make([]*token.Token, 0, 1)
