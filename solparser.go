@@ -8,6 +8,7 @@ import (
 	"github.com/uji/solparser/token"
 )
 
+// Parser parses "Solidity" code and outputs ASTs.
 type Parser struct {
 	input io.Reader
 	lexer *lexer.Lexer
