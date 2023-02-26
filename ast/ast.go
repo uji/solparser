@@ -1,6 +1,10 @@
 package ast
 
-import "github.com/uji/solparser/token"
+import (
+	"strings"
+
+	"github.com/uji/solparser/token"
+)
 
 type Node interface {
 	Pos() token.Pos
@@ -148,17 +152,24 @@ func (b *BooleanLiteral) End() token.Pos {
 }
 
 // EmptyStringLiteral | NonEmptyStringLiteral
-type StringLiteral struct {
-	From, To token.Pos
-	Value    string
-}
+type StringLiteral token.Token
 
 func (s StringLiteral) Pos() token.Pos {
-	return s.From
+	return s.Position
 }
 
-func (s StringLiteral) End() token.Pos {
-	return s.To
+func (s StringLiteral) End() (pos token.Pos) {
+	// Calculate Line and Offset by referring to the number of new line codes
+	nc := strings.Count(s.Value, "\n")
+
+	pos.Line = s.Position.Line + nc
+	if nc == 0 {
+		pos.Column = s.Position.Column + len(s.Value) - 1
+		return
+	}
+
+	pos.Column = len(s.Value) - strings.LastIndexByte(s.Value, '\n') - 1
+	return
 }
 
 type HexStringLiteral []*HexString

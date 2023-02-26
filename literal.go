@@ -15,18 +15,6 @@ func (p *Parser) ParseLiteral() (ast.Literal, error) {
 		return nil, token.NewPosError(tkn.Position, "not found string literal quote")
 	}
 
-	// peek to find literal end position.
-	peek, err := p.lexer.Peek()
-	if err != nil {
-		return nil, err
-	}
-
-	return &ast.StringLiteral{
-		Value: tkn.Value,
-		From:  tkn.Position,
-		To: token.Pos{
-			Column: peek.Position.Column - 1,
-			Line:   peek.Position.Line,
-		},
-	}, nil
+	lit := ast.StringLiteral(tkn)
+	return &lit, nil
 }

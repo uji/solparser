@@ -56,6 +56,36 @@ func TestNode_End(t *testing.T) {
 				Line:   3,
 			},
 		},
+		{
+			name: "StringLiteral",
+			node: &ast.StringLiteral{
+				Type:  token.StringLiteral,
+				Value: "\"Hello world!!\"",
+				Position: token.Pos{
+					Column: 4,
+					Line:   3,
+				},
+			},
+			exptEnd: token.Pos{
+				Column: 18,
+				Line:   3,
+			},
+		},
+		{
+			name: "StringLiteral with new line codes",
+			node: &ast.StringLiteral{
+				Type:  token.StringLiteral,
+				Value: "\"Hello \n new \nworld!!\"",
+				Position: token.Pos{
+					Column: 4,
+					Line:   3,
+				},
+			},
+			exptEnd: token.Pos{
+				Column: 8,
+				Line:   5,
+			},
+		},
 	}
 
 	for _, tt := range tests {
