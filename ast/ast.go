@@ -95,17 +95,17 @@ type TypeName interface {
 	typeNameNode()
 }
 
-type ElementaryTypeName []token.Token
+type ElementaryTypeName []*token.Token
 
 func (e ElementaryTypeName) Pos() token.Pos {
 	return e[0].Pos
 }
 
 func (e ElementaryTypeName) End() token.Pos {
-	// TODO
+	eTkn := e[len(e)-1]
 	return token.Pos{
-		Column: 1,
-		Line:   1,
+		Column: eTkn.Pos.Column + len(eTkn.Text),
+		Line:   eTkn.Pos.Line,
 	}
 }
 

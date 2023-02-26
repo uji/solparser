@@ -33,13 +33,13 @@ func (p *Parser) ParseElementaryTypeName() (ast.TypeName, error) {
 
 		if tkn2.TokenType == token.Payable {
 			p.lexer.Scan()
-			return ast.ElementaryTypeName{tkn, tkn2}, nil
+			return ast.ElementaryTypeName{&tkn, &tkn2}, nil
 		}
 	}
 
 	switch tkn.TokenType {
 	case token.Address, token.String, token.Bytes, token.Fixed, token.Bool:
-		return ast.ElementaryTypeName{tkn}, nil
+		return ast.ElementaryTypeName{&tkn}, nil
 	}
 
 	return nil, token.NewPosError(tkn.Pos, "not found elementary type name keyword.")
