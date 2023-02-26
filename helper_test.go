@@ -12,8 +12,20 @@ func pos(c, l int) token.Pos {
 	return token.Pos{Column: c, Line: l}
 }
 
+func posPtr(c, l int) *token.Pos {
+	return &token.Pos{Column: c, Line: l}
+}
+
 func tkn(tp token.TokenType, text string, pos token.Pos) token.Token {
 	return token.Token{
+		Type:     tp,
+		Value:    text,
+		Position: pos,
+	}
+}
+
+func tknPtr(tp token.TokenType, text string, pos token.Pos) *token.Token {
+	return &token.Token{
 		Type:     tp,
 		Value:    text,
 		Position: pos,

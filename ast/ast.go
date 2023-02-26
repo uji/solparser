@@ -11,6 +11,19 @@ type Node interface {
 	End() token.Pos
 }
 
+type SymbolAlias struct {
+	Symbol Identifier
+	As     *token.Pos
+	Alias  *Identifier
+}
+
+type SymbolAliases struct {
+	LBrace  token.Pos
+	Aliases []*SymbolAlias
+	Commas  []*token.Pos
+	RBrace  token.Pos
+}
+
 type PragmaDirective struct {
 	Pragma       token.Pos
 	PragmaTokens []*token.Token
