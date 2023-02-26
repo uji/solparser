@@ -10,8 +10,8 @@ func (p *Parser) ParsePragmaDirective() (*ast.PragmaDirective, error) {
 	if err != nil {
 		return nil, err
 	}
-	if prgm.TokenType != token.Pragma {
-		return nil, token.NewPosError(prgm.Pos, "not found pragma.")
+	if prgm.Type != token.Pragma {
+		return nil, token.NewPosError(prgm.Position, "not found pragma.")
 	}
 
 	tkns := make([]*token.Token, 0, 1)
@@ -20,17 +20,17 @@ func (p *Parser) ParsePragmaDirective() (*ast.PragmaDirective, error) {
 		if err != nil {
 			return nil, err
 		}
-		if tkn.TokenType == token.EOS {
-			return nil, token.NewPosError(tkn.Pos, "not found Semicolon.")
+		if tkn.Type == token.EOS {
+			return nil, token.NewPosError(tkn.Position, "not found Semicolon.")
 		}
-		if tkn.TokenType == token.Semicolon {
+		if tkn.Type == token.Semicolon {
 			if len(tkns) == 0 {
-				return nil, token.NewPosError(tkn.Pos, "not found pragma tokens.")
+				return nil, token.NewPosError(tkn.Position, "not found pragma tokens.")
 			}
 			return &ast.PragmaDirective{
-				Pragma:       prgm.Pos,
+				Pragma:       prgm.Position,
 				PragmaTokens: tkns,
-				Semicolon:    tkn.Pos,
+				Semicolon:    tkn.Position,
 			}, nil
 		}
 		tkns = append(tkns, &tkn)

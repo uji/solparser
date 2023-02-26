@@ -20,9 +20,9 @@ func TestParser_ParseVisibility(t *testing.T) {
 		{
 			input: "internal",
 			want: ast.Visibility{
-				TokenType: token.Internal,
-				Text:      "internal",
-				Pos:       token.Pos{Column: 1, Line: 1},
+				Type:     token.Internal,
+				Value:    "internal",
+				Position: token.Pos{Column: 1, Line: 1},
 			},
 		},
 		{
@@ -64,9 +64,9 @@ func TestParser_ParseStateMutability(t *testing.T) {
 		{
 			input: "pure",
 			want: ast.StateMutability{
-				TokenType: token.Pure,
-				Text:      "pure",
-				Pos:       token.Pos{Column: 1, Line: 1},
+				Type:     token.Pure,
+				Value:    "pure",
+				Position: token.Pos{Column: 1, Line: 1},
 			},
 		},
 		{
@@ -114,9 +114,9 @@ func TestParser_ParseFunctionDefinitionReturns(t *testing.T) {
 					{
 						TypeName: ast.ElementaryTypeName{
 							{
-								TokenType: token.String,
-								Text:      "string",
-								Pos:       token.Pos{Column: 10, Line: 1},
+								Type:     token.String,
+								Value:    "string",
+								Position: token.Pos{Column: 10, Line: 1},
 							},
 						},
 					},
@@ -180,22 +180,22 @@ func TestParser_ParseFunctionDefinition(t *testing.T) {
 			want: &ast.FunctionDefinition{
 				From: token.Pos{Column: 1, Line: 1},
 				FunctionDescriptor: token.Token{
-					TokenType: token.Identifier,
-					Text:      "hello",
-					Pos:       token.Pos{Column: 10, Line: 1},
+					Type:     token.Identifier,
+					Value:    "hello",
+					Position: token.Pos{Column: 10, Line: 1},
 				},
 				LParen: token.Pos{Column: 15, Line: 1},
 				RParen: token.Pos{Column: 16, Line: 1},
 				ModifierList: &ast.ModifierList{
 					Visibility: &token.Token{
-						TokenType: token.Public,
-						Text:      "public",
-						Pos:       token.Pos{Column: 18, Line: 1},
+						Type:     token.Public,
+						Value:    "public",
+						Position: token.Pos{Column: 18, Line: 1},
 					},
 					StateMutability: &token.Token{
-						TokenType: token.Pure,
-						Text:      "pure",
-						Pos:       token.Pos{Column: 25, Line: 1},
+						Type:     token.Pure,
+						Value:    "pure",
+						Position: token.Pos{Column: 25, Line: 1},
 					},
 				},
 				Returns: &ast.FunctionDefinitionReturns{
@@ -205,9 +205,9 @@ func TestParser_ParseFunctionDefinition(t *testing.T) {
 						{
 							TypeName: ast.ElementaryTypeName{
 								{
-									TokenType: token.String,
-									Text:      "string",
-									Pos:       token.Pos{Column: 39, Line: 1},
+									Type:     token.String,
+									Value:    "string",
+									Position: token.Pos{Column: 39, Line: 1},
 								},
 							},
 						},

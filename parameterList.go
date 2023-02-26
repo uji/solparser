@@ -31,7 +31,7 @@ func (p *Parser) ParseParameterList() (ast.ParameterList, error) {
 			return nil, err
 		}
 
-		if comma.TokenType != token.Comma {
+		if comma.Type != token.Comma {
 			return prms, nil
 		}
 

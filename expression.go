@@ -11,9 +11,9 @@ func (p *Parser) ParseExpression() (ast.Expression, error) {
 		return nil, err
 	}
 
-	if tkn.TokenType == token.StringLiteral {
+	if tkn.Type == token.StringLiteral {
 		return p.ParseLiteral()
 	}
 
-	return nil, token.NewPosError(tkn.Pos, "not found expression.")
+	return nil, token.NewPosError(tkn.Position, "not found expression.")
 }

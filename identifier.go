@@ -11,10 +11,10 @@ func (p *Parser) ParseIdentifier() (ast.Identifier, error) {
 		return token.Token{}, err
 	}
 
-	switch tkn.TokenType {
+	switch tkn.Type {
 	case token.Identifier, token.From, token.Error, token.Revert, token.Global:
 		return tkn, nil
 	}
 
-	return token.Token{}, token.NewPosError(tkn.Pos, "keyword is not available as identifier.")
+	return token.Token{}, token.NewPosError(tkn.Position, "keyword is not available as identifier.")
 }

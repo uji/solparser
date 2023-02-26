@@ -28,31 +28,31 @@ func TestParser_ParseContractDefinition(t *testing.T) {
 			want: &ast.ContractDefinition{
 				Contract: token.Pos{Column: 1, Line: 1},
 				Identifier: token.Token{
-					TokenType: token.Identifier,
-					Text:      "HelloWorld",
-					Pos:       token.Pos{Column: 10, Line: 1},
+					Type:     token.Identifier,
+					Value:    "HelloWorld",
+					Position: token.Pos{Column: 10, Line: 1},
 				},
 				LBrace: token.Pos{Column: 21, Line: 1},
 				ContractBodyElements: []ast.ContractBodyElement{
 					&ast.FunctionDefinition{
 						From: token.Pos{Column: 5, Line: 2},
 						FunctionDescriptor: token.Token{
-							TokenType: token.Identifier,
-							Text:      "hello",
-							Pos:       token.Pos{Column: 14, Line: 2},
+							Type:     token.Identifier,
+							Value:    "hello",
+							Position: token.Pos{Column: 14, Line: 2},
 						},
 						LParen: token.Pos{Column: 19, Line: 2},
 						RParen: token.Pos{Column: 20, Line: 2},
 						ModifierList: &ast.ModifierList{
 							Visibility: &token.Token{
-								TokenType: token.Public,
-								Text:      "public",
-								Pos:       token.Pos{Column: 22, Line: 2},
+								Type:     token.Public,
+								Value:    "public",
+								Position: token.Pos{Column: 22, Line: 2},
 							},
 							StateMutability: &token.Token{
-								TokenType: token.Pure,
-								Text:      "pure",
-								Pos:       token.Pos{Column: 29, Line: 2},
+								Type:     token.Pure,
+								Value:    "pure",
+								Position: token.Pos{Column: 29, Line: 2},
 							},
 						},
 						Returns: &ast.FunctionDefinitionReturns{
@@ -62,9 +62,9 @@ func TestParser_ParseContractDefinition(t *testing.T) {
 								{
 									TypeName: ast.ElementaryTypeName{
 										{
-											TokenType: token.String,
-											Text:      "string",
-											Pos:       token.Pos{Column: 43, Line: 2},
+											Type:     token.String,
+											Value:    "string",
+											Position: token.Pos{Column: 43, Line: 2},
 										},
 									},
 								},
@@ -102,31 +102,31 @@ func TestParser_ParseContractDefinition(t *testing.T) {
 				Abstract: &token.Pos{Column: 1, Line: 1},
 				Contract: token.Pos{Column: 10, Line: 1},
 				Identifier: token.Token{
-					TokenType: token.Identifier,
-					Text:      "HelloWorld",
-					Pos:       token.Pos{Column: 19, Line: 1},
+					Type:     token.Identifier,
+					Value:    "HelloWorld",
+					Position: token.Pos{Column: 19, Line: 1},
 				},
 				LBrace: token.Pos{Column: 30, Line: 1},
 				ContractBodyElements: []ast.ContractBodyElement{
 					&ast.FunctionDefinition{
 						From: token.Pos{Column: 5, Line: 2},
 						FunctionDescriptor: token.Token{
-							TokenType: token.Identifier,
-							Text:      "hello",
-							Pos:       token.Pos{Column: 14, Line: 2},
+							Type:     token.Identifier,
+							Value:    "hello",
+							Position: token.Pos{Column: 14, Line: 2},
 						},
 						LParen: token.Pos{Column: 19, Line: 2},
 						RParen: token.Pos{Column: 20, Line: 2},
 						ModifierList: &ast.ModifierList{
 							Visibility: &token.Token{
-								TokenType: token.Public,
-								Text:      "public",
-								Pos:       token.Pos{Column: 22, Line: 2},
+								Type:     token.Public,
+								Value:    "public",
+								Position: token.Pos{Column: 22, Line: 2},
 							},
 							StateMutability: &token.Token{
-								TokenType: token.Pure,
-								Text:      "pure",
-								Pos:       token.Pos{Column: 29, Line: 2},
+								Type:     token.Pure,
+								Value:    "pure",
+								Position: token.Pos{Column: 29, Line: 2},
 							},
 						},
 						Returns: &ast.FunctionDefinitionReturns{
@@ -136,9 +136,9 @@ func TestParser_ParseContractDefinition(t *testing.T) {
 								{
 									TypeName: ast.ElementaryTypeName{
 										{
-											TokenType: token.String,
-											Text:      "string",
-											Pos:       token.Pos{Column: 43, Line: 2},
+											Type:     token.String,
+											Value:    "string",
+											Position: token.Pos{Column: 43, Line: 2},
 										},
 									},
 								},

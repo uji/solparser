@@ -20,9 +20,9 @@ func TestParser_ParsePragmaDirective(t *testing.T) {
 			want: &ast.PragmaDirective{
 				Pragma: pos(1, 1),
 				PragmaTokens: []*token.Token{
-					{TokenType: token.Identifier, Text: "solidity", Pos: pos(8, 1)},
-					{TokenType: token.BitXor, Text: "^", Pos: pos(17, 1)},
-					{TokenType: token.Identifier, Text: "0.8.13", Pos: pos(18, 1)},
+					{Type: token.Identifier, Value: "solidity", Position: pos(8, 1)},
+					{Type: token.BitXor, Value: "^", Position: pos(17, 1)},
+					{Type: token.Identifier, Value: "0.8.13", Position: pos(18, 1)},
 				},
 				Semicolon: pos(24, 1),
 			},

@@ -480,16 +480,16 @@ func asToken(str string) TokenType {
 }
 
 type Token struct {
-	TokenType TokenType
-	Text      string
-	Pos       Pos
+	Type     TokenType
+	Value    string
+	Position Pos
 }
 
 func NewToken(ch string, pos Pos) Token {
 	return Token{
-		TokenType: asToken(ch),
-		Text:      ch,
-		Pos:       pos,
+		Type:     asToken(ch),
+		Value:    ch,
+		Position: pos,
 	}
 }
 

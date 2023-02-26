@@ -11,11 +11,11 @@ func (p *Parser) ParseStatement() (ast.Statement, error) {
 		return nil, err
 	}
 
-	if tkn.TokenType == token.Return {
+	if tkn.Type == token.Return {
 		return p.ParseReturnStatement()
 	}
 
-	return nil, token.NewPosError(tkn.Pos, "not found statement.")
+	return nil, token.NewPosError(tkn.Position, "not found statement.")
 }
 
 func (p *Parser) ParseReturnStatement() (ast.Statement, error) {
@@ -24,8 +24,8 @@ func (p *Parser) ParseReturnStatement() (ast.Statement, error) {
 		return nil, err
 	}
 
-	if rtn.TokenType != token.Return {
-		return nil, token.NewPosError(rtn.Pos, "not found return keyword.")
+	if rtn.Type != token.Return {
+		return nil, token.NewPosError(rtn.Position, "not found return keyword.")
 	}
 
 	exp, err := p.ParseExpression()
@@ -38,13 +38,13 @@ func (p *Parser) ParseReturnStatement() (ast.Statement, error) {
 		return nil, err
 	}
 
-	if semi.TokenType != token.Semicolon {
-		return nil, token.NewPosError(semi.Pos, "not found semicolon.")
+	if semi.Type != token.Semicolon {
+		return nil, token.NewPosError(semi.Position, "not found semicolon.")
 	}
 
 	return &ast.ReturnStatement{
-		From:       rtn.Pos,
-		SemiPos:    semi.Pos,
+		From:       rtn.Position,
+		SemiPos:    semi.Position,
 		Expression: exp,
 	}, nil
 }

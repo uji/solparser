@@ -11,8 +11,8 @@ func (p *Parser) ParseBlock() (*ast.Block, error) {
 		return nil, err
 	}
 
-	if lblace.TokenType != token.LBrace {
-		return nil, token.NewPosError(lblace.Pos, "not found LBrace.")
+	if lblace.Type != token.LBrace {
+		return nil, token.NewPosError(lblace.Position, "not found LBrace.")
 	}
 
 	stmt, err := p.ParseStatement()
@@ -25,13 +25,13 @@ func (p *Parser) ParseBlock() (*ast.Block, error) {
 		return nil, err
 	}
 
-	if rblace.TokenType != token.RBrace {
-		return nil, token.NewPosError(rblace.Pos, "not found RBrace.")
+	if rblace.Type != token.RBrace {
+		return nil, token.NewPosError(rblace.Position, "not found RBrace.")
 	}
 
 	return &ast.Block{
-		LBracePos: lblace.Pos,
-		RBracePos: rblace.Pos,
+		LBracePos: lblace.Position,
+		RBracePos: rblace.Position,
 		Nodes:     []ast.Node{stmt},
 	}, nil
 }

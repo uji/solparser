@@ -11,12 +11,12 @@ func (p *Parser) ParseTypeName() (ast.TypeName, error) {
 		return nil, err
 	}
 
-	switch tkn.TokenType {
+	switch tkn.Type {
 	case token.Address, token.String, token.Bytes, token.Fixed, token.Bool:
 		return p.ParseElementaryTypeName()
 	}
 
-	return nil, token.NewPosError(tkn.Pos, "not found type-name.")
+	return nil, token.NewPosError(tkn.Position, "not found type-name.")
 }
 
 func (p *Parser) ParseElementaryTypeName() (ast.TypeName, error) {
@@ -25,22 +25,22 @@ func (p *Parser) ParseElementaryTypeName() (ast.TypeName, error) {
 		return nil, err
 	}
 
-	if tkn.TokenType == token.Address {
+	if tkn.Type == token.Address {
 		tkn2, err := p.lexer.Peek()
 		if err != nil {
 			return nil, err
 		}
 
-		if tkn2.TokenType == token.Payable {
+		if tkn2.Type == token.Payable {
 			p.lexer.Scan()
 			return ast.ElementaryTypeName{&tkn, &tkn2}, nil
 		}
 	}
 
-	switch tkn.TokenType {
+	switch tkn.Type {
 	case token.Address, token.String, token.Bytes, token.Fixed, token.Bool:
 		return ast.ElementaryTypeName{&tkn}, nil
 	}
 
-	return nil, token.NewPosError(tkn.Pos, "not found elementary type name keyword.")
+	return nil, token.NewPosError(tkn.Position, "not found elementary type name keyword.")
 }

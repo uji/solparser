@@ -32,19 +32,19 @@ contract HelloWorld {
 					Pragma: token.Pos{Column: 1, Line: 1},
 					PragmaTokens: []*token.Token{
 						{
-							TokenType: token.Identifier,
-							Text:      "solidity",
-							Pos:       token.Pos{Column: 8, Line: 1},
+							Type:     token.Identifier,
+							Value:    "solidity",
+							Position: token.Pos{Column: 8, Line: 1},
 						},
 						{
-							TokenType: token.BitXor,
-							Text:      "^",
-							Pos:       token.Pos{Column: 17, Line: 1},
+							Type:     token.BitXor,
+							Value:    "^",
+							Position: token.Pos{Column: 17, Line: 1},
 						},
 						{
-							TokenType: token.Identifier,
-							Text:      "0.8.13",
-							Pos:       token.Pos{Column: 18, Line: 1},
+							Type:     token.Identifier,
+							Value:    "0.8.13",
+							Position: token.Pos{Column: 18, Line: 1},
 						},
 					},
 					Semicolon: token.Pos{Column: 24, Line: 1},
@@ -52,31 +52,31 @@ contract HelloWorld {
 				ContractDefinition: &ast.ContractDefinition{
 					Contract: token.Pos{Column: 1, Line: 3},
 					Identifier: token.Token{
-						TokenType: token.Identifier,
-						Text:      "HelloWorld",
-						Pos:       token.Pos{Column: 10, Line: 3},
+						Type:     token.Identifier,
+						Value:    "HelloWorld",
+						Position: token.Pos{Column: 10, Line: 3},
 					},
 					LBrace: token.Pos{Column: 21, Line: 3},
 					ContractBodyElements: []ast.ContractBodyElement{
 						&ast.FunctionDefinition{
 							From: token.Pos{Column: 5, Line: 4},
 							FunctionDescriptor: token.Token{
-								TokenType: token.Identifier,
-								Text:      "hello",
-								Pos:       token.Pos{Column: 14, Line: 4},
+								Type:     token.Identifier,
+								Value:    "hello",
+								Position: token.Pos{Column: 14, Line: 4},
 							},
 							LParen: token.Pos{Column: 19, Line: 4},
 							RParen: token.Pos{Column: 20, Line: 4},
 							ModifierList: &ast.ModifierList{
 								Visibility: &token.Token{
-									TokenType: token.Public,
-									Text:      "public",
-									Pos:       token.Pos{Column: 22, Line: 4},
+									Type:     token.Public,
+									Value:    "public",
+									Position: token.Pos{Column: 22, Line: 4},
 								},
 								StateMutability: &token.Token{
-									TokenType: token.Pure,
-									Text:      "pure",
-									Pos:       token.Pos{Column: 29, Line: 4},
+									Type:     token.Pure,
+									Value:    "pure",
+									Position: token.Pos{Column: 29, Line: 4},
 								},
 							},
 							Returns: &ast.FunctionDefinitionReturns{
@@ -86,9 +86,9 @@ contract HelloWorld {
 									{
 										TypeName: ast.ElementaryTypeName{
 											{
-												TokenType: token.String,
-												Text:      "string",
-												Pos:       token.Pos{Column: 43, Line: 4},
+												Type:     token.String,
+												Value:    "string",
+												Position: token.Pos{Column: 43, Line: 4},
 											},
 										},
 									},
@@ -151,9 +151,9 @@ func TestParser_ParseBooleanLiteral(t *testing.T) {
 			input: "true",
 			want: &ast.BooleanLiteral{
 				Token: token.Token{
-					TokenType: token.TrueLiteral,
-					Text:      "true",
-					Pos: token.Pos{
+					Type:  token.TrueLiteral,
+					Value: "true",
+					Position: token.Pos{
 						Column: 1,
 						Line:   1,
 					},
@@ -166,9 +166,9 @@ func TestParser_ParseBooleanLiteral(t *testing.T) {
 			input: "false",
 			want: &ast.BooleanLiteral{
 				Token: token.Token{
-					TokenType: token.FalseLiteral,
-					Text:      "false",
-					Pos: token.Pos{
+					Type:  token.FalseLiteral,
+					Value: "false",
+					Position: token.Pos{
 						Column: 1,
 						Line:   1,
 					},

@@ -20,9 +20,9 @@ func TestLexer_Scan(t *testing.T) {
 			name:  "normal",
 			input: "pragma",
 			wantToken: token.Token{
-				TokenType: token.Pragma,
-				Text:      "pragma",
-				Pos: token.Pos{
+				Type:  token.Pragma,
+				Value: "pragma",
+				Position: token.Pos{
 					Column: 1,
 					Line:   1,
 				},
@@ -32,9 +32,9 @@ func TestLexer_Scan(t *testing.T) {
 			name:  "There is a space at the beginning",
 			input: " pragma",
 			wantToken: token.Token{
-				TokenType: token.Pragma,
-				Text:      "pragma",
-				Pos: token.Pos{
+				Type:  token.Pragma,
+				Value: "pragma",
+				Position: token.Pos{
 					Column: 2,
 					Line:   1,
 				},
@@ -44,9 +44,9 @@ func TestLexer_Scan(t *testing.T) {
 			name:  "There is a StringLiteral",
 			input: `"pragma"`,
 			wantToken: token.Token{
-				TokenType: token.StringLiteral,
-				Text:      `"pragma"`,
-				Pos: token.Pos{
+				Type:  token.StringLiteral,
+				Value: `"pragma"`,
+				Position: token.Pos{
 					Column: 1,
 					Line:   1,
 				},
@@ -82,9 +82,9 @@ func TestLexer_Scan(t *testing.T) {
 			t.Errorf("got error: %s", err)
 		}
 		want := token.Token{
-			TokenType: token.EOS,
-			Text:      token.EOSString,
-			Pos: token.Pos{
+			Type:  token.EOS,
+			Value: token.EOSString,
+			Position: token.Pos{
 				Column: 1,
 				Line:   1,
 			},
@@ -96,9 +96,9 @@ func TestLexer_Scan(t *testing.T) {
 
 	t.Run("when peeked", func(t *testing.T) {
 		peekToken := token.Token{
-			TokenType: token.BitXor,
-			Text:      "^",
-			Pos: token.Pos{
+			Type:  token.BitXor,
+			Value: "^",
+			Position: token.Pos{
 				Column: 4,
 				Line:   6,
 			},
@@ -132,9 +132,9 @@ func TestLexer_Peek(t *testing.T) {
 			name:  "normal",
 			input: "pragma",
 			token: token.Token{
-				TokenType: token.Pragma,
-				Text:      "pragma",
-				Pos: token.Pos{
+				Type:  token.Pragma,
+				Value: "pragma",
+				Position: token.Pos{
 					Column: 1,
 					Line:   1,
 				},
@@ -144,9 +144,9 @@ func TestLexer_Peek(t *testing.T) {
 			name:  "when scan is done",
 			input: "",
 			token: token.Token{
-				TokenType: token.EOS,
-				Text:      token.EOSString,
-				Pos: token.Pos{
+				Type:  token.EOS,
+				Value: token.EOSString,
+				Position: token.Pos{
 					Column: 1,
 					Line:   1,
 				},
@@ -201,7 +201,7 @@ func TestLexer_ScanStringLiteral(t *testing.T) {
 			if err != nil {
 				t.Errorf("error is not nil, got: %s", err)
 			}
-			if diff := cmp.Diff(tt.wantText, tkn.Text); diff != "" {
+			if diff := cmp.Diff(tt.wantText, tkn.Value); diff != "" {
 				t.Errorf(diff)
 			}
 		})

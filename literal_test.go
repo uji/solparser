@@ -50,17 +50,16 @@ func TestParser_ParseLiteral(t *testing.T) {
 			},
 			err: nil,
 		},
-		// TODO
 		// {
 		// 	name:  `Next token is \n`,
 		// 	input: "\"Hello World!!\"\n",
 		// 	want: &ast.StringLiteral{
-		// 		Str: `"Hello World!!"`,
-		// 		Position: token.Pos{
+		// 		Value: `"Hello World!!"`,
+		// 		From: token.Pos{
 		// 			Column: 1,
 		// 			Line:   1,
 		// 		},
-		// 		EndPos: token.Pos{
+		// 		To: token.Pos{
 		// 			Column: 15,
 		// 			Line:   1,
 		// 		},

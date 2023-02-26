@@ -11,12 +11,12 @@ func (p *Parser) ParseVisibility() (ast.Visibility, error) {
 		return token.Token{}, err
 	}
 
-	switch tkn.TokenType {
+	switch tkn.Type {
 	case token.Internal, token.External, token.Public, token.Private:
 		return tkn, nil
 	}
 
-	return token.Token{}, token.NewPosError(tkn.Pos, "not found visibility keyword.")
+	return token.Token{}, token.NewPosError(tkn.Position, "not found visibility keyword.")
 }
 
 func (p *Parser) ParseStateMutability() (ast.StateMutability, error) {
@@ -25,12 +25,12 @@ func (p *Parser) ParseStateMutability() (ast.StateMutability, error) {
 		return token.Token{}, err
 	}
 
-	switch tkn.TokenType {
+	switch tkn.Type {
 	case token.Pure, token.View, token.Payable:
 		return tkn, nil
 	}
 
-	return token.Token{}, token.NewPosError(tkn.Pos, "not found state-mutability keyword.")
+	return token.Token{}, token.NewPosError(tkn.Position, "not found state-mutability keyword.")
 }
 
 func (p *Parser) ParseFunctionDefinitionReturns() (*ast.FunctionDefinitionReturns, error) {
@@ -38,7 +38,7 @@ func (p *Parser) ParseFunctionDefinitionReturns() (*ast.FunctionDefinitionReturn
 	if err != nil {
 		return nil, err
 	}
-	if tkn.TokenType != token.Returns {
+	if tkn.Type != token.Returns {
 		return nil, nil
 	}
 	if _, err := p.lexer.Scan(); err != nil {
@@ -49,8 +49,8 @@ func (p *Parser) ParseFunctionDefinitionReturns() (*ast.FunctionDefinitionReturn
 	if err != nil {
 		return nil, err
 	}
-	if lparen.TokenType != token.LParen {
-		return nil, token.NewPosError(lparen.Pos, "not found arguments LParen.")
+	if lparen.Type != token.LParen {
+		return nil, token.NewPosError(lparen.Position, "not found arguments LParen.")
 	}
 
 	pl, err := p.ParseParameterList()
@@ -62,15 +62,15 @@ func (p *Parser) ParseFunctionDefinitionReturns() (*ast.FunctionDefinitionReturn
 	if err != nil {
 		return nil, err
 	}
-	if rparen.TokenType != token.RParen {
-		return nil, token.NewPosError(rparen.Pos, "not found arguments RParen.")
+	if rparen.Type != token.RParen {
+		return nil, token.NewPosError(rparen.Position, "not found arguments RParen.")
 	}
 
 	return &ast.FunctionDefinitionReturns{
-		From:          tkn.Pos,
-		LParen:        lparen.Pos,
+		From:          tkn.Position,
+		LParen:        lparen.Position,
 		ParameterList: pl,
-		RParen:        rparen.Pos,
+		RParen:        rparen.Position,
 	}, nil
 }
 
@@ -80,8 +80,8 @@ func (p *Parser) ParseFunctionDefinition() (*ast.FunctionDefinition, error) {
 		return nil, err
 	}
 
-	if from.TokenType != token.Function {
-		return nil, token.NewPosError(from.Pos, "not found function keyword.")
+	if from.Type != token.Function {
+		return nil, token.NewPosError(from.Position, "not found function keyword.")
 	}
 
 	dsc, err := p.lexer.Scan()
@@ -89,26 +89,26 @@ func (p *Parser) ParseFunctionDefinition() (*ast.FunctionDefinition, error) {
 		return nil, err
 	}
 
-	switch dsc.TokenType {
+	switch dsc.Type {
 	case token.Identifier, token.From, token.Error, token.Revert, token.Global, token.Fallback, token.Receive:
 	default:
-		return nil, token.NewPosError(dsc.Pos, "not found function description.")
+		return nil, token.NewPosError(dsc.Position, "not found function description.")
 	}
 
 	lparen, err := p.lexer.Scan()
 	if err != nil {
 		return nil, err
 	}
-	if lparen.TokenType != token.LParen {
-		return nil, token.NewPosError(lparen.Pos, "not found arguments LParen.")
+	if lparen.Type != token.LParen {
+		return nil, token.NewPosError(lparen.Position, "not found arguments LParen.")
 	}
 
 	rparen, err := p.lexer.Scan()
 	if err != nil {
 		return nil, err
 	}
-	if rparen.TokenType != token.RParen {
-		return nil, token.NewPosError(rparen.Pos, "not found arguments RParen.")
+	if rparen.Type != token.RParen {
+		return nil, token.NewPosError(rparen.Position, "not found arguments RParen.")
 	}
 
 	modifierList := &ast.ModifierList{
@@ -122,7 +122,7 @@ func (p *Parser) ParseFunctionDefinition() (*ast.FunctionDefinition, error) {
 			return nil, err
 		}
 
-		switch tkn.TokenType {
+		switch tkn.Type {
 		case token.Internal, token.External, token.Public, token.Private:
 			vs, err := p.ParseVisibility()
 			if err != nil {
@@ -152,10 +152,10 @@ func (p *Parser) ParseFunctionDefinition() (*ast.FunctionDefinition, error) {
 	}
 
 	return &ast.FunctionDefinition{
-		From:               from.Pos,
+		From:               from.Position,
 		FunctionDescriptor: dsc,
-		LParen:             lparen.Pos,
-		RParen:             rparen.Pos,
+		LParen:             lparen.Position,
+		RParen:             rparen.Position,
 		ModifierList:       modifierList,
 		Returns:            r,
 		Block:              b,

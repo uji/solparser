@@ -98,14 +98,14 @@ type TypeName interface {
 type ElementaryTypeName []*token.Token
 
 func (e ElementaryTypeName) Pos() token.Pos {
-	return e[0].Pos
+	return e[0].Position
 }
 
 func (e ElementaryTypeName) End() token.Pos {
 	eTkn := e[len(e)-1]
 	return token.Pos{
-		Column: eTkn.Pos.Column + len(eTkn.Text),
-		Line:   eTkn.Pos.Line,
+		Column: eTkn.Position.Column + len(eTkn.Value),
+		Line:   eTkn.Position.Line,
 	}
 }
 
@@ -137,13 +137,13 @@ type BooleanLiteral struct {
 }
 
 func (b *BooleanLiteral) Pos() token.Pos {
-	return b.Token.Pos
+	return b.Token.Position
 }
 
 func (b *BooleanLiteral) End() token.Pos {
 	return token.Pos{
-		Column: b.Token.Pos.Column + len(b.Token.Text),
-		Line:   b.Token.Pos.Line,
+		Column: b.Token.Position.Column + len(b.Token.Value),
+		Line:   b.Token.Position.Line,
 	}
 }
 

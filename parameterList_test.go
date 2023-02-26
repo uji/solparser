@@ -24,9 +24,9 @@ func TestParser_ParseParameter(t *testing.T) {
 			want: &ast.Parameter{
 				TypeName: ast.ElementaryTypeName{
 					{
-						TokenType: token.String,
-						Text:      "string",
-						Pos:       token.Pos{Column: 1, Line: 1},
+						Type:     token.String,
+						Value:    "string",
+						Position: token.Pos{Column: 1, Line: 1},
 					},
 				},
 			},
@@ -80,9 +80,9 @@ func TestParser_ParseParameterList(t *testing.T) {
 				{
 					TypeName: ast.ElementaryTypeName{
 						{
-							TokenType: token.String,
-							Text:      "string",
-							Pos:       token.Pos{Column: 1, Line: 1},
+							Type:     token.String,
+							Value:    "string",
+							Position: token.Pos{Column: 1, Line: 1},
 						},
 					},
 				},
@@ -96,18 +96,18 @@ func TestParser_ParseParameterList(t *testing.T) {
 				{
 					TypeName: ast.ElementaryTypeName{
 						{
-							TokenType: token.String,
-							Text:      "string",
-							Pos:       token.Pos{Column: 1, Line: 1},
+							Type:     token.String,
+							Value:    "string",
+							Position: token.Pos{Column: 1, Line: 1},
 						},
 					},
 				},
 				{
 					TypeName: ast.ElementaryTypeName{
 						{
-							TokenType: token.Bool,
-							Text:      "bool",
-							Pos:       token.Pos{Column: 9, Line: 1},
+							Type:     token.Bool,
+							Value:    "bool",
+							Position: token.Pos{Column: 9, Line: 1},
 						},
 					},
 				},

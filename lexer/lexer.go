@@ -88,9 +88,9 @@ func (l *Lexer) ScanStringLiteral() (token.Token, error) {
 		txt = txt + str
 		if str == quote {
 			return token.Token{
-				TokenType: token.StringLiteral,
-				Text:      txt,
-				Pos:       firstPos,
+				Type:     token.StringLiteral,
+				Value:    txt,
+				Position: firstPos,
 			}, nil
 		}
 	}

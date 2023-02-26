@@ -14,9 +14,9 @@ func pos(c, l int) token.Pos {
 
 func tkn(tp token.TokenType, text string, pos token.Pos) token.Token {
 	return token.Token{
-		TokenType: tp,
-		Text:      text,
-		Pos:       pos,
+		Type:     tp,
+		Value:    text,
+		Position: pos,
 	}
 }
 

@@ -23,9 +23,9 @@ func TestParser_ParseTypeName(t *testing.T) {
 			input: "string)",
 			want: ast.ElementaryTypeName{
 				{
-					TokenType: token.String,
-					Text:      "string",
-					Pos:       token.Pos{Column: 1, Line: 1},
+					Type:     token.String,
+					Value:    "string",
+					Position: token.Pos{Column: 1, Line: 1},
 				},
 			},
 		},
@@ -70,9 +70,9 @@ func TestParser_ParseElementaryTypeName(t *testing.T) {
 			input: "address",
 			want: ast.ElementaryTypeName{
 				{
-					TokenType: token.Address,
-					Text:      "address",
-					Pos:       token.Pos{Column: 1, Line: 1},
+					Type:     token.Address,
+					Value:    "address",
+					Position: token.Pos{Column: 1, Line: 1},
 				},
 			},
 		},
@@ -80,9 +80,9 @@ func TestParser_ParseElementaryTypeName(t *testing.T) {
 			input: "bool",
 			want: ast.ElementaryTypeName{
 				{
-					TokenType: token.Bool,
-					Text:      "bool",
-					Pos:       token.Pos{Column: 1, Line: 1},
+					Type:     token.Bool,
+					Value:    "bool",
+					Position: token.Pos{Column: 1, Line: 1},
 				},
 			},
 		},
@@ -90,9 +90,9 @@ func TestParser_ParseElementaryTypeName(t *testing.T) {
 			input: "string",
 			want: ast.ElementaryTypeName{
 				{
-					TokenType: token.String,
-					Text:      "string",
-					Pos:       token.Pos{Column: 1, Line: 1},
+					Type:     token.String,
+					Value:    "string",
+					Position: token.Pos{Column: 1, Line: 1},
 				},
 			},
 		},
@@ -100,14 +100,14 @@ func TestParser_ParseElementaryTypeName(t *testing.T) {
 			input: "address payable",
 			want: ast.ElementaryTypeName{
 				{
-					TokenType: token.Address,
-					Text:      "address",
-					Pos:       token.Pos{Column: 1, Line: 1},
+					Type:     token.Address,
+					Value:    "address",
+					Position: token.Pos{Column: 1, Line: 1},
 				},
 				{
-					TokenType: token.Payable,
-					Text:      "payable",
-					Pos:       token.Pos{Column: 9, Line: 1},
+					Type:     token.Payable,
+					Value:    "payable",
+					Position: token.Pos{Column: 9, Line: 1},
 				},
 			},
 		},

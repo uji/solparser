@@ -20,33 +20,33 @@ func TestParser_ParseIdentifier(t *testing.T) {
 		{
 			input: "identifier",
 			want: token.Token{
-				TokenType: token.Identifier,
-				Text:      "identifier",
-				Pos:       token.Pos{Column: 1, Line: 1},
+				Type:     token.Identifier,
+				Value:    "identifier",
+				Position: token.Pos{Column: 1, Line: 1},
 			},
 		},
 		{
 			input: "from",
 			want: token.Token{
-				TokenType: token.From,
-				Text:      "from",
-				Pos:       token.Pos{Column: 1, Line: 1},
+				Type:     token.From,
+				Value:    "from",
+				Position: token.Pos{Column: 1, Line: 1},
 			},
 		},
 		{
 			input: "error",
 			want: token.Token{
-				TokenType: token.Error,
-				Text:      "error",
-				Pos:       token.Pos{Column: 1, Line: 1},
+				Type:     token.Error,
+				Value:    "error",
+				Position: token.Pos{Column: 1, Line: 1},
 			},
 		},
 		{
 			input: "global",
 			want: token.Token{
-				TokenType: token.Global,
-				Text:      "global",
-				Pos:       token.Pos{Column: 1, Line: 1},
+				Type:     token.Global,
+				Value:    "global",
+				Position: token.Pos{Column: 1, Line: 1},
 			},
 		},
 		{

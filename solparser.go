@@ -30,7 +30,7 @@ func (p *Parser) Parse() (*ast.SourceUnit, error) {
 			return nil, err
 		}
 
-		switch tkn.TokenType {
+		switch tkn.Type {
 		case token.Pragma:
 			prgm, err := p.ParsePragmaDirective()
 			if err != nil {
@@ -56,7 +56,7 @@ func (p *Parser) Parse() (*ast.SourceUnit, error) {
 				FunctionDefinition: functionDefinition,
 			}, nil
 		default:
-			return nil, token.NewPosError(tkn.Pos, "invalid")
+			return nil, token.NewPosError(tkn.Position, "invalid")
 		}
 	}
 }
@@ -67,8 +67,8 @@ func (p *Parser) ParseBooleanLiteral() (*ast.BooleanLiteral, error) {
 		return nil, err
 	}
 
-	if tkn.TokenType != token.TrueLiteral && tkn.TokenType != token.FalseLiteral {
-		return nil, token.NewPosError(tkn.Pos, "not found keyword true or false")
+	if tkn.Type != token.TrueLiteral && tkn.Type != token.FalseLiteral {
+		return nil, token.NewPosError(tkn.Position, "not found keyword true or false")
 	}
 
 	return &ast.BooleanLiteral{
