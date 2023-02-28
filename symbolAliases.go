@@ -90,17 +90,13 @@ func (p *Parser) ParseSymbolAliases() (*ast.SymbolAliases, error) {
 		commas = append(commas, &comma.Position)
 	}
 
-	rbrace, err := p.lexer.Peek()
+	rbrace, err := p.lexer.Scan()
 	if err != nil {
 		return nil, err
 	}
 
 	if rbrace.Type != token.RBrace {
 		return nil, token.NewPosError(rbrace.Position, "not found RBrace.")
-	}
-
-	if _, err := p.lexer.Scan(); err != nil {
-		return nil, err
 	}
 
 	return &ast.SymbolAliases{
