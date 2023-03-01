@@ -6,18 +6,51 @@ import (
 	"github.com/uji/solparser/token"
 )
 
+// All node types implement the Node interface.
 type Node interface {
 	Pos() token.Pos
 	End() token.Pos
 }
 
-// ----------------------------------------------------------------------------
-// ImportDirectiveElement Nodes
-
+// All import-directive-element node (own definition for solparser) types implement the ImportDirectiveElement interface.
 type ImportDirectiveElement interface {
 	Node
 	importDirectiveElementNode()
 }
+
+// All contract-body-element node types implement the ContractBodyElement interface.
+type ContractBodyElement interface {
+	Node
+	contractBodyElementNode()
+}
+
+// All type-name node types implement the TypeName interface.
+type TypeName interface {
+	Node
+	typeNameNode()
+}
+
+// All expression node types implement the Expression interface.
+type Expression interface {
+	Node
+	expressionNode()
+}
+
+// All literal node types implement the Literal interface.
+type Literal interface {
+	Node
+	literalNode()
+	expressionNode()
+}
+
+// All statement node types implement the Statement interface.
+type Statement interface {
+	Node
+	statementNode()
+}
+
+// ----------------------------------------------------------------------------
+// ImportDirectiveElement Nodes
 
 type ImportDirectivePathElement struct {
 	Path       Path
@@ -60,6 +93,9 @@ type ImportDirective struct {
 	Semicolon token.Pos
 }
 
+func (i ImportDirective) Pos() token.Pos { return i.Import }
+func (i ImportDirective) End() token.Pos { return i.Semicolon }
+
 type Path token.Token
 
 func (p Path) Pos() token.Pos { return p.Position }
@@ -74,6 +110,14 @@ type SymbolAlias struct {
 	Symbol Identifier
 	As     *token.Pos
 	Alias  *Identifier
+}
+
+func (s SymbolAlias) Pos() token.Pos { return s.Symbol.Pos() }
+func (s SymbolAlias) End() token.Pos {
+	if s.Alias != nil {
+		return s.Alias.End()
+	}
+	return s.Symbol.End()
 }
 
 type SymbolAliases struct {
@@ -91,6 +135,9 @@ type PragmaDirective struct {
 	PragmaTokens []*token.Token
 	Semicolon    token.Pos
 }
+
+func (p PragmaDirective) Pos() token.Pos { return p.Pragma }
+func (p PragmaDirective) End() token.Pos { return p.Semicolon }
 
 type ModifierList struct {
 	Visibility      *Visibility
@@ -118,6 +165,14 @@ type FunctionDefinitionReturns struct {
 	RParen        token.Pos
 }
 
+type InheritanceSpecifier struct {
+	IdentifierPath   string
+	CallArgumentList CallArgumentList
+}
+
+// ----------------------------------------------------------------------------
+// ContractBodyElement Nodes
+
 type FunctionDefinition struct {
 	From               token.Pos
 	FunctionDescriptor FunctionDescriptor
@@ -128,25 +183,12 @@ type FunctionDefinition struct {
 	Block              *Block
 }
 
-func (f FunctionDefinition) Pos() token.Pos {
-	return f.From
-}
-
-func (f FunctionDefinition) End() token.Pos {
-	return f.Block.End()
-}
-
-type InheritanceSpecifier struct {
-	IdentifierPath   string
-	CallArgumentList CallArgumentList
-}
-
-type ContractBodyElement interface {
-	Node
-	contractBodyElementNode()
-}
+func (f FunctionDefinition) Pos() token.Pos { return f.From }
+func (f FunctionDefinition) End() token.Pos { return f.Block.End() }
 
 func (f *FunctionDefinition) contractBodyElementNode() {}
+
+// ----------------------------------------------------------------------------
 
 type CallArgumentList struct{}
 
@@ -170,11 +212,6 @@ type SourceUnit struct {
 // ----------------------------------------------------------------------------
 // TypeName Nodes
 
-type TypeName interface {
-	Node
-	typeNameNode()
-}
-
 type ElementaryTypeName []*token.Token
 
 func (e ElementaryTypeName) Pos() token.Pos {
@@ -194,13 +231,6 @@ func (e ElementaryTypeName) typeNameNode() {}
 // ----------------------------------------------------------------------------
 // Expression Nodes
 
-type Expression interface {
-	Node
-	expressionNode()
-}
-
-// ----------------------------------------------------------------------------
-
 type Identifier token.Token
 
 func (i Identifier) Pos() token.Pos { return i.Position }
@@ -211,14 +241,10 @@ func (i Identifier) End() token.Pos {
 	}
 }
 
+func (i *Identifier) expressionNode() {}
+
 // ----------------------------------------------------------------------------
 // Literal Nodes
-
-type Literal interface {
-	Node
-	literalNode()
-	expressionNode()
-}
 
 type BooleanLiteral struct {
 	Token token.Token
@@ -387,22 +413,13 @@ func (b Block) End() token.Pos {
 // ----------------------------------------------------------------------------
 // Statement Nodes
 
-type Statement interface {
-	Node
-	statementNode()
-}
-
 type ReturnStatement struct {
 	From       token.Pos
 	SemiPos    token.Pos
 	Expression Expression
 }
 
-func (r *ReturnStatement) Pos() token.Pos {
-	return r.From
-}
-func (r *ReturnStatement) End() token.Pos {
-	return r.SemiPos
-}
+func (r ReturnStatement) Pos() token.Pos { return r.From }
+func (r ReturnStatement) End() token.Pos { return r.SemiPos }
 
 func (s *ReturnStatement) statementNode() {}

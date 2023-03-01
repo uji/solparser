@@ -8,6 +8,24 @@ import (
 	"github.com/uji/solparser/token"
 )
 
+var (
+	_ ast.ImportDirectiveElement = &ast.ImportDirectivePathElement{}
+	_ ast.ImportDirectiveElement = &ast.ImportDirectiveSymbolAliasesElement{}
+	_ ast.ImportDirectiveElement = &ast.ImportDirectiveMulElement{}
+	_ ast.Node                   = &ast.ImportDirective{}
+	_ ast.Node                   = &ast.Path{}
+	_ ast.Node                   = &ast.SymbolAlias{}
+	_ ast.Node                   = &ast.SymbolAliases{}
+	_ ast.Node                   = &ast.PragmaDirective{}
+	_ ast.ContractBodyElement    = &ast.FunctionDefinition{}
+	_ ast.TypeName               = ast.ElementaryTypeName{}
+	_ ast.Expression             = &ast.Identifier{}
+	_ ast.Literal                = &ast.BooleanLiteral{}
+	_ ast.Literal                = &ast.StringLiteral{}
+	_ ast.Node                   = &ast.Block{}
+	_ ast.Statement              = &ast.ReturnStatement{}
+)
+
 func TestNode_End(t *testing.T) {
 	tests := []struct {
 		name    string
