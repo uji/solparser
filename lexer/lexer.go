@@ -71,29 +71,66 @@ func (l *Lexer) Peek() (token.Token, error) {
 
 // ScanStringLiteral parse NonEmptyStringLiteral or EmptyStringLiteral then return StringLiteral token.
 func (l *Lexer) ScanStringLiteral() (token.Token, error) {
-	firstPos, str, err := l.scanner.Scan()
+	start, v, err := l.scanner.Scan()
 	if err != nil {
 		return token.Token{}, err
 	}
-	if str != `"` && str != `\'` {
-		return token.Token{}, token.NewPosError(firstPos, `not found " or \'`)
+	if v != `"` && v != `\'` {
+		return token.Token{}, token.NewPosError(start, `not found " or \'`)
 	}
 
-	quote, txt := str, str
+	quote, txt := v, v
 	tokenType := token.EmptyStringLiteral
 	for {
-		_, str, err := l.scanner.Scan()
+		_, v, err := l.scanner.Scan()
 		if err != nil {
 			return token.Token{}, err
 		}
-		txt = txt + str
-		if str == quote {
+		txt = txt + v
+		if v == quote {
 			return token.Token{
 				Type:     tokenType,
 				Value:    txt,
-				Position: firstPos,
+				Position: start,
 			}, nil
 		}
 		tokenType = token.NonEmptyStringLiteral
+	}
+}
+
+func (l *Lexer) ScanUnicodeStringLiteral() (token.Token, error) {
+	start, v, err := l.scanner.Scan()
+	if err != nil {
+		return token.Token{}, err
+	}
+	if v != `unicode` {
+		return token.Token{}, token.NewPosError(start, `not found unicode prefix.`)
+	}
+	rslt := v
+
+	pos, v, err := l.scanner.Scan()
+	if err != nil {
+		return token.Token{}, err
+	}
+	// 'unicode' and quote('"' or '\'') must not have spaces.
+	if v != `"` && v != `\'` || pos.Column != start.Column+7 {
+		return token.Token{}, token.NewPosError(pos, `not found " or \'`)
+	}
+
+	rslt = rslt + v
+	quote := v
+	for {
+		_, v, err := l.scanner.Scan()
+		if err != nil {
+			return token.Token{}, err
+		}
+		rslt = rslt + v
+		if v == quote {
+			return token.Token{
+				Type:     token.UnicodeStringLiteral,
+				Value:    rslt,
+				Position: start,
+			}, nil
+		}
 	}
 }
