@@ -22,7 +22,7 @@ func TestParser_ParseLiteral(t *testing.T) {
 			name:  "normal",
 			input: `"Hello World!!";`,
 			want: &ast.StringLiteral{
-				Type:     token.StringLiteral,
+				Type:     token.NonEmptyStringLiteral,
 				Value:    `"Hello World!!"`,
 				Position: pos(1, 1),
 			},
@@ -31,7 +31,7 @@ func TestParser_ParseLiteral(t *testing.T) {
 			name:  `Including \n`,
 			input: "\"Hello \nWorld!!\";",
 			want: &ast.StringLiteral{
-				Type:     token.StringLiteral,
+				Type:     token.NonEmptyStringLiteral,
 				Value:    "\"Hello \nWorld!!\"",
 				Position: pos(1, 1),
 			},

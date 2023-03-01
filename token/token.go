@@ -167,7 +167,8 @@ const (
 	TrueLiteral
 	FalseLiteral
 	Number
-	StringLiteral
+	NonEmptyStringLiteral
+	EmptyStringLiteral
 	UnicodeStringLiteral
 	HexStringLiteral
 	CommentLiteral

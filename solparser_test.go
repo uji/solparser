@@ -103,7 +103,7 @@ contract HelloWorld {
 										From:    token.Pos{Column: 9, Line: 5},
 										SemiPos: token.Pos{Column: 31, Line: 5},
 										Expression: &ast.StringLiteral{
-											Type:     token.StringLiteral,
+											Type:     token.NonEmptyStringLiteral,
 											Position: token.Pos{Column: 16, Line: 5},
 											Value:    "\"Hello World!!\"",
 										},

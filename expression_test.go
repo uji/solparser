@@ -22,7 +22,7 @@ func TestParser_ParseExpression(t *testing.T) {
 			name:  "Literal",
 			input: `"Hello World!!";`,
 			want: &ast.StringLiteral{
-				Type:     token.StringLiteral,
+				Type:     token.NonEmptyStringLiteral,
 				Value:    `"Hello World!!"`,
 				Position: pos(1, 1),
 			},

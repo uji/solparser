@@ -59,7 +59,7 @@ func TestNode_End(t *testing.T) {
 		{
 			name: "StringLiteral",
 			node: &ast.StringLiteral{
-				Type:  token.StringLiteral,
+				Type:  token.NonEmptyStringLiteral,
 				Value: "\"Hello world!!\"",
 				Position: token.Pos{
 					Column: 4,
@@ -74,7 +74,7 @@ func TestNode_End(t *testing.T) {
 		{
 			name: "StringLiteral with new line codes",
 			node: &ast.StringLiteral{
-				Type:  token.StringLiteral,
+				Type:  token.NonEmptyStringLiteral,
 				Value: "\"Hello \n new \nworld!!\"",
 				Position: token.Pos{
 					Column: 4,

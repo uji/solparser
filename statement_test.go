@@ -25,7 +25,7 @@ func TestParser_ParseStatement(t *testing.T) {
 				From:    token.Pos{Column: 1, Line: 1},
 				SemiPos: token.Pos{Column: 23, Line: 1},
 				Expression: &ast.StringLiteral{
-					Type:     token.StringLiteral,
+					Type:     token.NonEmptyStringLiteral,
 					Position: token.Pos{Column: 8, Line: 1},
 					Value:    `"Hello World!!"`,
 				},
@@ -85,7 +85,7 @@ func TestParser_ParseReturnStatement(t *testing.T) {
 				From:    token.Pos{Column: 1, Line: 1},
 				SemiPos: token.Pos{Column: 23, Line: 1},
 				Expression: &ast.StringLiteral{
-					Type:     token.StringLiteral,
+					Type:     token.NonEmptyStringLiteral,
 					Position: token.Pos{Column: 8, Line: 1},
 					Value:    `"Hello World!!"`,
 				},

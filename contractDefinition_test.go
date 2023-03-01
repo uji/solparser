@@ -79,7 +79,7 @@ func TestParser_ParseContractDefinition(t *testing.T) {
 									From:    token.Pos{Column: 9, Line: 3},
 									SemiPos: token.Pos{Column: 31, Line: 3},
 									Expression: &ast.StringLiteral{
-										Type:     token.StringLiteral,
+										Type:     token.NonEmptyStringLiteral,
 										Position: token.Pos{Column: 16, Line: 3},
 										Value:    "\"Hello World!!\"",
 									},
@@ -153,7 +153,7 @@ func TestParser_ParseContractDefinition(t *testing.T) {
 									From:    token.Pos{Column: 9, Line: 3},
 									SemiPos: token.Pos{Column: 31, Line: 3},
 									Expression: &ast.StringLiteral{
-										Type:     token.StringLiteral,
+										Type:     token.NonEmptyStringLiteral,
 										Position: token.Pos{Column: 16, Line: 3},
 										Value:    "\"Hello World!!\"",
 									},

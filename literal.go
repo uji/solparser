@@ -11,7 +11,7 @@ func (p *Parser) ParseLiteral() (ast.Literal, error) {
 		return nil, err
 	}
 
-	if tkn.Type != token.StringLiteral {
+	if tkn.Type != token.NonEmptyStringLiteral {
 		return nil, token.NewPosError(tkn.Position, "not found string literal quote")
 	}
 

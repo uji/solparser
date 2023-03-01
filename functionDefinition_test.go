@@ -222,7 +222,7 @@ func TestParser_ParseFunctionDefinition(t *testing.T) {
 							From:    token.Pos{Column: 9, Line: 2},
 							SemiPos: token.Pos{Column: 31, Line: 2},
 							Expression: &ast.StringLiteral{
-								Type:     token.StringLiteral,
+								Type:     token.NonEmptyStringLiteral,
 								Position: token.Pos{Column: 16, Line: 2},
 								Value:    "\"Hello World!!\"",
 							},

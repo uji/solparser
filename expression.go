@@ -11,7 +11,7 @@ func (p *Parser) ParseExpression() (ast.Expression, error) {
 		return nil, err
 	}
 
-	if tkn.Type == token.StringLiteral {
+	if tkn.Type == token.NonEmptyStringLiteral {
 		return p.ParseLiteral()
 	}
 

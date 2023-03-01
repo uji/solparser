@@ -29,7 +29,7 @@ func TestParser_ParseBlock(t *testing.T) {
 						From:    token.Pos{Column: 1, Line: 2},
 						SemiPos: token.Pos{Column: 23, Line: 2},
 						Expression: &ast.StringLiteral{
-							Type:     token.StringLiteral,
+							Type:     token.NonEmptyStringLiteral,
 							Position: token.Pos{Column: 8, Line: 2},
 							Value:    "\"Hello World!!\"",
 						},

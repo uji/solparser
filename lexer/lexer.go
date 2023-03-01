@@ -80,6 +80,7 @@ func (l *Lexer) ScanStringLiteral() (token.Token, error) {
 	}
 
 	quote, txt := str, str
+	tokenType := token.EmptyStringLiteral
 	for {
 		_, str, err := l.scanner.Scan()
 		if err != nil {
@@ -88,10 +89,11 @@ func (l *Lexer) ScanStringLiteral() (token.Token, error) {
 		txt = txt + str
 		if str == quote {
 			return token.Token{
-				Type:     token.StringLiteral,
+				Type:     tokenType,
 				Value:    txt,
 				Position: firstPos,
 			}, nil
 		}
+		tokenType = token.NonEmptyStringLiteral
 	}
 }

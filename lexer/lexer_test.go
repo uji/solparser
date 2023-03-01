@@ -44,7 +44,7 @@ func TestLexer_Scan(t *testing.T) {
 			name:  "There is a StringLiteral",
 			input: `"pragma"`,
 			wantToken: token.Token{
-				Type:  token.StringLiteral,
+				Type:  token.NonEmptyStringLiteral,
 				Value: `"pragma"`,
 				Position: token.Pos{
 					Column: 1,
@@ -174,24 +174,45 @@ func TestLexer_Peek(t *testing.T) {
 
 func TestLexer_ScanStringLiteral(t *testing.T) {
 	tests := []struct {
-		name     string
-		input    string
-		wantText string
+		input string
+		want  token.Token
 	}{
 		{
-			name:     "double-quoted-printable",
-			input:    `"Hello world!!";`,
-			wantText: `"Hello world!!"`,
+			input: `"Hello world!!";`,
+			want: token.Token{
+				Type:     token.NonEmptyStringLiteral,
+				Value:    `"Hello world!!"`,
+				Position: token.Pos{Column: 1, Line: 1},
+			},
 		},
 		{
-			name:     "single-quoted-printable",
-			input:    `\'Hello world!!\';`,
-			wantText: `\'Hello world!!\'`,
+			input: `\'Hello world!!\';`,
+			want: token.Token{
+				Type:     token.NonEmptyStringLiteral,
+				Value:    `\'Hello world!!\'`,
+				Position: token.Pos{Column: 1, Line: 1},
+			},
+		},
+		{
+			input: `"";`,
+			want: token.Token{
+				Type:     token.EmptyStringLiteral,
+				Value:    `""`,
+				Position: token.Pos{Column: 1, Line: 1},
+			},
+		},
+		{
+			input: `\'\';`,
+			want: token.Token{
+				Type:     token.EmptyStringLiteral,
+				Value:    `\'\'`,
+				Position: token.Pos{Column: 1, Line: 1},
+			},
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
+		t.Run(tt.input, func(t *testing.T) {
 			s := scanner.New(strings.NewReader(tt.input))
 			l := Lexer{
 				scanner: s,
@@ -201,7 +222,7 @@ func TestLexer_ScanStringLiteral(t *testing.T) {
 			if err != nil {
 				t.Errorf("error is not nil, got: %s", err)
 			}
-			if diff := cmp.Diff(tt.wantText, tkn.Value); diff != "" {
+			if diff := cmp.Diff(tt.want, tkn); diff != "" {
 				t.Errorf(diff)
 			}
 		})
