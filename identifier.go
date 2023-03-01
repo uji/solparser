@@ -8,13 +8,13 @@ import (
 func (p *Parser) ParseIdentifier() (ast.Identifier, error) {
 	tkn, err := p.lexer.Scan()
 	if err != nil {
-		return token.Token{}, err
+		return ast.Identifier{}, err
 	}
 
 	switch tkn.Type {
 	case token.Identifier, token.From, token.Error, token.Revert, token.Global:
-		return tkn, nil
+		return ast.Identifier(tkn), nil
 	}
 
-	return token.Token{}, token.NewPosError(tkn.Position, "keyword is not available as identifier.")
+	return ast.Identifier{}, token.NewPosError(tkn.Position, "keyword is not available as identifier.")
 }

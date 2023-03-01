@@ -51,7 +51,7 @@ contract HelloWorld {
 				},
 				ContractDefinition: &ast.ContractDefinition{
 					Contract: token.Pos{Column: 1, Line: 3},
-					Identifier: token.Token{
+					Identifier: ast.Identifier{
 						Type:     token.Identifier,
 						Value:    "HelloWorld",
 						Position: token.Pos{Column: 10, Line: 3},

@@ -19,7 +19,7 @@ func TestParser_ParseIdentifier(t *testing.T) {
 	}{
 		{
 			input: "identifier",
-			want: token.Token{
+			want: ast.Identifier{
 				Type:     token.Identifier,
 				Value:    "identifier",
 				Position: token.Pos{Column: 1, Line: 1},
@@ -27,7 +27,7 @@ func TestParser_ParseIdentifier(t *testing.T) {
 		},
 		{
 			input: "from",
-			want: token.Token{
+			want: ast.Identifier{
 				Type:     token.From,
 				Value:    "from",
 				Position: token.Pos{Column: 1, Line: 1},
@@ -35,7 +35,7 @@ func TestParser_ParseIdentifier(t *testing.T) {
 		},
 		{
 			input: "error",
-			want: token.Token{
+			want: ast.Identifier{
 				Type:     token.Error,
 				Value:    "error",
 				Position: token.Pos{Column: 1, Line: 1},
@@ -43,7 +43,7 @@ func TestParser_ParseIdentifier(t *testing.T) {
 		},
 		{
 			input: "global",
-			want: token.Token{
+			want: ast.Identifier{
 				Type:     token.Global,
 				Value:    "global",
 				Position: token.Pos{Column: 1, Line: 1},

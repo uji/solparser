@@ -18,26 +18,30 @@ func TestParser_ParseSymbolAlias(t *testing.T) {
 		{
 			input: "symbol as alias1}",
 			want: &ast.SymbolAlias{
-				Symbol: tkn(token.Identifier, "symbol", pos(1, 1)),
+				Symbol: ast.Identifier(tkn(token.Identifier, "symbol", pos(1, 1))),
 				As:     posPtr(8, 1),
-				Alias:  tknPtr(token.Identifier, "alias1", pos(11, 1)),
+				Alias: &ast.Identifier{
+					Type:     token.Identifier,
+					Value:    "alias1",
+					Position: pos(11, 1),
+				},
 			},
 		},
 		{
 			input: "symbol}",
 			want: &ast.SymbolAlias{
-				Symbol: tkn(token.Identifier, "symbol", pos(1, 1)),
+				Symbol: ast.Identifier(tkn(token.Identifier, "symbol", pos(1, 1))),
 				As:     nil,
 				Alias:  nil,
 			},
 		},
 		{
 			input: "pragma",
-			err:   perr(pos(1, 1), "not found identifier."),
+			err:   perr(pos(1, 1), "keyword is not available as identifier."),
 		},
 		{
 			input: "symbol as pragma",
-			err:   perr(pos(11, 1), "not found identifier."),
+			err:   perr(pos(11, 1), "keyword is not available as identifier."),
 		},
 	}
 
@@ -65,7 +69,7 @@ func TestParser_ParseSymbolAliases(t *testing.T) {
 				LBrace: pos(1, 1),
 				Aliases: []*ast.SymbolAlias{
 					{
-						Symbol: tkn(token.Identifier, "symbol1", pos(2, 1)),
+						Symbol: ast.Identifier(tkn(token.Identifier, "symbol1", pos(2, 1))),
 					},
 				},
 				Commas: []*token.Pos{},
@@ -78,9 +82,13 @@ func TestParser_ParseSymbolAliases(t *testing.T) {
 				LBrace: pos(1, 1),
 				Aliases: []*ast.SymbolAlias{
 					{
-						Symbol: tkn(token.Identifier, "symbol2", pos(2, 1)),
+						Symbol: ast.Identifier(tkn(token.Identifier, "symbol2", pos(2, 1))),
 						As:     posPtr(10, 1),
-						Alias:  tknPtr(token.Identifier, "alias1", pos(13, 1)),
+						Alias: &ast.Identifier{
+							Type:     token.Identifier,
+							Value:    "alias1",
+							Position: pos(13, 1),
+						},
 					},
 				},
 				Commas: []*token.Pos{},
@@ -93,12 +101,16 @@ func TestParser_ParseSymbolAliases(t *testing.T) {
 				LBrace: pos(1, 1),
 				Aliases: []*ast.SymbolAlias{
 					{
-						Symbol: tkn(token.Identifier, "symbol1", pos(2, 1)),
+						Symbol: ast.Identifier(tkn(token.Identifier, "symbol1", pos(2, 1))),
 					},
 					{
-						Symbol: tkn(token.Identifier, "symbol2", pos(11, 1)),
+						Symbol: ast.Identifier(tkn(token.Identifier, "symbol2", pos(11, 1))),
 						As:     posPtr(19, 1),
-						Alias:  tknPtr(token.Identifier, "alias1", pos(22, 1)),
+						Alias: &ast.Identifier{
+							Type:     token.Identifier,
+							Value:    "alias1",
+							Position: pos(22, 1),
+						},
 					},
 				},
 				Commas: []*token.Pos{posPtr(9, 1)},
@@ -111,7 +123,7 @@ func TestParser_ParseSymbolAliases(t *testing.T) {
 		},
 		{
 			input: "{symbol1, as alian1",
-			err:   perr(pos(11, 1), "not found identifier."),
+			err:   perr(pos(11, 1), "keyword is not available as identifier."),
 		},
 		{
 			input: "{symbol1, symbol2 as alian1",

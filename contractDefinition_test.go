@@ -27,7 +27,7 @@ func TestParser_ParseContractDefinition(t *testing.T) {
 }`,
 			want: &ast.ContractDefinition{
 				Contract: token.Pos{Column: 1, Line: 1},
-				Identifier: token.Token{
+				Identifier: ast.Identifier{
 					Type:     token.Identifier,
 					Value:    "HelloWorld",
 					Position: token.Pos{Column: 10, Line: 1},
@@ -101,7 +101,7 @@ func TestParser_ParseContractDefinition(t *testing.T) {
 			want: &ast.ContractDefinition{
 				Abstract: &token.Pos{Column: 1, Line: 1},
 				Contract: token.Pos{Column: 10, Line: 1},
-				Identifier: token.Token{
+				Identifier: ast.Identifier{
 					Type:     token.Identifier,
 					Value:    "HelloWorld",
 					Position: token.Pos{Column: 19, Line: 1},

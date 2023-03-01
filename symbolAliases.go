@@ -6,16 +6,8 @@ import (
 )
 
 func (p *Parser) ParseSymbolAlias() (*ast.SymbolAlias, error) {
-	smbl, err := p.lexer.Peek()
+	smbl, err := p.ParseIdentifier()
 	if err != nil {
-		return nil, err
-	}
-
-	if smbl.Type != token.Identifier {
-		return nil, token.NewPosError(smbl.Position, "not found identifier.")
-	}
-
-	if _, err := p.lexer.Scan(); err != nil {
 		return nil, err
 	}
 
@@ -30,13 +22,9 @@ func (p *Parser) ParseSymbolAlias() (*ast.SymbolAlias, error) {
 		return nil, err
 	}
 
-	alias, err := p.lexer.Scan()
+	alias, err := p.ParseIdentifier()
 	if err != nil {
 		return nil, err
-	}
-
-	if alias.Type != token.Identifier {
-		return nil, token.NewPosError(alias.Position, "not found identifier.")
 	}
 
 	return &ast.SymbolAlias{

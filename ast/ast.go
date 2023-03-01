@@ -138,7 +138,15 @@ type Expression interface {
 
 // ----------------------------------------------------------------------------
 
-type Identifier = token.Token
+type Identifier token.Token
+
+func (i Identifier) Pos() token.Pos { return i.Position }
+func (i Identifier) End() token.Pos {
+	return token.Pos{
+		Column: i.Position.Column + len(i.Value),
+		Line:   i.Position.Line,
+	}
+}
 
 // ----------------------------------------------------------------------------
 // Literal Nodes
