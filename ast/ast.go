@@ -11,6 +11,65 @@ type Node interface {
 	End() token.Pos
 }
 
+// ----------------------------------------------------------------------------
+// ImportDirectiveElement Nodes
+
+type ImportDirectiveElement interface {
+	Node
+	importDirectiveElementNode()
+}
+
+type ImportDirectivePathElement struct {
+	Path       Path
+	As         *token.Pos
+	Identifier *Identifier
+}
+
+func (i ImportDirectivePathElement) Pos() token.Pos { return i.Path.Pos() }
+func (i ImportDirectivePathElement) End() token.Pos { return i.Identifier.End() }
+
+type ImportDirectiveSymbolAliasesElement struct {
+	SymbolAliases *SymbolAliases
+	From          token.Pos
+	Path          Path
+}
+
+func (i ImportDirectiveSymbolAliasesElement) Pos() token.Pos { return i.SymbolAliases.Pos() }
+func (i ImportDirectiveSymbolAliasesElement) End() token.Pos { return i.Path.End() }
+
+type ImportDirectiveMulElement struct {
+	Mul        token.Pos
+	As         token.Pos
+	Identifier Identifier
+	From       token.Pos
+	Path       Path
+}
+
+func (i ImportDirectiveMulElement) Pos() token.Pos { return i.Mul }
+func (i ImportDirectiveMulElement) End() token.Pos { return i.Path.End() }
+
+func (i *ImportDirectivePathElement) importDirectiveElementNode()          {}
+func (i *ImportDirectiveSymbolAliasesElement) importDirectiveElementNode() {}
+func (i *ImportDirectiveMulElement) importDirectiveElementNode()           {}
+
+// ----------------------------------------------------------------------------
+
+type ImportDirective struct {
+	Import    token.Pos
+	Element   ImportDirectiveElement
+	Semicolon token.Pos
+}
+
+type Path token.Token
+
+func (p Path) Pos() token.Pos { return p.Position }
+func (p Path) End() token.Pos {
+	return token.Pos{
+		Column: p.Position.Column + len(p.Value), // Path does not include newline code.
+		Line:   p.Position.Line,
+	}
+}
+
 type SymbolAlias struct {
 	Symbol Identifier
 	As     *token.Pos
@@ -23,6 +82,9 @@ type SymbolAliases struct {
 	Commas  []*token.Pos
 	RBrace  token.Pos
 }
+
+func (s SymbolAliases) Pos() token.Pos { return s.LBrace }
+func (s SymbolAliases) End() token.Pos { return s.RBrace }
 
 type PragmaDirective struct {
 	Pragma       token.Pos
@@ -100,6 +162,7 @@ type ContractDefinition struct {
 // A File node represents a Solidity source file.
 type SourceUnit struct {
 	PragmaDirective    *PragmaDirective
+	ImportDirective    *ImportDirective
 	ContractDefinition *ContractDefinition
 	FunctionDefinition *FunctionDefinition
 }

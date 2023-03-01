@@ -23,6 +23,7 @@ func New(input io.Reader) *Parser {
 
 func (p *Parser) Parse() (*ast.SourceUnit, error) {
 	var pragmaDirective *ast.PragmaDirective
+	var importDirective *ast.ImportDirective
 	var contractDefinition *ast.ContractDefinition
 	var functionDefinition *ast.FunctionDefinition
 	for {
@@ -38,6 +39,12 @@ func (p *Parser) Parse() (*ast.SourceUnit, error) {
 				return nil, err
 			}
 			pragmaDirective = prgm
+		case token.Import:
+			imp, err := p.ParseImportDirective()
+			if err != nil {
+				return nil, err
+			}
+			importDirective = imp
 		case token.Abstract, token.Contract:
 			cntrct, err := p.ParseContractDefinition()
 			if err != nil {
@@ -53,6 +60,7 @@ func (p *Parser) Parse() (*ast.SourceUnit, error) {
 		case token.EOS:
 			return &ast.SourceUnit{
 				PragmaDirective:    pragmaDirective,
+				ImportDirective:    importDirective,
 				ContractDefinition: contractDefinition,
 				FunctionDefinition: functionDefinition,
 			}, nil
