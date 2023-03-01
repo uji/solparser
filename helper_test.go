@@ -2,9 +2,11 @@ package solparser_test
 
 import (
 	"errors"
+	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/uji/solparser"
 	"github.com/uji/solparser/token"
 )
 
@@ -50,5 +52,23 @@ func assert(t *testing.T, got, want interface{}, gotErr, wantErr error) {
 
 	if diff := cmp.Diff(want, got); diff != "" {
 		t.Errorf("%s", diff)
+	}
+}
+
+type TestData[T any] []struct {
+	input string
+	want  T
+	err   error
+}
+
+func (ts TestData[T]) Test(t *testing.T, target func(p *solparser.Parser) (T, error)) {
+	for _, tt := range ts {
+		tt := tt
+		t.Run(tt.input, func(t *testing.T) {
+			r := strings.NewReader(tt.input)
+			p := solparser.New(r)
+			got, err := target(p)
+			assert(t, got, tt.want, err, tt.err)
+		})
 	}
 }

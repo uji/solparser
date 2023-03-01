@@ -1,7 +1,6 @@
 package solparser_test
 
 import (
-	"strings"
 	"testing"
 
 	"github.com/uji/solparser"
@@ -10,11 +9,7 @@ import (
 )
 
 func TestParser_ParsePath(t *testing.T) {
-	tests := []struct {
-		input string
-		want  ast.Path
-		err   *token.PosError
-	}{
+	tests := TestData[ast.Path]{
 		{
 			input: `"test.sol"`,
 			want:  ast.Path(tkn(token.NonEmptyStringLiteral, `"test.sol"`, pos(1, 1))),
@@ -25,24 +20,13 @@ func TestParser_ParsePath(t *testing.T) {
 		},
 	}
 
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.input, func(t *testing.T) {
-			r := strings.NewReader(tt.input)
-			p := solparser.New(r)
-
-			got, err := p.ParsePath()
-			assert(t, got, tt.want, err, tt.err)
-		})
-	}
+	tests.Test(t, func(p *solparser.Parser) (ast.Path, error) {
+		return p.ParsePath()
+	})
 }
 
 func TestParser_ParseImportDirectivePathElement(t *testing.T) {
-	tests := []struct {
-		input string
-		want  *ast.ImportDirectivePathElement
-		err   *token.PosError
-	}{
+	tests := TestData[*ast.ImportDirectivePathElement]{
 		{
 			input: `"test.sol";`,
 			want: &ast.ImportDirectivePathElement{
@@ -63,24 +47,13 @@ func TestParser_ParseImportDirectivePathElement(t *testing.T) {
 		},
 	}
 
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.input, func(t *testing.T) {
-			r := strings.NewReader(tt.input)
-			p := solparser.New(r)
-
-			got, err := p.ParseImportDirectivePathElement()
-			assert(t, got, tt.want, err, tt.err)
-		})
-	}
+	tests.Test(t, func(p *solparser.Parser) (*ast.ImportDirectivePathElement, error) {
+		return p.ParseImportDirectivePathElement()
+	})
 }
 
 func TestParser_ParseImportDirectiveSymbolAliasesElement(t *testing.T) {
-	tests := []struct {
-		input string
-		want  *ast.ImportDirectiveSymbolAliasesElement
-		err   *token.PosError
-	}{
+	tests := TestData[*ast.ImportDirectiveSymbolAliasesElement]{
 		{
 			input: `{symbol1} from "test.sol"`,
 			want: &ast.ImportDirectiveSymbolAliasesElement{
@@ -106,24 +79,13 @@ func TestParser_ParseImportDirectiveSymbolAliasesElement(t *testing.T) {
 		},
 	}
 
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.input, func(t *testing.T) {
-			r := strings.NewReader(tt.input)
-			p := solparser.New(r)
-
-			got, err := p.ParseImportDirectiveSymbolAliasesElement()
-			assert(t, got, tt.want, err, tt.err)
-		})
-	}
+	tests.Test(t, func(p *solparser.Parser) (*ast.ImportDirectiveSymbolAliasesElement, error) {
+		return p.ParseImportDirectiveSymbolAliasesElement()
+	})
 }
 
 func TestParser_ParseImportDirectiveMulElement(t *testing.T) {
-	tests := []struct {
-		input string
-		want  *ast.ImportDirectiveMulElement
-		err   *token.PosError
-	}{
+	tests := TestData[*ast.ImportDirectiveMulElement]{
 		{
 			input: `* as alias1 from "test.sol"`,
 			want: &ast.ImportDirectiveMulElement{
@@ -152,24 +114,13 @@ func TestParser_ParseImportDirectiveMulElement(t *testing.T) {
 		},
 	}
 
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.input, func(t *testing.T) {
-			r := strings.NewReader(tt.input)
-			p := solparser.New(r)
-
-			got, err := p.ParseImportDirectiveMulElement()
-			assert(t, got, tt.want, err, tt.err)
-		})
-	}
+	tests.Test(t, func(p *solparser.Parser) (*ast.ImportDirectiveMulElement, error) {
+		return p.ParseImportDirectiveMulElement()
+	})
 }
 
 func TestParser_ParseImportDirective(t *testing.T) {
-	tests := []struct {
-		input string
-		want  *ast.ImportDirective
-		err   *token.PosError
-	}{
+	tests := TestData[*ast.ImportDirective]{
 		{
 			input: `import "test.sol";`,
 			want: &ast.ImportDirective{
@@ -235,14 +186,7 @@ func TestParser_ParseImportDirective(t *testing.T) {
 		},
 	}
 
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.input, func(t *testing.T) {
-			r := strings.NewReader(tt.input)
-			p := solparser.New(r)
-
-			got, err := p.ParseImportDirective()
-			assert(t, got, tt.want, err, tt.err)
-		})
-	}
+	tests.Test(t, func(p *solparser.Parser) (*ast.ImportDirective, error) {
+		return p.ParseImportDirective()
+	})
 }
