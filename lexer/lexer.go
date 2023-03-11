@@ -98,13 +98,15 @@ func (l *Lexer) ScanStringLiteral() (token.Token, error) {
 	}
 }
 
+const unicodeStringLiteralQuoteOffset = len("unicode")
+
 func (l *Lexer) ScanUnicodeStringLiteral() (token.Token, error) {
 	start, v, err := l.scanner.Scan()
 	if err != nil {
 		return token.Token{}, err
 	}
-	if v != `unicode` {
-		return token.Token{}, token.NewPosError(start, `not found unicode prefix.`)
+	if v != "unicode" {
+		return token.Token{}, token.NewPosError(start, "not found unicode prefix.")
 	}
 	rslt := v
 
@@ -113,7 +115,7 @@ func (l *Lexer) ScanUnicodeStringLiteral() (token.Token, error) {
 		return token.Token{}, err
 	}
 	// 'unicode' and quote('"' or '\'') must not have spaces.
-	if v != `"` && v != `\'` || pos.Column != start.Column+7 {
+	if v != `"` && v != `\'` && pos.Line == start.Line || pos.Column != start.Column+unicodeStringLiteralQuoteOffset {
 		return token.Token{}, token.NewPosError(pos, `not found " or \'`)
 	}
 

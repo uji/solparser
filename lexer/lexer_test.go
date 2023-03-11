@@ -260,7 +260,7 @@ func TestLexer_ScanUnicodeStringLiteral(t *testing.T) {
 		},
 		{
 			input: `unicode\'Hello 😃\'`,
-			want:  tkn(token.UnicodeStringLiteral, `unicode\'Hello 😃\'`, pos(1,1) ),
+			want:  tkn(token.UnicodeStringLiteral, `unicode\'Hello 😃\'`, pos(1,1)),
 		},
 		{
 			input: `unicode Hello 😃`,
@@ -268,6 +268,11 @@ func TestLexer_ScanUnicodeStringLiteral(t *testing.T) {
 		},
 		{
 			input: `unicode "Hello 😃"`,
+			err:   perr(pos(8, 1), `not found " or \'`),
+		},
+		{
+			input: `unicode
+       "Hello 😃"`,
 			err:   perr(pos(8, 1), `not found " or \'`),
 		},
 	}
