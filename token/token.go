@@ -130,7 +130,6 @@ const (
 	From
 	Function
 	Global
-	Hex
 	If
 	Immutable
 	Import
@@ -163,6 +162,8 @@ const (
 	Virtual
 	While
 
+	HexString
+
 	// Literal
 	TrueLiteral
 	FalseLiteral
@@ -170,7 +171,6 @@ const (
 	NonEmptyStringLiteral
 	EmptyStringLiteral
 	UnicodeStringLiteral
-	HexStringLiteral
 	CommentLiteral
 
 	// Not keywords or future reserved words
@@ -405,8 +405,6 @@ func asKeyword(str string) TokenType {
 		return Function
 	case "global":
 		return Global
-	case "hex":
-		return Hex
 	case "if":
 		return If
 	case "immutable":

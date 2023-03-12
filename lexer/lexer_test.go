@@ -256,11 +256,11 @@ func TestLexer_ScanUnicodeStringLiteral(t *testing.T) {
 	tests := TestData[token.Token]{
 		{
 			input: `unicode"Hello 😃"`,
-			want:  tkn(token.UnicodeStringLiteral, `unicode"Hello 😃"`, pos(1,1)),
+			want:  tkn(token.UnicodeStringLiteral, `unicode"Hello 😃"`, pos(1, 1)),
 		},
 		{
 			input: `unicode\'Hello 😃\'`,
-			want:  tkn(token.UnicodeStringLiteral, `unicode\'Hello 😃\'`, pos(1,1)),
+			want:  tkn(token.UnicodeStringLiteral, `unicode\'Hello 😃\'`, pos(1, 1)),
 		},
 		{
 			input: `unicode Hello 😃`,
@@ -273,11 +273,53 @@ func TestLexer_ScanUnicodeStringLiteral(t *testing.T) {
 		{
 			input: `unicode
        "Hello 😃"`,
-			err:   perr(pos(8, 1), `not found " or \'`),
+			err: perr(pos(8, 1), `not found " or \'`),
 		},
 	}
 
 	tests.Test(t, func(l *Lexer) (token.Token, error) {
 		return l.ScanUnicodeStringLiteral()
+	})
+}
+
+func TestLexer_ScanHexStringLiteral(t *testing.T) {
+	tests := TestData[token.Token]{
+		{
+			input: `hex"1B"`,
+			want:  tkn(token.HexString, `hex"1B"`, pos(1, 1)),
+		},
+		{
+			input: `hex\'2E\'`,
+			want:  tkn(token.HexString, `hex\'2E\'`, pos(1, 1)),
+		},
+		{
+			input: `hex"16_3F_B5"`,
+			want:  tkn(token.HexString, `hex"16_3F_B5"`, pos(1, 1)),
+		},
+		{
+			input: `hex "12"`,
+			err:   perr(pos(4, 1), `not found " or \'`),
+		},
+		{
+			input: `hex
+   "123"`,
+			err: perr(pos(4, 1), `not found " or \'`),
+		},
+		{
+			input: `hex" 123"`,
+			err:   perr(pos(5, 1), "invalid HexString format"),
+		},
+		{
+			input: `hex"16_3"`,
+			err:   perr(pos(5, 1), "invalid HexString format"),
+		},
+		{
+			input: `hex"163_A13"`,
+			err:   perr(pos(5, 1), "invalid HexString format"),
+		},
+	}
+
+	tests.Test(t, func(l *Lexer) (token.Token, error) {
+		return l.ScanHexString()
 	})
 }
