@@ -192,6 +192,17 @@ func (f *FunctionDefinition) contractBodyElementNode() {}
 
 type CallArgumentList struct{}
 
+type IdentifierPathElement struct {
+	Identifier Identifier
+	Period     *token.Pos
+}
+type IdentifierPath struct {
+	Elements []*IdentifierPathElement
+}
+
+func (i IdentifierPath) Pos() token.Pos { return i.Elements[0].Identifier.Pos() }
+func (i IdentifierPath) End() token.Pos { return i.Elements[len(i.Elements)-1].Identifier.End() }
+
 type ContractDefinition struct {
 	Abstract             *token.Pos
 	Contract             token.Pos
