@@ -190,7 +190,30 @@ func (f *FunctionDefinition) contractBodyElementNode() {}
 
 // ----------------------------------------------------------------------------
 
-type CallArgumentList struct{}
+type CallArgumentListExpretion struct {
+	Expression Expression
+	Comma      *token.Pos
+}
+
+type CallArgumentListNamedExpretion struct {
+	Identifier Identifier
+	Colon      token.Pos
+	Expression Expression
+	Comma      *token.Pos
+}
+
+type CallArgumentListNamedExpretions struct {
+	RBrace          token.Pos
+	NamedExpretions []*CallArgumentListNamedExpretion
+	LBrace          token.Pos
+}
+
+type CallArgumentList struct {
+	LParen           token.Pos
+	Expressions      []*CallArgumentListExpretion
+	NamedExpretionsa *CallArgumentListNamedExpretions
+	RParen           token.Pos
+}
 
 type IdentifierPathElement struct {
 	Identifier Identifier
