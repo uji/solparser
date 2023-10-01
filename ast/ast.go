@@ -165,11 +165,6 @@ type FunctionDefinitionReturns struct {
 	RParen        token.Pos
 }
 
-type InheritanceSpecifier struct {
-	IdentifierPath   string
-	CallArgumentList CallArgumentList
-}
-
 // ----------------------------------------------------------------------------
 // ContractBodyElement Nodes
 
@@ -189,6 +184,11 @@ func (f FunctionDefinition) End() token.Pos { return f.Block.End() }
 func (f *FunctionDefinition) contractBodyElementNode() {}
 
 // ----------------------------------------------------------------------------
+
+type InheritanceSpecifier struct {
+	IdentifierPath   IdentifierPath
+	CallArgumentList *CallArgumentList
+}
 
 type CallArgumentListExpretion struct {
 	Expression Expression
