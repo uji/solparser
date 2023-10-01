@@ -6,14 +6,10 @@ import (
 )
 
 func (p *Parser) ParseIdentifierPath() (ast.IdentifierPath, error) {
-	id, err := p.lexer.Peek()
+	id, err := p.ParseIdentifier()
 	if err != nil {
 		return ast.IdentifierPath{}, err
 	}
-	if !isIdentifier(id) {
-		return ast.IdentifierPath{}, token.NewPosError(id.Position, "not found identifier.")
-	}
-	p.lexer.Scan()
 
 	var elements []*ast.IdentifierPathElement
 	for {
@@ -28,14 +24,10 @@ func (p *Parser) ParseIdentifierPath() (ast.IdentifierPath, error) {
 			Period:     &prd.Position,
 		})
 
-		i, err := p.lexer.Peek()
+		i, err := p.ParseIdentifier()
 		if err != nil {
 			return ast.IdentifierPath{}, err
 		}
-		if !isIdentifier(i) {
-			return ast.IdentifierPath{}, token.NewPosError(i.Position, "not found identifier.")
-		}
-		p.lexer.Scan()
 		id = i
 	}
 
