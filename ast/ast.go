@@ -12,12 +12,6 @@ type Node interface {
 	End() token.Pos
 }
 
-// All import-directive-element node (own definition for solparser) types implement the ImportDirectiveElement interface.
-type ImportDirectiveElement interface {
-	Node
-	importDirectiveElementNode()
-}
-
 // All contract-body-element node types implement the ContractBodyElement interface.
 type ContractBodyElement interface {
 	Node
@@ -51,6 +45,12 @@ type Statement interface {
 
 // ----------------------------------------------------------------------------
 // ImportDirectiveElement Nodes
+
+// All import-directive-element node (own definition for solparser) types implement the ImportDirectiveElement interface.
+type ImportDirectiveElement interface {
+	Node
+	importDirectiveElementNode()
+}
 
 type ImportDirectivePathElement struct {
 	Path       Path
