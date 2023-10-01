@@ -190,10 +190,33 @@ type InheritanceSpecifier struct {
 	CallArgumentList *CallArgumentList
 }
 
+// ----------------------------------------------------------------------------
+// ImportDirectiveElement Nodes
+
+// All call-argument-list-elements node (own definition for solparser) types implement the CallArgumentListElements interface.
+type CallArgumentListElements interface {
+	Node
+	callArgumentListElementsNode()
+}
+
 type CallArgumentListExpretion struct {
 	Expression Expression
 	Comma      *token.Pos
 }
+
+func (c CallArgumentListExpretion) Pos() token.Pos { return c.Expression.Pos() }
+func (c CallArgumentListExpretion) End() token.Pos {
+	if c.Comma != nil {
+		return *c.Comma
+	}
+	return c.Expression.End()
+}
+
+type CallArgumentListExpretions []*CallArgumentListExpretion
+
+func (c CallArgumentListExpretions) Pos() token.Pos                { return c[0].Pos() }
+func (c CallArgumentListExpretions) End() token.Pos                { return c[len(c)-1].End() }
+func (c CallArgumentListExpretions) callArgumentListElementsNode() {}
 
 type CallArgumentListNamedExpretion struct {
 	Identifier Identifier
@@ -202,17 +225,30 @@ type CallArgumentListNamedExpretion struct {
 	Comma      *token.Pos
 }
 
-type CallArgumentListNamedExpretions struct {
-	RBrace          token.Pos
-	NamedExpretions []*CallArgumentListNamedExpretion
-	LBrace          token.Pos
+func (c CallArgumentListNamedExpretion) Pos() token.Pos { return c.Identifier.Pos() }
+func (c CallArgumentListNamedExpretion) End() token.Pos {
+	if c.Comma != nil {
+		return *c.Comma
+	}
+	return c.Expression.End()
 }
 
+type CallArgumentListNamedExpretions struct {
+	LBrace          token.Pos
+	NamedExpretions []*CallArgumentListNamedExpretion
+	RBrace          token.Pos
+}
+
+func (c CallArgumentListNamedExpretions) Pos() token.Pos                 { return c.LBrace }
+func (c CallArgumentListNamedExpretions) End() token.Pos                 { return c.RBrace }
+func (c *CallArgumentListNamedExpretions) callArgumentListElementsNode() {}
+
+// ----------------------------------------------------------------------------
+
 type CallArgumentList struct {
-	LParen           token.Pos
-	Expressions      []*CallArgumentListExpretion
-	NamedExpretionsa *CallArgumentListNamedExpretions
-	RParen           token.Pos
+	LParen   token.Pos
+	Elements CallArgumentListElements
+	RParen   token.Pos
 }
 
 type IdentifierPathElement struct {

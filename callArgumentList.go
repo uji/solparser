@@ -23,20 +23,19 @@ func (p *Parser) ParseCallArgumentList() (*ast.CallArgumentList, error) {
 		}, nil
 	}
 
-	var expretions []*ast.CallArgumentListExpretion
-	var namedExpretions *ast.CallArgumentListNamedExpretions
+	var elements ast.CallArgumentListElements
 	if tkn.Type == token.LBrace {
 		es, err := p.ParseCallArgumentListExpretions()
 		if err != nil {
 			return nil, err
 		}
-		expretions = es
+		elements = es
 	} else {
 		nes, err := p.ParseCallArgumentListNamedExpretions()
 		if err != nil {
 			return nil, err
 		}
-		namedExpretions = nes
+		elements = nes
 	}
 
 	rparen, err := p.lexer.Scan()
@@ -48,20 +47,19 @@ func (p *Parser) ParseCallArgumentList() (*ast.CallArgumentList, error) {
 	}
 
 	return &ast.CallArgumentList{
-		LParen:           lparen.Position,
-		Expressions:      expretions,
-		NamedExpretionsa: namedExpretions,
-		RParen:           rparen.Position,
+		LParen:   lparen.Position,
+		Elements: elements,
+		RParen:   rparen.Position,
 	}, nil
 }
 
-func (p *Parser) ParseCallArgumentListExpretions() ([]*ast.CallArgumentListExpretion, error) {
+func (p *Parser) ParseCallArgumentListExpretions() (ast.CallArgumentListExpretions, error) {
 	ex, err := p.ParseExpression()
 	if err != nil {
 		return nil, err
 	}
 
-	var exs []*ast.CallArgumentListExpretion
+	var exs ast.CallArgumentListExpretions
 	for {
 		cmm, err := p.lexer.Peek()
 		if err != nil || cmm.Type != token.Comma {
